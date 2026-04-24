@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aurix - Discord Bot</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+    <!-- API Configuration -->
+    <script src="api-config.js"></script>
+  </head>
+  <body>
+    <nav class="sticky-nav">
+      <div class="nav-container">
+        <div class="nav-brand">Aurix</div>
+        <button class="nav-toggle" id="navToggle">☰</button>
+        <ul class="nav-menu" id="navMenu">
+          <li><a href="#commands">Commands</a></li>
+          <li><a href="#guide">Guide</a></li>
+          <li><a href="#roadmap">Roadmap</a></li>
+          <li><a href="#links">Links</a></li>
+          <li><a href="#faq">FAQ</a></li>
+        </ul>
+        <span class="bot-status">🟢 Bot Online</span>
+      </div>
+    </nav>
+
+    <header class="site-header">
+      <div class="container">
+        <h1>Aurix</h1>
+        <p>Welcome to the official Aurix server — the home of aura farming, competition, and domination.</p>
+      </div>
+    </header>
+
+    <main class="container">
+      <section>
+        <h2>About Aurix</h2>
+        <p>
+          This is where players come together to grind aura, challenge rivals, and rise through the ranks. Whether you're just starting out or aiming for the top leaderboard spot, this server is your base.
+        </p>
+      </section>
+
+      <section>
+        <h2>🚀 What you can do here</h2>
+        <ul>
+          <li>Compete with other players and track your progress</li>
+          <li>Stay updated with new features, updates, and events</li>
+          <li>Get help, tips, and strategies to grow faster</li>
+          <li>Participate in exclusive server-only rewards and competitions</li>
+          <li>Connect with a community of grinders just like you</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>⚔️ Why join?</h2>
+        <p>
+          Aurix isn’t just a bot — it’s a competitive experience. The stronger your aura, the higher you climb. Only the most dedicated players will dominate.
+        </p>
+        <p>
+          👑 Do you have what it takes to reach the top?
+        </p>
+        <p>
+          Join now and start your journey.
+        </p>
+      </section>
+
+      <section class="commands-section" id="commands">
+        <h2>⚙️ Bot Commands</h2>
+        <div class="commands-grid">
+          <div class="command-card">
+            <div class="command-icon">📈</div>
+            <h3>/spin</h3>
+            <p>Start farming aura and climb the ranks</p>
+          </div>
+          <div class="command-card">
+            <div class="command-icon">🏆</div>
+            <h3>/leaderboard</h3>
+            <p>View top players and their scores</p>
+          </div>
+          <div class="command-card">
+            <div class="command-icon">⚔️</div>
+            <h3>/pvp</h3>
+            <p>Challenge other players to competitions</p>
+          </div>
+          <div class="command-card">
+            <div class="command-icon">👥</div>
+            <h3>/clan</h3>
+            <p>Join or create a clan and compete with other guilds</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="guide-section" id="guide">
+        <h2>📖 Getting Started Guide</h2>
+        <div class="guide-steps">
+          <div class="guide-step">
+            <div class="step-number">1</div>
+            <h3>Add the Bot</h3>
+            <p>Use the link below to add Aurix to your Discord server or join our official server.</p>
+          </div>
+          <div class="guide-step">
+            <div class="step-number">2</div>
+            <h3>Start Farming</h3>
+            <p>Use /start to begin accumulating aura and start your competitive journey.</p>
+          </div>
+          <div class="guide-step">
+            <div class="step-number">3</div>
+            <h3>Climb Ranks</h3>
+            <p>Compete with others, complete challenges, and rise through the leaderboards.</p>
+          </div>
+          <div class="guide-step">
+            <div class="step-number">4</div>
+            <h3>Earn Rewards</h3>
+            <p>Unlock exclusive rewards, badges, and status as you progress.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="roadmap-section" id="roadmap">
+        <h2>🗺️ Upcoming Features</h2>
+        <div class="roadmap-items">
+          <div class="roadmap-item completed">
+            <span class="roadmap-status">✓ Released</span>
+            <h3>Core Farming System</h3>
+          </div>
+          <div class="roadmap-item in-progress">
+            <span class="roadmap-status">✓ Released</span>
+            <h3>Guild Wars & Team Battles</h3>
+          </div>
+          <div class="roadmap-item upcoming">
+            <span class="roadmap-status">🚀 Coming Soon</span>
+            <h3>Web Dashboard</h3>
+          </div>
+          <div class="roadmap-item upcoming">
+            <span class="roadmap-status">🚀 Coming Soon</span>
+            <h3>Premium Rewards and Features</h3>
+          </div>
+          <div class="roadmap-item upcoming">
+            <span class="roadmap-status">🚀 Coming Soon</span>
+            <h3>Seasonal Events</h3>
+          </div>
+        </div>
+      </section>
+
+      <section class="faq-section" id="faq">
+        <h2>❓ Frequently Asked Questions</h2>
+        <div class="faq-items">
+          <div class="faq-item">
+            <h3>How do I start farming aura?</h3>
+            <p>Simply use the /start command in any channel where Aurix is active. The more you interact, the more aura you accumulate!</p>
+          </div>
+          <div class="faq-item">
+            <h3>Can I use Aurix on my own server?</h3>
+            <p>Yes! Click the "Add Bot to Your Server" button and authorize Aurix. You'll have full access to all features.</p>
+          </div>
+          <div class="faq-item">
+            <h3>What are the rewards for ranking up?</h3>
+            <p>Higher ranks unlock exclusive roles, badges, bonus aura multipliers, and access to premium competitions.</p>
+          </div>
+          <div class="faq-item">
+            <h3>Is Aurix free to use?</h3>
+            <p>Yes, Aurix is completely free! All core features are available without any paywalls.</p>
+          </div>
+          <div class="faq-item">
+            <h3>How can I report bugs or suggest features?</h3>
+            <p>Join our official Discord server and use the #suggestions and #bug-reports channels. We read and respond to all feedback!</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="newsletter-section">
+        <h2>📬 Stay Updated</h2>
+        <p>Subscribe to get notified about new features, events, and major updates</p>
+        <form class="newsletter-form" id="newsletterForm">
+          <input type="email" placeholder="your@email.com" required>
+          <button type="submit">Subscribe</button>
+        </form>
+      </section>
+
+      <section class="links-section" id="links">
+        <h2>🔗 Get Started</h2>
+        <p>Choose your next step:</p>
+        <div class="link-buttons">
+          <a href="https://discord.gg/PG7ht4SuJy" class="link-button server-link" target="_blank">Join Official Server</a>
+           <a href="https://www.youtube.com/@Aurix-s8n" class="link-button youtube-link" target="_blank">Subscribe to our Youtube</a>
+           <a href="https://www.tiktok.com/@aurix16890" class="link-button tiktok-link" target="_blank">Follow us on TikTok</a>
+          <a href="https://discord.com/oauth2/authorize?client_id=1492213325637877800" class="link-button bot-link" target="_blank">Add Bot to Your Server</a>
+        </div>
+      </section>
+      <section class="legal-section" id="legal">
+        <h2>Legal</h2>
+        <div class="faq-items">
+          <div class="faq-item" id="terms">
+            <h3>Terms of Service</h3>
+            <p>By using Aurix, you agree to use the bot responsibly, follow Discord's Terms of Service, and avoid abuse, cheating, or attempts to disrupt the experience for other players.</p>
+          </div>
+          <div class="faq-item" id="privacy">
+            <h3>Privacy Policy</h3>
+            <p>Aurix may store limited account and gameplay data needed to provide bot features, rankings, and support. We do not sell your personal information, and data is only used to operate and improve the service.</p>
+          </div>
+          <div class="faq-item" id="refunds">
+            <h3>Refund Policy</h3>
+            <p>If Aurix offers paid products or upgrades in the future, refund requests will be reviewed case by case. Abuse, completed digital deliveries, or violations of the rules may make purchases non-refundable.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-section">
+            <h4>Follow Us</h4>
+            <div class="social-links">
+              <a href="https://www.youtube.com/@Aurix-s8n" target="_blank" title="YouTube">YouTube</a>
+              <a href="https://www.tiktok.com/@aurix16890" target="_blank" title="TikTok">TikTok</a>
+            </div>
+          </div>
+          <div class="footer-section">
+            <h4>Legal</h4>
+            <div class="social-links">
+              <a href="#terms">Terms of Service</a>
+              <a href="#privacy">Privacy Policy</a>
+              <a href="#refunds">Refund Policy</a>
+            </div>
+          </div>
+        </div>
+        <p class="footer-credit">© 2026 Aurix Bot. All rights reserved.</p>
+      </div>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>

@@ -1,0 +1,28 @@
+
+  "faqs" :[
+    {
+      "question": "How do I start farming aura?",
+      "answer": "Simply use the /spin command in any channel where Aurix is active. The more you interact, the more aura you accumulate!"
+    },
+    {
+      "question": "Can I use Aurix on my own server?",
+      "answer": "Yes! Click the 'Add Bot to Your Server' button and authorize Aurix. You'll have full access to all features."
+    },
+    {
+      "question": "What are the rewards for ranking up?",
+      "answer": "Higher ranks unlock exclusive roles, badges, bonus aura multipliers, and access to premium competitions."
+    },
+    {
+      "question": "How often does the leaderboard reset?",
+      "answer": "The global leaderboard resets monthly, while seasonal leaderboards reset quarterly. Your stats are always preserved!"
+    },
+    {
+      "question": "Is Aurix free to use?",
+      "answer": "Yes, Aurix is completely free! All core features are available without any paywalls."
+    },
+    {
+      "question": "How can I report bugs or suggest features?",
+      "answer": "Join our official Discord server and use the #suggestions and #bug-reports channels. We read and respond to all feedback!"
+    }
+  ]
+}
