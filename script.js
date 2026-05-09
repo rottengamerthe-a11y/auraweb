@@ -46,7 +46,7 @@ const FALLBACK_COMMUNITY_DATA = {
     },
     {
       question: 'Is Aurix free to use?',
-      answer: 'Yes, Aurix is completely free! All core features are available without any paywalls.'
+      answer: 'Yes, Aurix has free core features. Premium plans add stronger boosts and bonus rewards for players who want to progress faster.'
     },
     {
       question: 'How can I report bugs or suggest features?',
@@ -128,6 +128,7 @@ function updateLeaderboard() {
   if (!communityData.leaderboard) return;
   
   const leaderboard = document.querySelector('.leaderboard');
+  if (!leaderboard) return;
   leaderboard.innerHTML = '';
   
   communityData.leaderboard.forEach(player => {
@@ -146,6 +147,7 @@ function updateTestimonials() {
   if (!communityData.testimonials) return;
   
   const testimonialsGrid = document.querySelector('.testimonials-grid');
+  if (!testimonialsGrid) return;
   testimonialsGrid.innerHTML = '';
   
   communityData.testimonials.forEach(testimonial => {
@@ -163,6 +165,7 @@ function updateFAQ() {
   if (!communityData.faqs) return;
   
   const faqItems = document.querySelector('.faq-items');
+  if (!faqItems) return;
   faqItems.innerHTML = '';
   
   communityData.faqs.forEach(faq => {

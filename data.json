@@ -1,12 +1,12 @@
-
-  "faqs" :[
+{
+  "faqs": [
     {
       "question": "How do I start farming aura?",
-      "answer": "Simply use the /spin command in any channel where Aurix is active. The more you interact, the more aura you accumulate!"
+      "answer": "Simply use the /start command in any channel where Aurix is active. The more you interact, the more aura you accumulate!"
     },
     {
       "question": "Can I use Aurix on my own server?",
-      "answer": "Yes! Click the 'Add Bot to Your Server' button and authorize Aurix. You'll have full access to all features."
+      "answer": "Yes! Click the Add Bot to Your Server button and authorize Aurix. You'll have full access to all features."
     },
     {
       "question": "What are the rewards for ranking up?",
@@ -18,7 +18,7 @@
     },
     {
       "question": "Is Aurix free to use?",
-      "answer": "Yes, Aurix is completely free! All core features are available without any paywalls."
+      "answer": "Yes, Aurix has free core features. Premium plans add stronger boosts and bonus rewards for players who want to progress faster."
     },
     {
       "question": "How can I report bugs or suggest features?",
