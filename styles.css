@@ -647,31 +647,6 @@ body {
   margin: 0 0 1.5rem 0;
 }
 
-.sign-up-btn {
-  align-self: flex-start;
-  margin-top: 1rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.85rem 2rem;
-  background: linear-gradient(135deg, var(--accent), var(--primary));
-  color: #040814;
-  border: none;
-  border-radius: 50px;
-  font-weight: 800;
-  font-size: 1rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: 0 8px 30px rgba(0, 216, 255, 0.25);
-}
-
-.sign-up-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 40px rgba(0, 216, 255, 0.35);
-}
-
 .eyebrow {
   color: var(--accent) !important;
   font-size: 0.85rem !important;
@@ -797,6 +772,9 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.04em;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
 }
 
 .plan-button:hover {

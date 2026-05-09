@@ -11,21 +11,10 @@
     <script type="text/javascript">
       let paddleReady = false;
       
-      // define items - test with single item first
-      let itemsList = [
-        {
-          priceId: "pri_01kr6ms7z1txvs703mf3ez9rk5",
-          quantity: 1
-        },
-        {
-          priceId: "pri_01kr6mtxermany2ksdf1hmxbz6",
-          quantity: 1
-        },
-        {
-          priceId: "pri_01kr6mvkjxwv0qpyjp9hvzn0kx",
-          quantity: 1
-        }
-      ];
+      // define individual price IDs for each plan
+      const monthlyPriceId = "pri_01kr6ms7z1txvs703mf3ez9rk5";
+      const yearlyPriceId = "pri_01kr6mtxermany2ksdf1hmxbz6";
+      const lifetimePriceId = "pri_01kr6mvkjxwv0qpyjp9hvzn0kx";
       
       function initPaddleWhenReady() {
         // Wait a bit for Paddle to be fully available
@@ -39,7 +28,8 @@
       function initPaddle() {
         try {
           Paddle.Initialize({
-            token: "test_d4eb0ae0fb7f3769c198e959885"
+            token: "live_2345bc35c0b52ee515204854e3b",
+            pwCustomer: { }
           });
           paddleReady = true;
           console.log('✅ Paddle initialized successfully');
@@ -49,14 +39,15 @@
       }
       
       // open checkout
-      function openCheckout(items){
+      function openCheckout(priceId){
         try {
           if (!paddleReady || typeof Paddle === 'undefined') {
             console.error('Paddle not ready yet');
             alert('Payment system is loading. Please try again in a moment.');
             return;
           }
-          console.log('Opening checkout with items:', JSON.stringify(items));
+          const items = [{ priceId: priceId, quantity: 1 }];
+          console.log('Opening checkout with price:', priceId);
           Paddle.Checkout.open({
             items: items
           });
@@ -183,7 +174,6 @@
           <p class="eyebrow">Premium Plans</p>
           <h2>Upgrade Your Aura Grind</h2>
           <p>Pick the boost that fits your server and stack stronger rewards across daily farming, work, mining, vaults, bosses, PvP, crates, and spins.</p>
-          <button class="sign-up-btn" onclick="openCheckout(itemsList)">Sign Up Now</button>
         </div>
         <div class="pricing-grid">
           <article class="pricing-card">
@@ -205,7 +195,7 @@
               <li>+10% boss rewards, +8% PvP rewards</li>
               <li>+10% crate aura rewards</li>
             </ul>
-            <a href="https://discord.gg/PG7ht4SuJy" class="plan-button" target="_blank">Get Monthly</a>
+            <button class="plan-button" onclick="openCheckout(monthlyPriceId)">Get Monthly</button>
           </article>
 
           <article class="pricing-card featured-plan">
@@ -228,7 +218,7 @@
               <li>+15% boss rewards, +12% PvP rewards</li>
               <li>+15% crate aura rewards</li>
             </ul>
-            <a href="https://discord.gg/PG7ht4SuJy" class="plan-button" target="_blank">Get Yearly</a>
+            <button class="plan-button" onclick="openCheckout(yearlyPriceId)">Get Yearly</button>
           </article>
 
           <article class="pricing-card">
@@ -250,7 +240,7 @@
               <li>+22% boss rewards, +18% PvP rewards</li>
               <li>+22% crate aura rewards</li>
             </ul>
-            <a href="https://discord.gg/PG7ht4SuJy" class="plan-button" target="_blank">Get Lifetime</a>
+            <button class="plan-button" onclick="openCheckout(lifetimePriceId)">Get Lifetime</button>
           </article>
         </div>
       </section>
