@@ -27,21 +27,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
   signUpButton.addEventListener('click', () => {
     const urlParams = new URLSearchParams(window.location.search);
-    const discordId = urlParams.get('userid');
-    const customData = {};
-
-    if (discordId) {
-      customData.discord_user_id = discordId;
-    }
-
-    Paddle.Checkout.open({
+    const discordId = urlParams.get('userid')?.trim();
+    const checkoutOptions = {
       items: [
         {
           priceId: signUpButton.dataset.priceId,
           quantity: 1
         }
-      ],
-      customData
-    });
+      ]
+    };
+
+    if (discordId) {
+      checkoutOptions.customData = {
+        discord_user_id: discordId
+      };
+    }
+
+    Paddle.Checkout.open(checkoutOptions);
   });
 });
