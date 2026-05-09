@@ -14,7 +14,15 @@
       // define items - test with single item first
       let itemsList = [
         {
-          priceId: "pri_01kr6rjdst1nb5q8ac5wmp0qce",
+          priceId: "pri_01kr6ms7z1txvs703mf3ez9rk5",
+          quantity: 1
+        },
+        {
+          priceId: "pri_01kr6mtxermany2ksdf1hmxbz6",
+          quantity: 1
+        },
+        {
+          priceId: "pri_01kr6mvkjxwv0qpyjp9hvzn0kx",
           quantity: 1
         }
       ];
@@ -30,7 +38,6 @@
 
       function initPaddle() {
         try {
-          Paddle.Environment.set("sandbox");
           Paddle.Initialize({
             token: "test_d4eb0ae0fb7f3769c198e959885"
           });
