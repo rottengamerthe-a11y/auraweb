@@ -64,9 +64,36 @@ def fetch_discord_user(access_token):
         return json.loads(response.read().decode("utf-8"))
 
 
+def safe_discord_error(error_body):
+    try:
+        payload = json.loads(error_body)
+    except json.JSONDecodeError:
+        return error_body[:300]
+
+    return json.dumps({
+        "error": payload.get("error"),
+        "error_description": payload.get("error_description"),
+        "message": payload.get("message"),
+    })
+
+
 @app.route("/")
 def home():
     return send_from_directory(".", "index.html")
+
+
+@app.route("/debug/config")
+def debug_config():
+    redirect_uri = os.environ.get("DISCORD_REDIRECT_URI", "").strip()
+    frontend_url = os.environ.get("FRONTEND_URL", "").strip()
+
+    return jsonify({
+        "discord_client_id_set": bool(os.environ.get("DISCORD_CLIENT_ID", "").strip()),
+        "discord_client_secret_set": bool(os.environ.get("DISCORD_CLIENT_SECRET", "").strip()),
+        "discord_redirect_uri": redirect_uri,
+        "frontend_url": frontend_url or None,
+        "session_secret_set": bool(os.environ.get("SESSION_SECRET", "").strip()),
+    })
 
 
 @app.route("/auth/discord")
@@ -111,7 +138,7 @@ def discord_callback():
     except HTTPError as error:
         error_body = error.read().decode("utf-8", errors="replace")
         print(f"Discord login failed: HTTP {error.code} {error_body}")
-        return f"Discord login failed: Discord returned HTTP {error.code}. Check Render logs.", 500
+        return f"Discord login failed: Discord returned HTTP {error.code}. {safe_discord_error(error_body)}", 500
     except (URLError, KeyError, RuntimeError) as error:
         print(f"Discord login failed: {error}")
         return f"Discord login failed: {error}", 500
