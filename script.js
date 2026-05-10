@@ -58,7 +58,7 @@ const FALLBACK_COMMUNITY_DATA = {
 let communityData = {};
 const DISCORD_AUTH_STORAGE_KEY = 'aurixDiscordAuth';
 const PENDING_CHECKOUT_STORAGE_KEY = 'aurixPendingCheckout';
-const DISCORD_OAUTH_SCOPES = ['identify', 'email'];
+const DISCORD_OAUTH_SCOPES = ['identify'];
 
 function getDiscordClientId() {
   return window.DISCORD_CLIENT_ID || '1492213325637877800';
@@ -97,9 +97,8 @@ function buildDiscordLoginUrl() {
   const params = new URLSearchParams({
     client_id: getDiscordClientId(),
     redirect_uri: getDiscordRedirectUri(),
-    response_type: 'token',
-    scope: DISCORD_OAUTH_SCOPES.join(' '),
-    prompt: 'consent'
+    response_type: 'code',
+    scope: DISCORD_OAUTH_SCOPES.join(' ')
   });
 
   return `https://discord.com/oauth2/authorize?${params.toString()}`;
