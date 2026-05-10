@@ -10,6 +10,7 @@
     <script src="api-config.js"></script>
     <script type="text/javascript">
       let paddleReady = false;
+      window.paddleReady = false;
       
       // define individual price IDs for each plan
       const monthlyPriceId = "pri_01kr6ms7z1txvs703mf3ez9rk5";
@@ -32,6 +33,7 @@
             pwCustomer: { }
           });
           paddleReady = true;
+          window.paddleReady = true;
           console.log('✅ Paddle initialized successfully');
         } catch (error) {
           console.error('❌ Paddle initialization error:', error);
@@ -41,16 +43,36 @@
       // open checkout
       function openCheckout(priceId){
         try {
+          if (typeof requireDiscordLogin === 'function' && !requireDiscordLogin(priceId)) {
+            return;
+          }
+
           if (!paddleReady || typeof Paddle === 'undefined') {
             console.error('Paddle not ready yet');
             alert('Payment system is loading. Please try again in a moment.');
             return;
           }
           const items = [{ priceId: priceId, quantity: 1 }];
-          console.log('Opening checkout with price:', priceId);
-          Paddle.Checkout.open({
+          const checkoutOptions = {
             items: items
-          });
+          };
+          const discordUser = typeof getDiscordUser === 'function' ? getDiscordUser() : null;
+
+          if (discordUser) {
+            checkoutOptions.customData = {
+              discord_user_id: discordUser.id,
+              discord_username: discordUser.username
+            };
+
+            if (discordUser.email) {
+              checkoutOptions.customer = {
+                email: discordUser.email
+              };
+            }
+          }
+
+          console.log('Opening checkout with price:', priceId);
+          Paddle.Checkout.open(checkoutOptions);
         } catch (error) {
           console.error('Checkout error:', error);
           alert('Error opening checkout: ' + error.message);
@@ -74,7 +96,10 @@
           <li><a href="#faq">FAQ</a></li>
           <li><a href="#legal">Legal</a></li>
         </ul>
-        <span class="bot-status">🟢 Bot Online</span>
+        <div class="nav-actions">
+          <span class="bot-status">🟢 Bot Online</span>
+          <button class="discord-login-button" id="discordLoginButton" type="button">Login with Discord</button>
+        </div>
       </div>
     </nav>
 
@@ -174,6 +199,7 @@
           <p class="eyebrow">Premium Plans</p>
           <h2>Upgrade Your Aura Grind</h2>
           <p>Pick the boost that fits your server and stack stronger rewards across daily farming, work, mining, vaults, bosses, PvP, crates, and spins.</p>
+          <p class="pricing-login-note" id="pricingLoginNote">Login with Discord before buying so your membership can be linked to your account.</p>
         </div>
         <div class="pricing-grid">
           <article class="pricing-card">

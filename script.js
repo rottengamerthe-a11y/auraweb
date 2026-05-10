@@ -56,6 +56,169 @@ const FALLBACK_COMMUNITY_DATA = {
 };
 
 let communityData = {};
+const DISCORD_AUTH_STORAGE_KEY = 'aurixDiscordAuth';
+const PENDING_CHECKOUT_STORAGE_KEY = 'aurixPendingCheckoutPrice';
+const DISCORD_OAUTH_SCOPES = ['identify', 'email'];
+
+function getDiscordClientId() {
+  return window.DISCORD_CLIENT_ID || '1492213325637877800';
+}
+
+function getDiscordRedirectUri() {
+  if (window.DISCORD_REDIRECT_URI) {
+    return window.DISCORD_REDIRECT_URI;
+  }
+
+  return `${window.location.origin}${window.location.pathname}`;
+}
+
+function getDiscordAuth() {
+  try {
+    const auth = JSON.parse(localStorage.getItem(DISCORD_AUTH_STORAGE_KEY) || 'null');
+
+    if (!auth || !auth.user || !auth.expiresAt || Date.now() >= auth.expiresAt) {
+      localStorage.removeItem(DISCORD_AUTH_STORAGE_KEY);
+      return null;
+    }
+
+    return auth;
+  } catch (error) {
+    localStorage.removeItem(DISCORD_AUTH_STORAGE_KEY);
+    return null;
+  }
+}
+
+function getDiscordUser() {
+  const auth = getDiscordAuth();
+  return auth ? auth.user : null;
+}
+
+function buildDiscordLoginUrl() {
+  const params = new URLSearchParams({
+    client_id: getDiscordClientId(),
+    redirect_uri: getDiscordRedirectUri(),
+    response_type: 'token',
+    scope: DISCORD_OAUTH_SCOPES.join(' '),
+    prompt: 'consent'
+  });
+
+  return `https://discord.com/oauth2/authorize?${params.toString()}`;
+}
+
+function beginDiscordLogin() {
+  if (window.location.protocol === 'file:') {
+    alert('Discord login needs a real website URL. Run the site with python -m http.server 8000 --bind 127.0.0.1, then open http://127.0.0.1:8000/.');
+    return;
+  }
+
+  window.location.href = buildDiscordLoginUrl();
+}
+
+function logoutDiscord() {
+  localStorage.removeItem(DISCORD_AUTH_STORAGE_KEY);
+  updateDiscordLoginUI();
+}
+
+function requireDiscordLogin(priceId) {
+  if (getDiscordUser()) {
+    return true;
+  }
+
+  if (priceId) {
+    sessionStorage.setItem(PENDING_CHECKOUT_STORAGE_KEY, priceId);
+  }
+
+  beginDiscordLogin();
+  return false;
+}
+
+function resumePendingCheckout(attempt = 0) {
+  const pendingPriceId = sessionStorage.getItem(PENDING_CHECKOUT_STORAGE_KEY);
+
+  if (!pendingPriceId || !getDiscordUser()) {
+    return;
+  }
+
+  if (typeof openCheckout === 'function' && window.paddleReady === true && typeof Paddle !== 'undefined') {
+    sessionStorage.removeItem(PENDING_CHECKOUT_STORAGE_KEY);
+    openCheckout(pendingPriceId);
+    return;
+  }
+
+  if (attempt < 20) {
+    setTimeout(() => resumePendingCheckout(attempt + 1), 300);
+  }
+}
+
+async function fetchDiscordUser(accessToken) {
+  const response = await fetch('https://discord.com/api/users/@me', {
+    headers: {
+      Authorization: `Bearer ${accessToken}`
+    }
+  });
+
+  if (!response.ok) {
+    throw new Error('Discord profile request failed.');
+  }
+
+  return response.json();
+}
+
+async function handleDiscordRedirect() {
+  const hash = new URLSearchParams(window.location.hash.slice(1));
+  const accessToken = hash.get('access_token');
+  const expiresIn = Number(hash.get('expires_in') || 0);
+
+  if (!accessToken) {
+    return;
+  }
+
+  try {
+    const user = await fetchDiscordUser(accessToken);
+    localStorage.setItem(DISCORD_AUTH_STORAGE_KEY, JSON.stringify({
+      accessToken,
+      user,
+      expiresAt: Date.now() + Math.max(expiresIn - 60, 60) * 1000
+    }));
+  } catch (error) {
+    console.error('Discord login error:', error);
+    alert('Discord login failed. Please try again.');
+  } finally {
+    history.replaceState(null, document.title, `${window.location.pathname}${window.location.search}`);
+    updateDiscordLoginUI();
+
+    if (sessionStorage.getItem(PENDING_CHECKOUT_STORAGE_KEY)) {
+      document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' });
+      resumePendingCheckout();
+    }
+  }
+}
+
+function updateDiscordLoginUI() {
+  const loginButton = document.getElementById('discordLoginButton');
+  const pricingLoginNote = document.getElementById('pricingLoginNote');
+  const user = getDiscordUser();
+
+  if (loginButton) {
+    if (user) {
+      loginButton.textContent = `Logged in as ${user.global_name || user.username}`;
+      loginButton.classList.add('is-logged-in');
+      loginButton.title = 'Click to log out';
+      loginButton.onclick = logoutDiscord;
+    } else {
+      loginButton.textContent = 'Login with Discord';
+      loginButton.classList.remove('is-logged-in');
+      loginButton.title = 'Login is required before buying a membership';
+      loginButton.onclick = beginDiscordLogin;
+    }
+  }
+
+  if (pricingLoginNote) {
+    pricingLoginNote.textContent = user
+      ? `Memberships will be linked to ${user.global_name || user.username}.`
+      : 'Login with Discord before buying so your membership can be linked to your account.';
+  }
+}
 
 async function loadData() {
   try {
@@ -181,6 +344,10 @@ function updateFAQ() {
 
 // Load data on page load
 document.addEventListener('DOMContentLoaded', loadData);
+document.addEventListener('DOMContentLoaded', () => {
+  updateDiscordLoginUI();
+  handleDiscordRedirect();
+});
 
 // Mobile Navigation Toggle
 const navToggle = document.getElementById('navToggle');
