@@ -708,6 +708,13 @@ body {
   line-height: 1.45 !important;
 }
 
+.pricing-compliance-note {
+  color: var(--muted) !important;
+  font-size: 0.95rem !important;
+  line-height: 1.6 !important;
+  margin-top: -0.4rem !important;
+}
+
 .pricing-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
