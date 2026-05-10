@@ -13,6 +13,20 @@ app.secret_key = os.environ.get("SESSION_SECRET", "dev-session-secret-change-me"
 DISCORD_API_BASE = "https://discord.com/api"
 
 
+@app.after_request
+def add_cors_headers(response):
+    frontend_url = os.environ.get("FRONTEND_URL", "").rstrip("/")
+    origin = request.headers.get("Origin")
+
+    if frontend_url and origin == frontend_url:
+        response.headers["Access-Control-Allow-Origin"] = origin
+        response.headers["Access-Control-Allow-Credentials"] = "true"
+        response.headers["Access-Control-Allow-Headers"] = "Content-Type"
+        response.headers["Access-Control-Allow-Methods"] = "GET,POST,OPTIONS"
+
+    return response
+
+
 def require_env(name):
     value = os.environ.get(name, "").strip()
     if not value:
@@ -75,9 +89,19 @@ def discord_login():
 def discord_callback():
     code = request.args.get("code", "")
     state = request.args.get("state", "")
+    expected_state = session.get("discord_oauth_state")
 
-    if not code or not state or state != session.get("discord_oauth_state"):
-        return "Discord login failed. Please try again.", 400
+    if not code:
+        print("Discord login failed: callback missing code")
+        return "Discord login failed: missing code.", 400
+
+    if not state:
+        print("Discord login failed: callback missing state")
+        return "Discord login failed: missing state.", 400
+
+    if state != expected_state:
+        print("Discord login failed: state mismatch")
+        return "Discord login failed: session expired. Please start login again.", 400
 
     session.pop("discord_oauth_state", None)
 
@@ -95,11 +119,14 @@ def discord_callback():
         "avatar": user.get("avatar"),
     }
 
-    return redirect("/")
+    return redirect(os.environ.get("FRONTEND_URL", "/"))
 
 
-@app.route("/logout", methods=["POST"])
+@app.route("/logout", methods=["POST", "OPTIONS"])
 def logout():
+    if request.method == "OPTIONS":
+        return "", 204
+
     session.pop("discord_user", None)
     return jsonify({"ok": True})
 

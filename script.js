@@ -64,7 +64,8 @@ function getDiscordUser() {
 }
 
 function buildDiscordLoginUrl() {
-  return 'https://aurawebsite-12gd.onrender.com/auth/discord';
+  const authBaseUrl = window.AUTH_BASE_URL || window.location.origin;
+  return `${authBaseUrl}/auth/discord`;
 }
 
 function beginDiscordLogin() {
@@ -77,8 +78,10 @@ function beginDiscordLogin() {
 }
 
 async function logoutDiscord() {
+  const authBaseUrl = window.AUTH_BASE_URL || window.location.origin;
+
   try {
-    await fetch('/logout', { method: 'POST' });
+    await fetch(`${authBaseUrl}/logout`, { method: 'POST', credentials: 'include' });
   } catch (error) {
     console.warn('Logout request failed:', error);
   }
@@ -129,8 +132,10 @@ function getPendingCheckout() {
 }
 
 async function refreshDiscordSession() {
+  const authBaseUrl = window.AUTH_BASE_URL || window.location.origin;
+
   try {
-    const response = await fetch('/api/me');
+    const response = await fetch(`${authBaseUrl}/api/me`, { credentials: 'include' });
     if (response.ok) {
       const payload = await response.json();
       discordUser = payload.user || null;
