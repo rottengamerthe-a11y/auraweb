@@ -8,6 +8,11 @@ def home():
     return send_from_directory(".", "index.html")
 
 
+@app.route("/auth/discord/callback")
+def discord_callback():
+    return send_from_directory(".", "index.html")
+
+
 @app.route("/<path:path>")
 def static_files(path):
     return send_from_directory(".", path)
