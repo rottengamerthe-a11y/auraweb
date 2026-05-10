@@ -29,8 +29,7 @@
       function initPaddle() {
         try {
           Paddle.Initialize({
-            token: "live_2345bc35c0b52ee515204854e3b",
-            pwCustomer: { }
+            token: "live_2345bc35c0b52ee515204854e3b"
           });
           paddleReady = true;
           window.paddleReady = true;
@@ -60,16 +59,10 @@
 
           if (discordUser) {
             checkoutOptions.customData = {
-              discordUserId: discordUser.id,
-              discordUsername: discordUser.username,
-              planId: planId
+              discord_user_id: discordUser.id,
+              discord_username: discordUser.username,
+              plan_id: planId
             };
-
-            if (discordUser.email) {
-              checkoutOptions.customer = {
-                email: discordUser.email
-              };
-            }
           }
 
           console.log('Opening checkout with price:', priceId);
