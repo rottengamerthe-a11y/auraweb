@@ -108,9 +108,13 @@ def discord_callback():
     try:
         token = exchange_discord_code(code)
         user = fetch_discord_user(token["access_token"])
-    except (HTTPError, URLError, KeyError, RuntimeError) as error:
+    except HTTPError as error:
+        error_body = error.read().decode("utf-8", errors="replace")
+        print(f"Discord login failed: HTTP {error.code} {error_body}")
+        return f"Discord login failed: Discord returned HTTP {error.code}. Check Render logs.", 500
+    except (URLError, KeyError, RuntimeError) as error:
         print(f"Discord login failed: {error}")
-        return "Discord login failed. Please try again.", 500
+        return f"Discord login failed: {error}", 500
 
     session["discord_user"] = {
         "id": user["id"],
