@@ -108,15 +108,11 @@ def debug_config():
 
 @app.route("/auth/discord")
 def discord_login():
-    state = secrets.token_urlsafe(24)
-    session["discord_oauth_state"] = state
-
     params = {
         "client_id": require_env("DISCORD_CLIENT_ID"),
         "redirect_uri": require_env("DISCORD_REDIRECT_URI"),
-        "response_type": "code",
+        "response_type": "token",
         "scope": "identify",
-        "state": state,
     }
 
     return redirect(f"https://discord.com/oauth2/authorize?{urlencode(params)}")
@@ -129,8 +125,7 @@ def discord_callback():
     expected_state = session.get("discord_oauth_state")
 
     if not code:
-        print("Discord login failed: callback missing code")
-        return "Discord login failed: missing code.", 400
+        return send_from_directory(".", "index.html")
 
     if not state:
         print("Discord login failed: callback missing state")
