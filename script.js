@@ -57,7 +57,7 @@ const FALLBACK_COMMUNITY_DATA = {
 
 let communityData = {};
 const DISCORD_AUTH_STORAGE_KEY = 'aurixDiscordAuth';
-const PENDING_CHECKOUT_STORAGE_KEY = 'aurixPendingCheckoutPrice';
+const PENDING_CHECKOUT_STORAGE_KEY = 'aurixPendingCheckout';
 const DISCORD_OAUTH_SCOPES = ['identify', 'email'];
 
 function getDiscordClientId() {
@@ -119,13 +119,13 @@ function logoutDiscord() {
   updateDiscordLoginUI();
 }
 
-function requireDiscordLogin(priceId) {
+function requireDiscordLogin(priceId, planId) {
   if (getDiscordUser()) {
     return true;
   }
 
   if (priceId) {
-    sessionStorage.setItem(PENDING_CHECKOUT_STORAGE_KEY, priceId);
+    sessionStorage.setItem(PENDING_CHECKOUT_STORAGE_KEY, JSON.stringify({ priceId, planId }));
   }
 
   beginDiscordLogin();
@@ -133,20 +133,30 @@ function requireDiscordLogin(priceId) {
 }
 
 function resumePendingCheckout(attempt = 0) {
-  const pendingPriceId = sessionStorage.getItem(PENDING_CHECKOUT_STORAGE_KEY);
+  const pendingCheckout = getPendingCheckout();
 
-  if (!pendingPriceId || !getDiscordUser()) {
+  if (!pendingCheckout || !getDiscordUser()) {
     return;
   }
 
   if (typeof openCheckout === 'function' && window.paddleReady === true && typeof Paddle !== 'undefined') {
     sessionStorage.removeItem(PENDING_CHECKOUT_STORAGE_KEY);
-    openCheckout(pendingPriceId);
+    openCheckout(pendingCheckout.priceId, pendingCheckout.planId);
     return;
   }
 
   if (attempt < 20) {
     setTimeout(() => resumePendingCheckout(attempt + 1), 300);
+  }
+}
+
+function getPendingCheckout() {
+  try {
+    const pendingCheckout = JSON.parse(sessionStorage.getItem(PENDING_CHECKOUT_STORAGE_KEY) || 'null');
+    return pendingCheckout && pendingCheckout.priceId ? pendingCheckout : null;
+  } catch (error) {
+    sessionStorage.removeItem(PENDING_CHECKOUT_STORAGE_KEY);
+    return null;
   }
 }
 

@@ -41,9 +41,9 @@
       }
       
       // open checkout
-      function openCheckout(priceId){
+      function openCheckout(priceId, planId){
         try {
-          if (typeof requireDiscordLogin === 'function' && !requireDiscordLogin(priceId)) {
+          if (typeof requireDiscordLogin === 'function' && !requireDiscordLogin(priceId, planId)) {
             return;
           }
 
@@ -60,8 +60,9 @@
 
           if (discordUser) {
             checkoutOptions.customData = {
-              discord_user_id: discordUser.id,
-              discord_username: discordUser.username
+              discordUserId: discordUser.id,
+              discordUsername: discordUser.username,
+              planId: planId
             };
 
             if (discordUser.email) {
@@ -221,7 +222,7 @@
               <li>+10% boss rewards, +8% PvP rewards</li>
               <li>+10% crate aura rewards</li>
             </ul>
-            <button class="plan-button" onclick="openCheckout(monthlyPriceId)">Get Monthly</button>
+            <button class="plan-button" onclick="openCheckout(monthlyPriceId, 'monthly')">Get Monthly</button>
           </article>
 
           <article class="pricing-card featured-plan">
@@ -244,7 +245,7 @@
               <li>+15% boss rewards, +12% PvP rewards</li>
               <li>+15% crate aura rewards</li>
             </ul>
-            <button class="plan-button" onclick="openCheckout(yearlyPriceId)">Get Yearly</button>
+            <button class="plan-button" onclick="openCheckout(yearlyPriceId, 'yearly')">Get Yearly</button>
           </article>
 
           <article class="pricing-card">
@@ -266,7 +267,7 @@
               <li>+22% boss rewards, +18% PvP rewards</li>
               <li>+22% crate aura rewards</li>
             </ul>
-            <button class="plan-button" onclick="openCheckout(lifetimePriceId)">Get Lifetime</button>
+            <button class="plan-button" onclick="openCheckout(lifetimePriceId, 'lifetime')">Get Lifetime</button>
           </article>
         </div>
       </section>
