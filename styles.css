@@ -808,6 +808,13 @@ body {
   font-weight: 800;
 }
 
+.plan-delivery {
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin: 0 0 1rem;
+}
+
 .plan-button {
   display: inline-flex;
   align-items: center;
