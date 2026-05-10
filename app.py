@@ -8,9 +8,16 @@ def home():
     return send_from_directory(".", "index.html")
 
 
+@app.route("/auth/discord")
 @app.route("/auth/discord/callback")
-def discord_callback():
+@app.route("/logout")
+def spa_auth_routes():
     return send_from_directory(".", "index.html")
+
+
+@app.route("/api/me")
+def current_user():
+    return jsonify({"user": None, "authenticated": False}), 401
 
 
 @app.route("/<path:path>")
