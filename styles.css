@@ -994,6 +994,35 @@ body {
   padding-top: 0.35rem;
 }
 
+.support-section {
+  margin-top: 4rem;
+}
+
+.legal-page {
+  max-width: 900px;
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+
+.legal-page h1,
+.legal-page h2 {
+  color: var(--text);
+}
+
+.legal-page p,
+.legal-page li {
+  color: #dce7ff;
+  line-height: 1.7;
+}
+
+.legal-page a,
+.support-section a,
+.pricing-compliance-note a,
+.legal-intro a,
+.policy-card a {
+  color: var(--accent);
+}
+
 /* Newsletter Section */
 .newsletter-section {
   margin-top: 4rem;
