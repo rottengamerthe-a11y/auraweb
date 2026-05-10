@@ -64,7 +64,7 @@ function getDiscordUser() {
 }
 
 function buildDiscordLoginUrl() {
-  return '/auth/discord';
+  return 'https://aurawebsite-12gd.onrender.com/auth/discord';
 }
 
 function beginDiscordLogin() {
