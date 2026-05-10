@@ -56,52 +56,15 @@ const FALLBACK_COMMUNITY_DATA = {
 };
 
 let communityData = {};
-const DISCORD_AUTH_STORAGE_KEY = 'aurixDiscordAuth';
 const PENDING_CHECKOUT_STORAGE_KEY = 'aurixPendingCheckout';
-const DISCORD_OAUTH_SCOPES = ['identify'];
-
-function getDiscordClientId() {
-  return window.DISCORD_CLIENT_ID || '1492213325637877800';
-}
-
-function getDiscordRedirectUri() {
-  if (window.DISCORD_REDIRECT_URI) {
-    return window.DISCORD_REDIRECT_URI;
-  }
-
-  return `${window.location.origin}${window.location.pathname}`;
-}
-
-function getDiscordAuth() {
-  try {
-    const auth = JSON.parse(localStorage.getItem(DISCORD_AUTH_STORAGE_KEY) || 'null');
-
-    if (!auth || !auth.user || !auth.expiresAt || Date.now() >= auth.expiresAt) {
-      localStorage.removeItem(DISCORD_AUTH_STORAGE_KEY);
-      return null;
-    }
-
-    return auth;
-  } catch (error) {
-    localStorage.removeItem(DISCORD_AUTH_STORAGE_KEY);
-    return null;
-  }
-}
+let discordUser = null;
 
 function getDiscordUser() {
-  const auth = getDiscordAuth();
-  return auth ? auth.user : null;
+  return discordUser;
 }
 
 function buildDiscordLoginUrl() {
-  const params = new URLSearchParams({
-    client_id: getDiscordClientId(),
-    redirect_uri: getDiscordRedirectUri(),
-    response_type: 'code',
-    scope: DISCORD_OAUTH_SCOPES.join(' ')
-  });
-
-  return `https://discord.com/oauth2/authorize?${params.toString()}`;
+  return '/auth/discord';
 }
 
 function beginDiscordLogin() {
@@ -113,8 +76,14 @@ function beginDiscordLogin() {
   window.location.href = buildDiscordLoginUrl();
 }
 
-function logoutDiscord() {
-  localStorage.removeItem(DISCORD_AUTH_STORAGE_KEY);
+async function logoutDiscord() {
+  try {
+    await fetch('/logout', { method: 'POST' });
+  } catch (error) {
+    console.warn('Logout request failed:', error);
+  }
+
+  discordUser = null;
   updateDiscordLoginUI();
 }
 
@@ -159,44 +128,22 @@ function getPendingCheckout() {
   }
 }
 
-async function fetchDiscordUser(accessToken) {
-  const response = await fetch('https://discord.com/api/users/@me', {
-    headers: {
-      Authorization: `Bearer ${accessToken}`
-    }
-  });
-
-  if (!response.ok) {
-    throw new Error('Discord profile request failed.');
-  }
-
-  return response.json();
-}
-
-async function handleDiscordRedirect() {
-  const hash = new URLSearchParams(window.location.hash.slice(1));
-  const accessToken = hash.get('access_token');
-  const expiresIn = Number(hash.get('expires_in') || 0);
-
-  if (!accessToken) {
-    return;
-  }
-
+async function refreshDiscordSession() {
   try {
-    const user = await fetchDiscordUser(accessToken);
-    localStorage.setItem(DISCORD_AUTH_STORAGE_KEY, JSON.stringify({
-      accessToken,
-      user,
-      expiresAt: Date.now() + Math.max(expiresIn - 60, 60) * 1000
-    }));
+    const response = await fetch('/api/me');
+    if (response.ok) {
+      const payload = await response.json();
+      discordUser = payload.user || null;
+    } else {
+      discordUser = null;
+    }
   } catch (error) {
-    console.error('Discord login error:', error);
-    alert('Discord login failed. Please try again.');
+    console.warn('Could not refresh Discord session:', error);
+    discordUser = null;
   } finally {
-    history.replaceState(null, document.title, `${window.location.pathname}${window.location.search}`);
     updateDiscordLoginUI();
 
-    if (sessionStorage.getItem(PENDING_CHECKOUT_STORAGE_KEY)) {
+    if (discordUser && sessionStorage.getItem(PENDING_CHECKOUT_STORAGE_KEY)) {
       document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' });
       resumePendingCheckout();
     }
@@ -355,7 +302,7 @@ function updateFAQ() {
 document.addEventListener('DOMContentLoaded', loadData);
 document.addEventListener('DOMContentLoaded', () => {
   updateDiscordLoginUI();
-  handleDiscordRedirect();
+  refreshDiscordSession();
 });
 
 // Mobile Navigation Toggle
