@@ -10,7 +10,11 @@ from flask import Flask, jsonify, redirect, request, send_from_directory, sessio
 app = Flask(__name__)
 app.secret_key = os.environ.get("SESSION_SECRET", "dev-session-secret-change-me")
 
-DISCORD_API_BASE = "https://discord.com/api"
+DISCORD_API_BASE = "https://discord.com/api/v10"
+DISCORD_REQUEST_HEADERS = {
+    "Accept": "application/json",
+    "User-Agent": "AurixWebsiteOAuth/1.0 (https://aurawebsite-12gd.onrender.com)",
+}
 
 
 @app.after_request
@@ -46,7 +50,10 @@ def exchange_discord_code(code):
     req = Request(
         f"{DISCORD_API_BASE}/oauth2/token",
         data=data,
-        headers={"Content-Type": "application/x-www-form-urlencoded"},
+        headers={
+            **DISCORD_REQUEST_HEADERS,
+            "Content-Type": "application/x-www-form-urlencoded",
+        },
         method="POST",
     )
 
@@ -57,7 +64,10 @@ def exchange_discord_code(code):
 def fetch_discord_user(access_token):
     req = Request(
         f"{DISCORD_API_BASE}/users/@me",
-        headers={"Authorization": f"Bearer {access_token}"},
+        headers={
+            **DISCORD_REQUEST_HEADERS,
+            "Authorization": f"Bearer {access_token}",
+        },
     )
 
     with urlopen(req, timeout=15) as response:
