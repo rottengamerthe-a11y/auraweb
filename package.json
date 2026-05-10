@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/rottengamerthe-a11y/auraweb/issues"
   },
-  "homepage": "https://github.com/rottengamerthe-a11y/auraweb#readme"
+  "homepage": "https://github.com/rottengamerthe-a11y/auraweb#readme",
+  "dependencies": {
+    "express-session": "^1.19.0"
+  }
 }
