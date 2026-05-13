@@ -29,7 +29,19 @@
       function initPaddle() {
         try {
           Paddle.Initialize({
-            token: "live_2345bc35c0b52ee515204854e3b"
+            token: "live_2345bc35c0b52ee515204854e3b",
+            eventCallback: function(data) {
+              console.log('Paddle event:', data);
+
+              if (data && (data.name === 'checkout.error' || data.name === 'checkout.payment.error')) {
+                const detail = data.detail || data.code || data.error || 'Unknown Paddle checkout error';
+                alert('Paddle checkout error: ' + detail);
+              }
+
+              if (data && data.name === 'checkout.warning') {
+                console.warn('Paddle checkout warning:', data);
+              }
+            }
           });
           paddleReady = true;
           window.paddleReady = true;
