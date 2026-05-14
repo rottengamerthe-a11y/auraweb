@@ -75,11 +75,6 @@
             return;
           }
 
-          if (isPaddleSandbox && priceId.startsWith('pri_01kr')) {
-            alert('Sandbox mode needs sandbox price IDs in api-config.js before checkout can be tested.');
-            return;
-          }
-
           const checkoutOptions = {
             items: items
           };
