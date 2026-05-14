@@ -13,9 +13,10 @@
       window.paddleReady = false;
       
       // define individual price IDs for each plan
-      const monthlyPriceId = "pri_01kr6ms7z1txvs703mf3ez9rk5";
-      const yearlyPriceId = "pri_01kr6mtxermany2ksdf1hmxbz6";
-      const lifetimePriceId = "pri_01kr6mvkjxwv0qpyjp9hvzn0kx";
+      const isPaddleSandbox = window.PADDLE_ENVIRONMENT === 'sandbox';
+      const monthlyPriceId = isPaddleSandbox ? window.PADDLE_MONTHLY_PRICE_ID : (window.PADDLE_MONTHLY_PRICE_ID || "pri_01kr6ms7z1txvs703mf3ez9rk5");
+      const yearlyPriceId = isPaddleSandbox ? window.PADDLE_YEARLY_PRICE_ID : (window.PADDLE_YEARLY_PRICE_ID || "pri_01kr6mtxermany2ksdf1hmxbz6");
+      const lifetimePriceId = isPaddleSandbox ? window.PADDLE_LIFETIME_PRICE_ID : (window.PADDLE_LIFETIME_PRICE_ID || "pri_01kr6mvkjxwv0qpyjp9hvzn0kx");
       
       function initPaddleWhenReady() {
         // Wait a bit for Paddle to be fully available
@@ -28,8 +29,12 @@
 
       function initPaddle() {
         try {
+          if (window.PADDLE_ENVIRONMENT === 'sandbox') {
+            Paddle.Environment.set('sandbox');
+          }
+
           Paddle.Initialize({
-            token: "live_2345bc35c0b52ee515204854e3b",
+            token: window.PADDLE_CLIENT_TOKEN || "live_2345bc35c0b52ee515204854e3b",
             eventCallback: function(data) {
               console.log('Paddle event:', data);
 
@@ -64,6 +69,17 @@
             return;
           }
           const items = [{ priceId: priceId, quantity: 1 }];
+
+          if (!priceId) {
+            alert('Missing Paddle price ID for this plan. Add the sandbox price IDs in api-config.js.');
+            return;
+          }
+
+          if (isPaddleSandbox && priceId.startsWith('pri_01kr')) {
+            alert('Sandbox mode needs sandbox price IDs in api-config.js before checkout can be tested.');
+            return;
+          }
+
           const checkoutOptions = {
             items: items
           };
