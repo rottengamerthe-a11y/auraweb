@@ -401,7 +401,7 @@ html {
 
   .nav-menu {
     position: absolute;
-    top: 70px;
+    top: 60px;
     left: 0;
     right: 0;
     background: rgba(4, 8, 20, 0.98);
@@ -427,17 +427,25 @@ html {
   }
 
   .nav-container {
-    flex-wrap: wrap;
-    gap: 1rem;
+    flex-wrap: nowrap;
+    gap: 0.65rem;
   }
 
   .nav-actions {
-    width: 100%;
-    justify-content: center;
+    width: auto;
+    justify-content: flex-end;
+    margin-left: auto;
   }
 
-  .bot-status,
+  .bot-status {
+    display: none;
+  }
+
   .discord-login-button {
+    min-height: 34px;
+    max-width: 150px;
+    padding: 0.48rem 0.7rem;
+    font-size: 0.72rem;
     text-align: center;
   }
 }
@@ -1129,6 +1137,90 @@ body {
 
 /* Responsive Design */
 @media (max-width: 768px) {
+  body {
+    padding-top: 60px;
+    line-height: 1.5;
+  }
+
+  .sticky-nav {
+    padding: 0.65rem 0;
+  }
+
+  .nav-brand {
+    font-size: 1.35rem;
+  }
+
+  .nav-toggle {
+    min-width: 38px;
+    min-height: 38px;
+    border-radius: 8px;
+    box-shadow: none;
+    text-transform: none;
+  }
+
+  .container,
+  .nav-container {
+    width: min(100% - 1.5rem, 1120px);
+  }
+
+  .container {
+    padding: 1rem 0;
+  }
+
+  .site-header {
+    padding: 2.25rem 0 1.9rem;
+  }
+
+  .site-header h1 {
+    margin-bottom: 0.75rem;
+    font-size: clamp(2.4rem, 16vw, 3.6rem);
+    letter-spacing: 0;
+  }
+
+  .site-header p {
+    max-width: 31rem;
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
+  main section {
+    padding: 1.35rem 1rem;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 14px 38px rgba(0, 0, 0, 0.24);
+  }
+
+  main section:hover,
+  .command-card:hover,
+  .pricing-card:hover,
+  .roadmap-item:hover,
+  .faq-item:hover,
+  .social-links a:hover,
+  button:hover,
+  .link-button:hover,
+  .plan-button:hover {
+    transform: none;
+  }
+
+  main h2 {
+    margin-bottom: 0.85rem;
+    font-size: clamp(1.35rem, 8vw, 1.8rem);
+    letter-spacing: 0;
+  }
+
+  main p {
+    font-size: 0.98rem;
+    line-height: 1.58;
+  }
+
+  main li {
+    padding-top: 0.48rem;
+    padding-bottom: 0.48rem;
+    padding-left: 1.45rem;
+    font-size: 0.96rem;
+    line-height: 1.45;
+  }
+
   .stats-grid,
   .commands-grid,
   .testimonials-grid,
@@ -1137,8 +1229,164 @@ body {
     grid-template-columns: 1fr;
   }
 
+  .commands-section,
+  .guide-section,
+  .pricing-section,
+  .roadmap-section,
+  .faq-section,
+  .newsletter-section,
+  .support-section,
+  .site-footer {
+    margin-top: 1rem;
+  }
+
+  .commands-grid,
+  .guide-steps,
+  .pricing-grid,
+  .faq-items,
+  .roadmap-items,
+  .policy-grid {
+    gap: 0.8rem;
+    margin-top: 1rem;
+  }
+
+  .command-card,
+  .faq-item,
+  .pricing-card,
+  .policy-card {
+    border-radius: 8px;
+    padding: 1rem;
+  }
+
+  .command-icon {
+    margin-bottom: 0.35rem;
+    font-size: 2rem;
+  }
+
+  .command-card h3,
+  .guide-step h3 {
+    margin: 0.45rem 0;
+  }
+
+  .command-card p,
+  .guide-step p,
+  .faq-item p,
+  .policy-card p,
+  .policy-card li {
+    font-size: 0.92rem;
+    line-height: 1.5;
+  }
+
+  .guide-step {
+    display: grid;
+    grid-template-columns: 42px 1fr;
+    gap: 0.2rem 0.85rem;
+    padding: 0.9rem 0;
+    text-align: left;
+  }
+
+  .step-number {
+    grid-row: span 2;
+    width: 38px;
+    height: 38px;
+    margin: 0.1rem 0 0;
+    font-size: 1.15rem;
+    line-height: 38px;
+    text-align: center;
+  }
+
+  .section-heading {
+    margin-bottom: 1rem;
+  }
+
+  .section-heading p {
+    margin-bottom: 0.8rem;
+  }
+
+  .pricing-compliance-note {
+    font-size: 0.86rem !important;
+    line-height: 1.45 !important;
+  }
+
+  .pricing-login-note {
+    display: block;
+    padding: 0.65rem 0.75rem;
+    font-size: 0.88rem !important;
+  }
+
   .plan-header {
     min-height: auto;
+    gap: 0.75rem;
+    padding-bottom: 0.9rem;
+  }
+
+  .plan-price span {
+    font-size: 2.15rem;
+  }
+
+  .plan-benefits {
+    max-height: 220px;
+    margin: 0.9rem 0;
+    overflow: auto;
+    overscroll-behavior: contain;
+    padding-right: 0.25rem;
+  }
+
+  .plan-benefits li {
+    font-size: 0.9rem;
+    line-height: 1.35;
+    padding: 0.4rem 0 0.4rem 1.35rem;
+  }
+
+  .plan-delivery {
+    font-size: 0.85rem;
+  }
+
+  .plan-button,
+  .link-button,
+  .newsletter-form button,
+  button {
+    min-height: 44px;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    letter-spacing: 0;
+  }
+
+  .roadmap-item {
+    display: grid;
+    gap: 0.55rem;
+    padding: 1rem;
+    border-radius: 8px;
+  }
+
+  .roadmap-status {
+    width: fit-content;
+    margin: 0;
+  }
+
+  .policy-card {
+    max-height: 420px;
+    overflow: auto;
+    overscroll-behavior: contain;
+  }
+
+  .newsletter-section {
+    padding: 1.35rem 1rem;
+    border-radius: 8px;
+  }
+
+  .newsletter-section p {
+    margin: 0.5rem 0 1rem;
+  }
+
+  .link-buttons {
+    gap: 0.75rem;
+    margin-top: 1rem;
+  }
+
+  .link-button {
+    width: 100%;
   }
 
   .leaderboard-item {
@@ -1153,13 +1401,45 @@ body {
 
   .newsletter-form {
     flex-direction: column;
+    gap: 0.75rem;
   }
 
   .newsletter-form input {
     min-width: 100%;
+    min-height: 44px;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
   }
 
   .social-links {
     justify-content: center;
+    gap: 0.75rem 1rem;
+  }
+
+  .footer-content {
+    gap: 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .discord-login-button {
+    max-width: 126px;
+  }
+
+  .site-header {
+    padding-top: 1.85rem;
+  }
+
+  main section {
+    padding-inline: 0.85rem;
+  }
+
+  .plan-benefits {
+    max-height: 190px;
+  }
+
+  .policy-card {
+    max-height: 360px;
   }
 }
