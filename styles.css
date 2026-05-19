@@ -1036,6 +1036,20 @@ body {
   scroll-margin-top: 6rem;
 }
 
+.policy-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  margin-top: 1rem;
+  padding: 0.65rem 1rem;
+  color: #040814 !important;
+  background: linear-gradient(135deg, var(--accent), var(--primary));
+  border-radius: 8px;
+  font-weight: 800;
+  line-height: 1;
+  text-decoration: none;
+}
+
 .policy-card h3 {
   color: var(--accent);
   font-size: clamp(1.3rem, 3vw, 1.7rem);
@@ -1228,11 +1242,11 @@ body {
   }
 
   .container {
-    padding: 1rem 0;
+    padding: 0.7rem 0;
   }
 
   .site-header {
-    padding: 2.25rem 0 1.9rem;
+    padding: 1.65rem 0 1.35rem;
   }
 
   .site-header h1 {
@@ -1243,13 +1257,13 @@ body {
 
   .site-header p {
     max-width: 31rem;
-    font-size: 1rem;
-    line-height: 1.5;
+    font-size: 0.95rem;
+    line-height: 1.42;
   }
 
   main section {
-    padding: 1.35rem 1rem;
-    margin-bottom: 1rem;
+    padding: 1rem 0.85rem;
+    margin-bottom: 0.7rem;
     border-radius: 8px;
     box-shadow: 0 14px 38px rgba(0, 0, 0, 0.24);
   }
@@ -1268,22 +1282,22 @@ body {
   }
 
   main h2 {
-    margin-bottom: 0.85rem;
+    margin-bottom: 0.65rem;
     font-size: clamp(1.35rem, 8vw, 1.8rem);
     letter-spacing: 0;
   }
 
   main p {
-    font-size: 0.98rem;
-    line-height: 1.58;
+    font-size: 0.94rem;
+    line-height: 1.48;
   }
 
   main li {
-    padding-top: 0.48rem;
-    padding-bottom: 0.48rem;
+    padding-top: 0.38rem;
+    padding-bottom: 0.38rem;
     padding-left: 1.45rem;
-    font-size: 0.96rem;
-    line-height: 1.45;
+    font-size: 0.92rem;
+    line-height: 1.38;
   }
 
   .stats-grid,
@@ -1304,7 +1318,7 @@ body {
   .newsletter-section,
   .support-section,
   .site-footer {
-    margin-top: 1rem;
+    margin-top: 0.65rem;
   }
 
   .commands-grid,
@@ -1314,8 +1328,8 @@ body {
   .faq-items,
   .roadmap-items,
   .policy-grid {
-    gap: 0.8rem;
-    margin-top: 1rem;
+    gap: 0.55rem;
+    margin-top: 0.7rem;
   }
 
   .command-card,
@@ -1324,7 +1338,7 @@ body {
   .microshop-card,
   .policy-card {
     border-radius: 8px;
-    padding: 1rem;
+    padding: 0.85rem;
   }
 
   .command-icon {
@@ -1334,7 +1348,7 @@ body {
 
   .command-card h3,
   .guide-step h3 {
-    margin: 0.45rem 0;
+    margin: 0.3rem 0;
   }
 
   .command-card p,
@@ -1342,8 +1356,8 @@ body {
   .faq-item p,
   .policy-card p,
   .policy-card li {
-    font-size: 0.92rem;
-    line-height: 1.5;
+    font-size: 0.88rem;
+    line-height: 1.42;
   }
 
   .guide-step {
@@ -1365,11 +1379,11 @@ body {
   }
 
   .section-heading {
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
   }
 
   .section-heading p {
-    margin-bottom: 0.8rem;
+    margin-bottom: 0.6rem;
   }
 
   .pricing-compliance-note {
@@ -1394,8 +1408,8 @@ body {
   }
 
   .plan-benefits {
-    max-height: 220px;
-    margin: 0.9rem 0;
+    max-height: 170px;
+    margin: 0.65rem 0;
     overflow: auto;
     overscroll-behavior: contain;
     padding-right: 0.25rem;
@@ -1408,7 +1422,8 @@ body {
   }
 
   .plan-delivery {
-    font-size: 0.85rem;
+    font-size: 0.82rem;
+    line-height: 1.35;
   }
 
   .plan-button,
@@ -1425,7 +1440,7 @@ body {
   .roadmap-item {
     display: grid;
     gap: 0.55rem;
-    padding: 1rem;
+    padding: 0.85rem;
     border-radius: 8px;
   }
 
@@ -1435,13 +1450,18 @@ body {
   }
 
   .policy-card {
-    max-height: 420px;
-    overflow: auto;
-    overscroll-behavior: contain;
+    scroll-margin-top: 4.5rem;
+  }
+
+  .policy-link {
+    min-height: 38px;
+    margin-top: 0.7rem;
+    padding: 0.6rem 0.85rem;
+    font-size: 0.86rem;
   }
 
   .newsletter-section {
-    padding: 1.35rem 1rem;
+    padding: 1rem 0.85rem;
     border-radius: 8px;
   }
 
@@ -1486,8 +1506,8 @@ body {
   }
 
   .footer-content {
-    gap: 1.25rem;
-    margin-bottom: 1.25rem;
+    gap: 0.9rem;
+    margin-bottom: 0.9rem;
   }
 }
 
@@ -1497,18 +1517,14 @@ body {
   }
 
   .site-header {
-    padding-top: 1.85rem;
+    padding-top: 1.35rem;
   }
 
   main section {
-    padding-inline: 0.85rem;
+    padding-inline: 0.75rem;
   }
 
   .plan-benefits {
-    max-height: 190px;
-  }
-
-  .policy-card {
-    max-height: 360px;
+    max-height: 145px;
   }
 }
