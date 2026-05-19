@@ -392,6 +392,10 @@ html {
     padding: 0.5rem 0.8rem;
     font-size: 0.85rem;
   }
+
+  .microshop-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 768px) {
@@ -856,6 +860,66 @@ body {
   box-shadow: 0 12px 40px rgba(0, 216, 255, 0.35);
 }
 
+.microshop-section {
+  margin-top: 3rem;
+  background: linear-gradient(135deg, rgba(98, 255, 225, 0.08), rgba(255, 200, 87, 0.08));
+}
+
+.microshop-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.25rem;
+  align-items: stretch;
+}
+
+.microshop-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  padding: 1.35rem;
+  background: rgba(10, 18, 38, 0.94);
+  border: 1px solid rgba(255, 200, 87, 0.16);
+  border-radius: 8px;
+  box-shadow: 0 18px 55px rgba(0, 0, 0, 0.22);
+  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.microshop-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(255, 200, 87, 0.42);
+  box-shadow: 0 26px 70px rgba(255, 200, 87, 0.12);
+}
+
+.microshop-header {
+  display: flex;
+  min-height: 92px;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.85rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.microshop-header h3 {
+  color: var(--text);
+  font-family: 'Poppins', 'Inter', Arial, sans-serif;
+  font-size: 1.2rem;
+  line-height: 1.25;
+  margin: 0;
+}
+
+.microshop-price {
+  color: var(--accent);
+  font-size: 2.15rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.microshop-benefits {
+  margin: 1rem 0;
+}
+
 /* Roadmap */
 .roadmap-section {
   margin-top: 4rem;
@@ -1193,6 +1257,7 @@ body {
   main section:hover,
   .command-card:hover,
   .pricing-card:hover,
+  .microshop-card:hover,
   .roadmap-item:hover,
   .faq-item:hover,
   .social-links a:hover,
@@ -1225,13 +1290,15 @@ body {
   .commands-grid,
   .testimonials-grid,
   .guide-steps,
-  .pricing-grid {
+  .pricing-grid,
+  .microshop-grid {
     grid-template-columns: 1fr;
   }
 
   .commands-section,
   .guide-section,
   .pricing-section,
+  .microshop-section,
   .roadmap-section,
   .faq-section,
   .newsletter-section,
@@ -1243,6 +1310,7 @@ body {
   .commands-grid,
   .guide-steps,
   .pricing-grid,
+  .microshop-grid,
   .faq-items,
   .roadmap-items,
   .policy-grid {
@@ -1253,6 +1321,7 @@ body {
   .command-card,
   .faq-item,
   .pricing-card,
+  .microshop-card,
   .policy-card {
     border-radius: 8px;
     padding: 1rem;

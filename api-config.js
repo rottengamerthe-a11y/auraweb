@@ -7,3 +7,7 @@ window.PADDLE_CLIENT_TOKEN = 'live_2345bc35c0b52ee515204854e3b';
 window.PADDLE_MONTHLY_PRICE_ID = 'pri_01kr6ms7z1txvs703mf3ez9rk5';
 window.PADDLE_YEARLY_PRICE_ID = 'pri_01kr6mtxermany2ksdf1hmxbz6';
 window.PADDLE_LIFETIME_PRICE_ID = 'pri_01kr6mvkjxwv0qpyjp9hvzn0kx';
+window.PADDLE_STARTER_CRATE_BUNDLE_PRICE_ID = '';
+window.PADDLE_RARE_CRATE_STACK_PRICE_ID = '';
+window.PADDLE_LEGENDARY_VAULT_DROP_PRICE_ID = '';
+window.PADDLE_BOOST_SUPPLY_PACK_PRICE_ID = '';

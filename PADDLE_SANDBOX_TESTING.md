@@ -12,6 +12,10 @@ window.PADDLE_CLIENT_TOKEN = 'test_your_sandbox_client_token';
 window.PADDLE_MONTHLY_PRICE_ID = 'pri_your_sandbox_monthly_price';
 window.PADDLE_YEARLY_PRICE_ID = 'pri_your_sandbox_yearly_price';
 window.PADDLE_LIFETIME_PRICE_ID = 'pri_your_sandbox_lifetime_price';
+window.PADDLE_STARTER_CRATE_BUNDLE_PRICE_ID = 'pri_your_sandbox_starter_bundle_price';
+window.PADDLE_RARE_CRATE_STACK_PRICE_ID = 'pri_your_sandbox_rare_stack_price';
+window.PADDLE_LEGENDARY_VAULT_DROP_PRICE_ID = 'pri_your_sandbox_legendary_drop_price';
+window.PADDLE_BOOST_SUPPLY_PACK_PRICE_ID = 'pri_your_sandbox_boost_pack_price';
 ```
 
 The sandbox client token and sandbox price IDs must come from the same Paddle sandbox account.
@@ -25,6 +29,10 @@ PADDLE_WEBHOOK_SECRET=your_sandbox_webhook_secret
 PADDLE_MONTHLY_PRICE_ID=pri_your_sandbox_monthly_price
 PADDLE_YEARLY_PRICE_ID=pri_your_sandbox_yearly_price
 PADDLE_LIFETIME_PRICE_ID=pri_your_sandbox_lifetime_price
+PADDLE_STARTER_CRATE_BUNDLE_PRICE_ID=pri_your_sandbox_starter_bundle_price
+PADDLE_RARE_CRATE_STACK_PRICE_ID=pri_your_sandbox_rare_stack_price
+PADDLE_LEGENDARY_VAULT_DROP_PRICE_ID=pri_your_sandbox_legendary_drop_price
+PADDLE_BOOST_SUPPLY_PACK_PRICE_ID=pri_your_sandbox_boost_pack_price
 ```
 
 ## Paddle sandbox webhook
@@ -51,10 +59,10 @@ subscription.resumed
 
 1. Open the website.
 2. Login with Discord.
-3. Click a premium plan.
+3. Click a premium plan or one-time drop pack.
 4. Complete Paddle sandbox checkout with a Paddle sandbox test card.
 5. In Paddle sandbox, confirm the webhook delivery returned HTTP 200.
-6. In Discord, run `/premium`.
-7. The bot should show the active premium plan.
+6. In Discord, run `/premium` for memberships or `/inventory` for one-time drops.
+7. The bot should show the active premium plan or delivered crates/items.
 
-If the bot does not show premium, check Paddle sandbox webhook delivery response and confirm `custom_data.discord_user_id` is present.
+If the bot does not show premium or delivered items, check Paddle sandbox webhook delivery response and confirm `custom_data.discord_user_id` is present.

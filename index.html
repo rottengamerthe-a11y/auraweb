@@ -17,6 +17,10 @@
       const monthlyPriceId = isPaddleSandbox ? window.PADDLE_MONTHLY_PRICE_ID : (window.PADDLE_MONTHLY_PRICE_ID || "pri_01kr6ms7z1txvs703mf3ez9rk5");
       const yearlyPriceId = isPaddleSandbox ? window.PADDLE_YEARLY_PRICE_ID : (window.PADDLE_YEARLY_PRICE_ID || "pri_01kr6mtxermany2ksdf1hmxbz6");
       const lifetimePriceId = isPaddleSandbox ? window.PADDLE_LIFETIME_PRICE_ID : (window.PADDLE_LIFETIME_PRICE_ID || "pri_01kr6mvkjxwv0qpyjp9hvzn0kx");
+      const starterCrateBundlePriceId = window.PADDLE_STARTER_CRATE_BUNDLE_PRICE_ID || "";
+      const rareCrateStackPriceId = window.PADDLE_RARE_CRATE_STACK_PRICE_ID || "";
+      const legendaryVaultDropPriceId = window.PADDLE_LEGENDARY_VAULT_DROP_PRICE_ID || "";
+      const boostSupplyPackPriceId = window.PADDLE_BOOST_SUPPLY_PACK_PRICE_ID || "";
       
       function initPaddleWhenReady() {
         // Wait a bit for Paddle to be fully available
@@ -57,9 +61,11 @@
       }
       
       // open checkout
-      function openCheckout(priceId, planId){
+      function openCheckout(priceId, purchaseMeta){
         try {
-          if (typeof requireDiscordLogin === 'function' && !requireDiscordLogin(priceId, planId)) {
+          const meta = typeof purchaseMeta === 'string' ? { planId: purchaseMeta } : (purchaseMeta || {});
+
+          if (typeof requireDiscordLogin === 'function' && !requireDiscordLogin(priceId, meta)) {
             return;
           }
 
@@ -71,7 +77,7 @@
           const items = [{ priceId: priceId, quantity: 1 }];
 
           if (!priceId) {
-            alert('Missing Paddle price ID for this plan. Add the sandbox price IDs in api-config.js.');
+            alert('Missing Paddle price ID for this item. Add its Paddle price ID in api-config.js.');
             return;
           }
 
@@ -84,8 +90,14 @@
             checkoutOptions.customData = {
               discord_user_id: discordUser.id,
               discord_username: discordUser.username,
-              plan_id: planId
+              purchase_type: meta.productId ? 'microtransaction' : 'membership'
             };
+            if (meta.planId) {
+              checkoutOptions.customData.plan_id = meta.planId;
+            }
+            if (meta.productId) {
+              checkoutOptions.customData.product_id = meta.productId;
+            }
           }
 
           console.log('Opening checkout with price:', priceId);
@@ -108,6 +120,7 @@
           <li><a href="#commands">Commands</a></li>
           <li><a href="#guide">Guide</a></li>
           <li><a href="#pricing">Pricing</a></li>
+          <li><a href="#microshop">Drops</a></li>
           <li><a href="#roadmap">Roadmap</a></li>
           <li><a href="#links">Links</a></li>
           <li><a href="#faq">FAQ</a></li>
@@ -225,7 +238,7 @@
             <div class="plan-header">
               <h3>Monthly</h3>
               <div class="plan-price">
-                <span>$5</span>
+                <span>$4.99</span>
                 <small>/month</small>
               </div>
             </div>
@@ -258,7 +271,7 @@
             <div class="plan-header">
               <h3>Yearly</h3>
               <div class="plan-price">
-                <span>$20</span>
+                <span>$19.99</span>
                 <small>/year</small>
               </div>
             </div>
@@ -290,7 +303,7 @@
             <div class="plan-header">
               <h3>Lifetime</h3>
               <div class="plan-price">
-                <span>$50</span>
+                <span>$49.99</span>
                 <small>one-time</small>
               </div>
             </div>
@@ -316,6 +329,75 @@
             </ul>
             <p class="plan-delivery">Delivered digitally to the Discord account connected at checkout.</p>
             <button class="plan-button" onclick="openCheckout(lifetimePriceId, 'lifetime')">Get Lifetime</button>
+          </article>
+        </div>
+      </section>
+
+      <section class="microshop-section" id="microshop">
+        <div class="section-heading">
+          <p class="eyebrow">One-Time Drops</p>
+          <h2>Crates, Boosts, and Supply Packs</h2>
+          <p>Pick up optional digital item packs for the Aurix Discord bot. These purchases deliver virtual crates, aura, and consumable boost items to the Discord account connected at checkout.</p>
+          <p class="pricing-compliance-note">All packs are optional gameplay convenience items. They do not grant cash value, real-money rewards, withdrawals, gambling entries, prizes, physical goods, cryptocurrency, gift cards, or stored value.</p>
+        </div>
+        <div class="microshop-grid">
+          <article class="microshop-card">
+            <div class="microshop-header">
+              <h3>Starter Crate Bundle</h3>
+              <div class="microshop-price">$0.99</div>
+            </div>
+            <ul class="plan-benefits microshop-benefits">
+              <li>8 common crates</li>
+              <li>2 rare crates</li>
+              <li>12,500 bonus aura</li>
+            </ul>
+            <p class="plan-delivery">Best for new profiles that want an early inventory push.</p>
+            <button class="plan-button" onclick="openCheckout(starterCrateBundlePriceId, { productId: 'starter_crate_bundle' })">Buy Bundle</button>
+          </article>
+
+          <article class="microshop-card featured-plan">
+            <div class="plan-badge">Popular</div>
+            <div class="microshop-header">
+              <h3>Rare Crate Stack</h3>
+              <div class="microshop-price">$2.99</div>
+            </div>
+            <ul class="plan-benefits microshop-benefits">
+              <li>8 rare crates</li>
+              <li>2 epic crates</li>
+              <li>30,000 bonus aura</li>
+            </ul>
+            <p class="plan-delivery">A focused crate pack for mid-game progression spikes.</p>
+            <button class="plan-button" onclick="openCheckout(rareCrateStackPriceId, { productId: 'rare_crate_stack' })">Buy Stack</button>
+          </article>
+
+          <article class="microshop-card">
+            <div class="microshop-header">
+              <h3>Legendary Vault Drop</h3>
+              <div class="microshop-price">$4.99</div>
+            </div>
+            <ul class="plan-benefits microshop-benefits">
+              <li>6 rare crates</li>
+              <li>3 epic crates</li>
+              <li>1 legendary crate</li>
+              <li>90,000 bonus aura</li>
+              <li>Battle consumables included</li>
+            </ul>
+            <p class="plan-delivery">A larger one-time drop for active boss and PvP players.</p>
+            <button class="plan-button" onclick="openCheckout(legendaryVaultDropPriceId, { productId: 'legendary_vault_drop' })">Buy Drop</button>
+          </article>
+
+          <article class="microshop-card">
+            <div class="microshop-header">
+              <h3>Boost Supply Pack</h3>
+              <div class="microshop-price">$4</div>
+            </div>
+            <ul class="plan-benefits microshop-benefits">
+              <li>Lucky Charm, Vault Key, and Coinflip Gloves</li>
+              <li>2 Adrenaline Tonics</li>
+              <li>4,000 bonus aura</li>
+            </ul>
+            <p class="plan-delivery">Utility perks and combat supplies for repeated play sessions.</p>
+            <button class="plan-button" onclick="openCheckout(boostSupplyPackPriceId, { productId: 'boost_supply_pack' })">Buy Pack</button>
           </article>
         </div>
       </section>
@@ -403,8 +485,8 @@
             <h3>Terms of Service</h3>
             <p>Aurix Bot is operated as a sole proprietor brand by Anju Sharma. Support requests may be sent to <a href="mailto:zxavokaurix@gmail.com">zxavokaurix@gmail.com</a>.</p>
             <p>By inviting, accessing, or using Aurix, you agree to these Terms of Service and to Discord's own Terms of Service and Community Guidelines. If you do not agree, you should remove the bot from your server and stop using the service.</p>
-            <h4>Paid Premium Memberships</h4>
-            <p>Aurix sells digital premium memberships for the Aurix Discord bot software. Premium benefits are linked to the Discord account connected during checkout and include the enhanced command settings, progression modifiers, higher premium effect caps, premium-only shop items, profile cosmetics, extra reminder slots, profile membership status, premium activation announcement, and in-bot features shown in the pricing section.</p>
+            <h4>Paid Digital Products</h4>
+            <p>Aurix sells digital premium memberships and optional one-time virtual item packs for the Aurix Discord bot software. Paid products are linked to the Discord account connected during checkout and include the enhanced command settings, progression modifiers, higher premium effect caps, premium-only shop items, profile cosmetics, extra reminder slots, profile membership status, virtual crates, boost supplies, aura, and in-bot features shown in the pricing and drops sections.</p>
             <p>Payments are processed by Paddle as reseller and merchant of record. Aurix Bot provides product access and product support after purchase.</p>
             <p>All Aurix points, virtual items, ranks, progression, and bot features are virtual features only. They have no cash value, cannot be sold or transferred outside Aurix, and cannot be exchanged for money, prizes, physical goods, cryptocurrency, gift cards, or stored value. Aurix does not offer gambling, betting, sweepstakes, lotteries, auctions, or real-money rewards.</p>
             <h4>Acceptable Use</h4>
@@ -445,7 +527,7 @@
           </article>
           <article class="policy-card" id="refunds">
             <h3>Refund Policy</h3>
-            <p>Aurix sells digital premium memberships for Discord bot software features. Premium access is delivered digitally to the Discord account connected during checkout. Aurix's core bot features remain free, and paid plans add the premium command settings, higher premium effect caps, premium-only shop items, profile cosmetics, reminder slots, profile status, premium activation announcement, and virtual progression features shown in the pricing section.</p>
+            <p>Aurix sells digital premium memberships and optional one-time virtual item packs for Discord bot software features. Paid access and virtual items are delivered digitally to the Discord account connected during checkout. Aurix's core bot features remain free, and paid products add the premium command settings, higher premium effect caps, premium-only shop items, profile cosmetics, reminder slots, profile status, premium activation announcement, crates, boost supplies, aura, and virtual progression features shown in the pricing and drops sections.</p>
             <h4>Eligible Refunds</h4>
             <ul>
               <li>Duplicate charges or clear billing mistakes.</li>
