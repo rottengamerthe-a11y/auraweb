@@ -1,6 +1,8 @@
 import os
 import secrets
+import hashlib
 from datetime import datetime
+from datetime import timedelta
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 from urllib.error import HTTPError, URLError
@@ -130,6 +132,10 @@ def role_listings_collection():
     return get_mongo_db()["rolelistings"]
 
 
+def dashboard_sessions_collection():
+    return get_mongo_db()["dashboardsessions"]
+
+
 def get_bot_token():
     return os.environ.get("DISCORD_BOT_TOKEN", "").strip() or os.environ.get("DISCORD_TOKEN", "").strip()
 
@@ -159,6 +165,53 @@ def require_dashboard_session():
     if not user or not access_token:
         return None, None, (jsonify({"error": "Login with Discord first."}), 401)
     return user, access_token, None
+
+
+def hash_dashboard_token(token):
+    return hashlib.sha256(token.encode("utf-8")).hexdigest()
+
+
+def create_dashboard_session(user, access_token):
+    token = secrets.token_urlsafe(32)
+    expires_at = datetime.utcnow() + timedelta(days=7)
+    dashboard_sessions_collection().update_one(
+        {"tokenHash": hash_dashboard_token(token)},
+        {
+            "$set": {
+                "user": user,
+                "accessToken": access_token,
+                "expiresAt": expires_at,
+                "updatedAt": datetime.utcnow(),
+            },
+            "$setOnInsert": {"createdAt": datetime.utcnow()},
+        },
+        upsert=True,
+    )
+    return token
+
+
+def require_dashboard_auth():
+    user = session.get("discord_user")
+    access_token = session.get("discord_access_token")
+    if user and access_token:
+        return user, access_token, None
+
+    auth_header = request.headers.get("Authorization", "")
+    if not auth_header.startswith("Bearer "):
+        return None, None, (jsonify({"error": "Login with Discord first."}), 401)
+
+    token = auth_header.removeprefix("Bearer ").strip()
+    if not token:
+        return None, None, (jsonify({"error": "Login with Discord first."}), 401)
+
+    record = dashboard_sessions_collection().find_one({
+        "tokenHash": hash_dashboard_token(token),
+        "expiresAt": {"$gt": datetime.utcnow()},
+    })
+    if not record:
+        return None, None, (jsonify({"error": "Dashboard login expired. Login with Discord again."}), 401)
+
+    return record["user"], record["accessToken"], None
 
 
 def get_manageable_guild(access_token, guild_id):
@@ -268,11 +321,13 @@ def discord_callback():
         "avatar": user.get("avatar"),
     }
     session["discord_access_token"] = token["access_token"]
+    dashboard_token = create_dashboard_session(session["discord_user"], token["access_token"])
 
     frontend_url = os.environ.get("FRONTEND_URL", "/")
     user_query = urlencode({
         "discord_login": "1",
         "discord_user": json.dumps(session["discord_user"], separators=(",", ":")),
+        "dashboard_token": dashboard_token,
     })
     separator = "&" if "?" in frontend_url else "?"
     return redirect(f"{frontend_url}{separator}{user_query}")
@@ -285,6 +340,9 @@ def logout():
 
     session.pop("discord_user", None)
     session.pop("discord_access_token", None)
+    auth_header = request.headers.get("Authorization", "")
+    if auth_header.startswith("Bearer "):
+        dashboard_sessions_collection().delete_one({"tokenHash": hash_dashboard_token(auth_header.removeprefix("Bearer ").strip())})
     return jsonify({"ok": True})
 
 
@@ -299,7 +357,7 @@ def current_user():
 
 @app.route("/api/dashboard/guilds")
 def dashboard_guilds():
-    _user, access_token, error = require_dashboard_session()
+    _user, access_token, error = require_dashboard_auth()
     if error:
         return error
 
@@ -323,7 +381,7 @@ def dashboard_guilds():
 
 @app.route("/api/dashboard/guilds/<guild_id>/roles")
 def dashboard_roles(guild_id):
-    _user, access_token, error = require_dashboard_session()
+    _user, access_token, error = require_dashboard_auth()
     if error:
         return error
     if not get_manageable_guild(access_token, guild_id):
@@ -342,7 +400,7 @@ def dashboard_role_listings(guild_id):
     if request.method == "OPTIONS":
         return "", 204
 
-    user, access_token, error = require_dashboard_session()
+    user, access_token, error = require_dashboard_auth()
     if error:
         return error
     if not get_manageable_guild(access_token, guild_id):
@@ -406,7 +464,7 @@ def dashboard_toggle_role_listing(listing_id):
     if request.method == "OPTIONS":
         return "", 204
 
-    _user, access_token, error = require_dashboard_session()
+    _user, access_token, error = require_dashboard_auth()
     if error:
         return error
 

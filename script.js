@@ -58,6 +58,7 @@ const FALLBACK_COMMUNITY_DATA = {
 let communityData = {};
 const DISCORD_AUTH_STORAGE_KEY = 'aurixDiscordAuth';
 const PENDING_CHECKOUT_STORAGE_KEY = 'aurixPendingCheckout';
+const DASHBOARD_TOKEN_STORAGE_KEY = 'aurixDashboardToken';
 let discordUser = null;
 
 function getDiscordUser() {
@@ -101,15 +102,21 @@ function beginDiscordLogin() {
 
 async function logoutDiscord() {
   const authBaseUrl = window.AUTH_BASE_URL || window.location.origin;
+  const dashboardToken = localStorage.getItem(DASHBOARD_TOKEN_STORAGE_KEY);
 
   try {
-    await fetch(`${authBaseUrl}/logout`, { method: 'POST', credentials: 'include' });
+    await fetch(`${authBaseUrl}/logout`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: dashboardToken ? { Authorization: `Bearer ${dashboardToken}` } : {}
+    });
   } catch (error) {
     console.warn('Logout request failed:', error);
   }
 
   discordUser = null;
   localStorage.removeItem(DISCORD_AUTH_STORAGE_KEY);
+  localStorage.removeItem(DASHBOARD_TOKEN_STORAGE_KEY);
   updateDiscordLoginUI();
 }
 
@@ -157,6 +164,7 @@ function getPendingCheckout() {
 async function refreshDiscordSession() {
   const query = new URLSearchParams(window.location.search);
   const redirectedUser = query.get('discord_user');
+  const dashboardToken = query.get('dashboard_token');
 
   if (query.get('discord_login') === '1' && redirectedUser) {
     try {
@@ -165,6 +173,9 @@ async function refreshDiscordSession() {
         user: discordUser,
         expiresAt: Date.now() + 7 * 24 * 60 * 60 * 1000
       }));
+      if (dashboardToken) {
+        localStorage.setItem(DASHBOARD_TOKEN_STORAGE_KEY, dashboardToken);
+      }
       history.replaceState(null, document.title, window.location.pathname);
       updateDiscordLoginUI();
 
@@ -408,10 +419,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function dashboardFetch(path, options = {}) {
   const authBaseUrl = window.AUTH_BASE_URL || window.location.origin;
+  const dashboardToken = localStorage.getItem(DASHBOARD_TOKEN_STORAGE_KEY);
   const response = await fetch(`${authBaseUrl}${path}`, {
     credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
+      ...(dashboardToken ? { Authorization: `Bearer ${dashboardToken}` } : {}),
       ...(options.headers || {})
     },
     ...options
