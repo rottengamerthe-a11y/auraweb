@@ -269,7 +269,13 @@ def discord_callback():
     }
     session["discord_access_token"] = token["access_token"]
 
-    return redirect(os.environ.get("FRONTEND_URL", "/"))
+    frontend_url = os.environ.get("FRONTEND_URL", "/")
+    user_query = urlencode({
+        "discord_login": "1",
+        "discord_user": json.dumps(session["discord_user"], separators=(",", ":")),
+    })
+    separator = "&" if "?" in frontend_url else "?"
+    return redirect(f"{frontend_url}{separator}{user_query}")
 
 
 @app.route("/logout", methods=["POST", "OPTIONS"])

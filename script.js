@@ -155,6 +155,29 @@ function getPendingCheckout() {
 }
 
 async function refreshDiscordSession() {
+  const query = new URLSearchParams(window.location.search);
+  const redirectedUser = query.get('discord_user');
+
+  if (query.get('discord_login') === '1' && redirectedUser) {
+    try {
+      discordUser = JSON.parse(redirectedUser);
+      localStorage.setItem(DISCORD_AUTH_STORAGE_KEY, JSON.stringify({
+        user: discordUser,
+        expiresAt: Date.now() + 7 * 24 * 60 * 60 * 1000
+      }));
+      history.replaceState(null, document.title, window.location.pathname);
+      updateDiscordLoginUI();
+
+      if (discordUser && sessionStorage.getItem(PENDING_CHECKOUT_STORAGE_KEY)) {
+        document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' });
+        resumePendingCheckout();
+      }
+      return;
+    } catch (error) {
+      console.warn('Could not restore Discord login from callback:', error);
+    }
+  }
+
   const hash = new URLSearchParams(window.location.hash.slice(1));
   const accessToken = hash.get('access_token');
   const expiresIn = Number(hash.get('expires_in') || 0);
