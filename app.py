@@ -45,13 +45,28 @@ def require_env(name):
     return value
 
 
+def get_discord_redirect_uri():
+    configured = os.environ.get("DISCORD_REDIRECT_URI", "").strip()
+    if configured:
+        normalized = configured.rstrip("/")
+        if not normalized.endswith("/auth/discord/callback"):
+            return f"{normalized}/auth/discord/callback"
+        return normalized
+
+    frontend_url = os.environ.get("FRONTEND_URL", "").strip().rstrip("/")
+    if frontend_url:
+        return f"{frontend_url}/auth/discord/callback"
+
+    return request.url_root.rstrip("/") + "/auth/discord/callback"
+
+
 def exchange_discord_code(code):
     data = urlencode({
         "client_id": require_env("DISCORD_CLIENT_ID"),
         "client_secret": require_env("DISCORD_CLIENT_SECRET"),
         "grant_type": "authorization_code",
         "code": code,
-        "redirect_uri": require_env("DISCORD_REDIRECT_URI"),
+        "redirect_uri": get_discord_redirect_uri(),
     }).encode("utf-8")
 
     req = Request(
@@ -185,7 +200,7 @@ def home():
 
 @app.route("/debug/config")
 def debug_config():
-    redirect_uri = os.environ.get("DISCORD_REDIRECT_URI", "").strip()
+    redirect_uri = get_discord_redirect_uri()
     frontend_url = os.environ.get("FRONTEND_URL", "").strip()
 
     return jsonify({
@@ -203,7 +218,7 @@ def discord_login():
     session["discord_oauth_state"] = state
     params = {
         "client_id": require_env("DISCORD_CLIENT_ID"),
-        "redirect_uri": require_env("DISCORD_REDIRECT_URI"),
+        "redirect_uri": get_discord_redirect_uri(),
         "response_type": "code",
         "scope": "identify guilds",
         "state": state,
