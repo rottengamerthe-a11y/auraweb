@@ -1,7 +1,7 @@
 window.API_ENDPOINT = '';
 window.AUTH_BASE_URL = '';
 window.DISCORD_CLIENT_ID = '1492213325637877800';
-window.DISCORD_REDIRECT_URI = 'https://auraweb16.onrender.com/';
+window.DISCORD_REDIRECT_URI = 'https://auraweb16.onrender.com/auth/discord/callback';
 window.PADDLE_ENVIRONMENT = 'live';
 window.PADDLE_CLIENT_TOKEN = 'live_2345bc35c0b52ee515204854e3b';
 window.PADDLE_MONTHLY_PRICE_ID = 'pri_01kr6ms7z1txvs703mf3ez9rk5';
