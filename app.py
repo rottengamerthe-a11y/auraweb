@@ -13,6 +13,10 @@ from pymongo.errors import ConfigurationError
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SESSION_SECRET", "dev-session-secret-change-me")
+app.config.update(
+    SESSION_COOKIE_SAMESITE=os.environ.get("SESSION_COOKIE_SAMESITE", "None"),
+    SESSION_COOKIE_SECURE=os.environ.get("SESSION_COOKIE_SECURE", "true").strip().lower() != "false",
+)
 
 DISCORD_API_BASE = "https://discord.com/api/v10"
 DISCORD_REQUEST_HEADERS = {
