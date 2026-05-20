@@ -121,6 +121,7 @@
           <li><a href="#guide">Guide</a></li>
           <li><a href="#pricing">Pricing</a></li>
           <li><a href="#microshop">Drops</a></li>
+          <li><a href="#roleDashboard">Dashboard</a></li>
           <li><a href="#roadmap">Roadmap</a></li>
           <li><a href="#links">Links</a></li>
           <li><a href="#faq">FAQ</a></li>
@@ -383,6 +384,51 @@
             <p class="plan-delivery">Utility perks and combat supplies for repeated play sessions.</p>
             <button class="plan-button" onclick="openCheckout(boostSupplyPackPriceId, { productId: 'boost_supply_pack' })">Buy Pack</button>
           </article>
+        </div>
+      </section>
+
+      <section class="role-dashboard-section" id="roleDashboard">
+        <div class="section-heading">
+          <p class="eyebrow">Server Dashboard</p>
+          <h2>Role Shop Manager</h2>
+          <p>Admins can list Discord server roles for players to buy with aura. Players buy them in Discord with <strong>/roleshop list</strong> and <strong>/roleshop buy</strong>.</p>
+          <p class="pricing-compliance-note">Aurix can only assign roles below the bot's highest role and needs the Manage Roles permission in your server.</p>
+        </div>
+        <div class="dashboard-shell">
+          <div class="dashboard-toolbar">
+            <button class="dashboard-login-button" id="dashboardLoginButton" type="button">Login with Discord</button>
+            <p class="dashboard-status" id="roleDashboardStatus">Login with Discord to manage server role listings.</p>
+          </div>
+          <form class="role-listing-form" id="roleListingForm">
+            <label>
+              Server
+              <select id="dashboardGuildSelect">
+                <option value="">Choose a server</option>
+              </select>
+            </label>
+            <label>
+              Role
+              <select id="dashboardRoleSelect">
+                <option value="">Choose a role</option>
+              </select>
+            </label>
+            <label>
+              Aura Price
+              <input id="roleListingPrice" type="number" min="1" step="1" placeholder="25000" required>
+            </label>
+            <label>
+              Description
+              <input id="roleListingDescription" type="text" maxlength="180" placeholder="Limited color role or VIP community badge">
+            </label>
+            <label class="dashboard-checkbox">
+              <input id="roleListingEnabled" type="checkbox" checked>
+              Enabled
+            </label>
+            <button class="plan-button" type="submit">Save Role Listing</button>
+          </form>
+          <div class="role-listing-list" id="roleListingList">
+            <p class="dashboard-empty">No server selected.</p>
+          </div>
         </div>
       </section>
 

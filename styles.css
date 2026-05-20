@@ -920,6 +920,143 @@ body {
   margin: 1rem 0;
 }
 
+.role-dashboard-section {
+  margin-top: 3rem;
+  background: linear-gradient(135deg, rgba(88, 101, 242, 0.08), rgba(98, 255, 225, 0.08));
+}
+
+.dashboard-shell {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.dashboard-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.dashboard-login-button {
+  min-height: 42px;
+  padding: 0.7rem 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.dashboard-status {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.dashboard-status.is-error {
+  color: #ff9bb0;
+}
+
+.role-listing-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  padding: 1.25rem;
+  background: rgba(10, 18, 38, 0.72);
+  border: 1px solid rgba(98, 255, 225, 0.14);
+  border-radius: 8px;
+}
+
+.role-listing-form label {
+  display: grid;
+  gap: 0.45rem;
+  color: #dce7ff;
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.role-listing-form input,
+.role-listing-form select {
+  min-height: 44px;
+  width: 100%;
+  padding: 0.75rem 0.85rem;
+  color: var(--text);
+  background: rgba(4, 8, 20, 0.86);
+  border: 1px solid rgba(0, 216, 255, 0.2);
+  border-radius: 8px;
+  font: inherit;
+}
+
+.role-listing-form input:focus,
+.role-listing-form select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(98, 255, 225, 0.12);
+}
+
+.dashboard-checkbox {
+  grid-template-columns: auto 1fr;
+  align-items: center;
+}
+
+.dashboard-checkbox input {
+  width: 20px;
+  min-height: 20px;
+}
+
+.role-listing-list {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.role-listing-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem;
+  background: rgba(10, 18, 38, 0.72);
+  border: 1px solid rgba(98, 255, 225, 0.14);
+  border-radius: 8px;
+}
+
+.role-listing-item strong,
+.role-listing-item span,
+.role-listing-item small,
+.role-listing-item code {
+  display: block;
+}
+
+.role-listing-item strong {
+  color: var(--accent);
+}
+
+.role-listing-item span {
+  color: #dce7ff;
+  font-weight: 800;
+}
+
+.role-listing-item small,
+.role-listing-item code,
+.dashboard-empty {
+  color: var(--muted);
+}
+
+.role-listing-item code {
+  margin-top: 0.35rem;
+  font-size: 0.8rem;
+  word-break: break-all;
+}
+
+.role-listing-item button {
+  min-width: 104px;
+  min-height: 40px;
+  padding: 0.6rem 0.85rem;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
 /* Roadmap */
 .roadmap-section {
   margin-top: 4rem;
@@ -1313,6 +1450,7 @@ body {
   .guide-section,
   .pricing-section,
   .microshop-section,
+  .role-dashboard-section,
   .roadmap-section,
   .faq-section,
   .newsletter-section,
@@ -1325,6 +1463,7 @@ body {
   .guide-steps,
   .pricing-grid,
   .microshop-grid,
+  .role-listing-form,
   .faq-items,
   .roadmap-items,
   .policy-grid {
@@ -1336,6 +1475,7 @@ body {
   .faq-item,
   .pricing-card,
   .microshop-card,
+  .role-listing-form,
   .policy-card {
     border-radius: 8px;
     padding: 0.85rem;
@@ -1435,6 +1575,16 @@ body {
     border-radius: 8px;
     font-size: 0.9rem;
     letter-spacing: 0;
+  }
+
+  .dashboard-toolbar,
+  .role-listing-item {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .role-listing-item button {
+    width: 100%;
   }
 
   .roadmap-item {

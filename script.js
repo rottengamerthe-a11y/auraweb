@@ -86,14 +86,8 @@ function getStoredDiscordAuth() {
 }
 
 function buildDiscordLoginUrl() {
-  const params = new URLSearchParams({
-    client_id: window.DISCORD_CLIENT_ID || '1492213325637877800',
-    redirect_uri: window.DISCORD_REDIRECT_URI || `${window.location.origin}/auth/discord/callback`,
-    response_type: 'token',
-    scope: 'identify'
-  });
-
-  return `https://discord.com/oauth2/authorize?${params.toString()}`;
+  const authBaseUrl = window.AUTH_BASE_URL || window.location.origin;
+  return `${authBaseUrl}/auth/discord`;
 }
 
 function beginDiscordLogin() {
@@ -386,7 +380,182 @@ document.addEventListener('DOMContentLoaded', loadData);
 document.addEventListener('DOMContentLoaded', () => {
   updateDiscordLoginUI();
   refreshDiscordSession();
+  initRoleDashboard();
 });
+
+async function dashboardFetch(path, options = {}) {
+  const authBaseUrl = window.AUTH_BASE_URL || window.location.origin;
+  const response = await fetch(`${authBaseUrl}${path}`, {
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(options.headers || {})
+    },
+    ...options
+  });
+  const payload = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    throw new Error(payload.error || 'Dashboard request failed.');
+  }
+  return payload;
+}
+
+function setDashboardStatus(message, isError = false) {
+  const status = document.getElementById('roleDashboardStatus');
+  if (!status) return;
+  status.textContent = message;
+  status.classList.toggle('is-error', isError);
+}
+
+function renderGuildOptions(guilds) {
+  const select = document.getElementById('dashboardGuildSelect');
+  if (!select) return;
+  select.innerHTML = '<option value="">Choose a server</option>';
+  guilds.forEach((guild) => {
+    const option = document.createElement('option');
+    option.value = guild.id;
+    option.textContent = guild.name;
+    select.appendChild(option);
+  });
+}
+
+function renderRoleOptions(roles) {
+  const select = document.getElementById('dashboardRoleSelect');
+  if (!select) return;
+  select.innerHTML = '<option value="">Choose a role</option>';
+  roles.forEach((role) => {
+    const option = document.createElement('option');
+    option.value = role.id;
+    option.textContent = role.name;
+    select.appendChild(option);
+  });
+}
+
+function escapeHtml(value) {
+  return String(value || '').replace(/[&<>"']/g, (char) => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  }[char]));
+}
+
+function renderRoleListings(listings) {
+  const list = document.getElementById('roleListingList');
+  if (!list) return;
+  list.innerHTML = '';
+
+  if (!listings.length) {
+    list.innerHTML = '<p class="dashboard-empty">No roles listed yet.</p>';
+    return;
+  }
+
+  listings.forEach((listing) => {
+    const item = document.createElement('div');
+    item.className = 'role-listing-item';
+    item.innerHTML = `
+      <div>
+        <strong>${escapeHtml(listing.name)}</strong>
+        <span>${Number(listing.price).toLocaleString()} aura</span>
+        <small>${escapeHtml(listing.description || 'No description')} | ${listing.enabled ? 'Enabled' : 'Disabled'} | ${listing.purchaseCount || 0} purchases</small>
+        <code>${escapeHtml(listing.id)}</code>
+      </div>
+      <button type="button" data-listing-id="${listing.id}" data-enabled="${listing.enabled ? 'false' : 'true'}">${listing.enabled ? 'Disable' : 'Enable'}</button>
+    `;
+    list.appendChild(item);
+  });
+
+  list.querySelectorAll('button[data-listing-id]').forEach((button) => {
+    button.addEventListener('click', async () => {
+      try {
+        await dashboardFetch(`/api/dashboard/role-listings/${button.dataset.listingId}/toggle`, {
+          method: 'POST',
+          body: JSON.stringify({ enabled: button.dataset.enabled === 'true' })
+        });
+        await loadRoleListings();
+      } catch (error) {
+        setDashboardStatus(error.message, true);
+      }
+    });
+  });
+}
+
+async function loadRoleListings() {
+  const guildId = document.getElementById('dashboardGuildSelect')?.value;
+  if (!guildId) {
+    renderRoleListings([]);
+    return;
+  }
+
+  const payload = await dashboardFetch(`/api/dashboard/guilds/${guildId}/role-listings`);
+  renderRoleListings(payload.listings || []);
+}
+
+async function loadDashboardGuildData(guildId) {
+  if (!guildId) {
+    renderRoleOptions([]);
+    renderRoleListings([]);
+    return;
+  }
+
+  setDashboardStatus('Loading server roles...');
+  const rolesPayload = await dashboardFetch(`/api/dashboard/guilds/${guildId}/roles`);
+  renderRoleOptions(rolesPayload.roles || []);
+  await loadRoleListings();
+  setDashboardStatus('Ready. Create a listing or update an existing role.');
+}
+
+async function initRoleDashboard() {
+  const dashboard = document.getElementById('roleDashboard');
+  if (!dashboard) return;
+
+  const loginButton = document.getElementById('dashboardLoginButton');
+  const guildSelect = document.getElementById('dashboardGuildSelect');
+  const form = document.getElementById('roleListingForm');
+
+  loginButton?.addEventListener('click', beginDiscordLogin);
+  guildSelect?.addEventListener('change', () => {
+    loadDashboardGuildData(guildSelect.value).catch((error) => setDashboardStatus(error.message, true));
+  });
+
+  form?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const guildId = guildSelect?.value;
+    const roleId = document.getElementById('dashboardRoleSelect')?.value;
+    const price = Number(document.getElementById('roleListingPrice')?.value || 0);
+    const description = document.getElementById('roleListingDescription')?.value || '';
+    const enabled = document.getElementById('roleListingEnabled')?.checked ?? true;
+
+    if (!guildId || !roleId) {
+      setDashboardStatus('Choose a server and role first.', true);
+      return;
+    }
+
+    try {
+      await dashboardFetch(`/api/dashboard/guilds/${guildId}/role-listings`, {
+        method: 'POST',
+        body: JSON.stringify({ roleId, price, description, enabled })
+      });
+      form.reset();
+      guildSelect.value = guildId;
+      document.getElementById('roleListingEnabled').checked = true;
+      await loadDashboardGuildData(guildId);
+      setDashboardStatus('Role listing saved.');
+    } catch (error) {
+      setDashboardStatus(error.message, true);
+    }
+  });
+
+  try {
+    const payload = await dashboardFetch('/api/dashboard/guilds');
+    const guilds = payload.guilds || [];
+    renderGuildOptions(guilds);
+    setDashboardStatus(guilds.length ? 'Choose a server you manage.' : 'No manageable servers found for this Discord account.');
+  } catch (error) {
+    setDashboardStatus('Login with Discord to manage server role listings.');
+  }
+}
 
 // Mobile Navigation Toggle
 const navToggle = document.getElementById('navToggle');
