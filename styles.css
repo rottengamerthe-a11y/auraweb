@@ -1147,7 +1147,7 @@ body {
 }
 
 .command-list {
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
 }
 
 .command-card {
@@ -1263,6 +1263,45 @@ body {
 .command-empty {
   margin: 1rem 0 0;
   color: var(--muted);
+}
+
+.command-group-card {
+  display: block;
+  min-height: 0;
+}
+
+.command-group-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.85rem;
+}
+
+.command-group-card h3 {
+  flex: none;
+}
+
+.command-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.command-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  max-width: 100%;
+  padding: 0.38rem 0.55rem;
+  color: #dce7ff;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 8px;
+  font-size: 0.84rem;
+  font-weight: 800;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
 }
 
 /* Leaderboard */

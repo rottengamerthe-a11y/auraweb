@@ -523,11 +523,12 @@ function updateFAQ() {
 function initCommandSearch() {
   const searchInput = document.getElementById('commandSearchInput');
   const filters = document.querySelectorAll('[data-command-filter]');
-  const cards = Array.from(document.querySelectorAll('.command-card'));
+  const commandList = document.querySelector('.command-list');
+  const sourceCards = Array.from(document.querySelectorAll('.command-card'));
   const empty = document.getElementById('commandEmpty');
   let activeFilter = 'all';
 
-  if (!searchInput || !cards.length) return;
+  if (!searchInput || !commandList || !sourceCards.length) return;
 
   const commandCategories = {
     '/spin': 'economy',
@@ -548,18 +549,35 @@ function initCommandSearch() {
     reminder: 'Reminder'
   };
 
-  cards.forEach((card) => {
+  const groupedCommands = {};
+
+  sourceCards.forEach((card) => {
     const title = card.querySelector('h3')?.textContent?.trim().toLowerCase() || '';
     const category = card.dataset.commandCategory || Object.entries(commandCategories).find(([command]) => title.startsWith(command))?.[1] || 'core';
-    card.dataset.commandCategory = category;
+    const commandTitle = card.querySelector('h3')?.textContent?.trim() || '';
+    const description = card.querySelector('p')?.textContent?.trim() || '';
 
-    if (!card.querySelector('.command-meta')) {
-      const meta = document.createElement('span');
-      meta.className = 'command-meta';
-      meta.textContent = commandCategoryLabels[category] || category.charAt(0).toUpperCase() + category.slice(1);
-      card.appendChild(meta);
-    }
+    if (!groupedCommands[category]) groupedCommands[category] = [];
+    groupedCommands[category].push({ commandTitle, description });
   });
+
+  commandList.innerHTML = Object.entries(commandCategoryLabels)
+    .filter(([category]) => groupedCommands[category]?.length)
+    .map(([category, label]) => `
+      <article class="command-card command-group-card" data-command-category="${category}">
+        <div class="command-group-heading">
+          <h3>${label}</h3>
+          <span class="command-meta">${groupedCommands[category].length} commands</span>
+        </div>
+        <div class="command-chips">
+          ${groupedCommands[category].map(({ commandTitle, description }) => `
+            <span class="command-chip" title="${description}">${commandTitle}</span>
+          `).join('')}
+        </div>
+      </article>
+    `).join('');
+
+  const cards = Array.from(commandList.querySelectorAll('.command-card'));
 
   const applyFilter = () => {
     const query = searchInput.value.trim().toLowerCase();
@@ -567,11 +585,18 @@ function initCommandSearch() {
 
     cards.forEach((card) => {
       const matchesCategory = activeFilter === 'all' || card.dataset.commandCategory === activeFilter;
-      const matchesQuery = !query || card.textContent.toLowerCase().includes(query);
-      const isVisible = matchesCategory && matchesQuery;
+      let visibleChips = 0;
+
+      card.querySelectorAll('.command-chip').forEach((chip) => {
+        const matchesQuery = !query || chip.textContent.toLowerCase().includes(query) || chip.title.toLowerCase().includes(query);
+        chip.hidden = !matchesQuery;
+        if (matchesQuery) visibleChips += 1;
+      });
+
+      const isVisible = matchesCategory && visibleChips > 0;
 
       card.hidden = !isVisible;
-      if (isVisible) visibleCount += 1;
+      if (isVisible) visibleCount += visibleChips;
     });
 
     if (empty) {
