@@ -121,7 +121,7 @@
           <li><a href="#pricing">Store</a></li>
           <li><a href="#roleDashboard">Dashboard</a></li>
           <li class="nav-dropdown">
-            <button type="button">Resources</button>
+            <button type="button" data-resource-nav>Resources</button>
             <div class="nav-dropdown-menu">
               <a href="#guide">Guide</a>
               <a href="#roadmap">Roadmap</a>
@@ -157,51 +157,59 @@
               <strong>Zxavok</strong>
               <p>/spin</p>
             </div>
-            <div class="mockup-message bot-message">
-              <div class="spin-embed">
-                <div class="spin-embed-title">
-                  <span class="spin-orb"></span>
-                  <div>
+            <div class="mockup-message bot-message discord-message">
+              <div class="discord-avatar">A</div>
+              <div class="discord-message-body">
+                <div class="discord-message-meta">
+                  <strong>Aurix</strong>
+                  <span class="bot-tag">APP</span>
+                  <time>Today at 12:13 PM</time>
+                </div>
+                <div class="spin-embed discord-embed">
+                  <div class="discord-embed-author">
+                    <span class="spin-orb"></span>
+                    <span>Aurix Economy</span>
+                  </div>
+                  <div class="spin-embed-title">
                     <strong>Spin Complete</strong>
                     <span>Success</span>
                   </div>
+                  <p class="spin-summary">The wheel landed clean. You gained <strong>744 aura</strong> and <strong>82 XP</strong>.</p>
+                  <div class="spin-stats discord-fields">
+                    <div>
+                      <span class="stat-gem blue"></span>
+                      <strong>Jackpot</strong>
+                      <p>Not this time</p>
+                    </div>
+                    <div>
+                      <span class="stat-gem gold"></span>
+                      <strong>Next Spin</strong>
+                      <p>3m 0s</p>
+                    </div>
+                    <div>
+                      <span class="stat-gem white"></span>
+                      <strong>Wallet</strong>
+                      <p>62,537 aura</p>
+                    </div>
+                    <div>
+                      <span class="stat-gem premium"></span>
+                      <strong>Premium</strong>
+                      <p>Spin boost applied</p>
+                    </div>
+                  </div>
+                  <div class="spin-wheel" aria-label="Spin result wheel">
+                    <div class="wheel-lane">
+                      <span class="wheel-prize large"></span>
+                      <span class="wheel-prize"></span>
+                      <span class="wheel-prize"></span>
+                      <span class="wheel-prize"></span>
+                      <span class="wheel-prize"></span>
+                      <span class="wheel-prize large white"></span>
+                    </div>
+                    <div class="wheel-ticks"><span></span><span></span><span></span><span></span><span></span></div>
+                  </div>
+                  <div class="spin-footer">AURIX - SUCCESS</div>
                 </div>
-                <div class="spin-divider"></div>
-                <p class="spin-summary">The wheel landed clean. You gained <strong>744 aura</strong> and <strong>82 XP</strong>.</p>
-                <div class="spin-stats">
-                  <div>
-                    <span class="stat-gem blue"></span>
-                    <strong>Jackpot</strong>
-                    <p>Not this time</p>
-                  </div>
-                  <div>
-                    <span class="stat-gem gold"></span>
-                    <strong>Next Spin</strong>
-                    <p>3m 0s</p>
-                  </div>
-                  <div>
-                    <span class="stat-gem white"></span>
-                    <strong>Wallet</strong>
-                    <p>62,537 aura</p>
-                  </div>
-                  <div>
-                    <span class="stat-gem premium"></span>
-                    <strong>Premium</strong>
-                    <p>Spin boost applied</p>
-                  </div>
-                </div>
-                <div class="spin-wheel" aria-label="Spin result wheel">
-                  <div class="wheel-lane">
-                    <span class="wheel-prize large"></span>
-                    <span class="wheel-prize"></span>
-                    <span class="wheel-prize"></span>
-                    <span class="wheel-prize"></span>
-                    <span class="wheel-prize"></span>
-                    <span class="wheel-prize large white"></span>
-                  </div>
-                  <div class="wheel-ticks"><span></span><span></span><span></span><span></span><span></span></div>
-                </div>
-                <div class="spin-footer">AURIX - SUCCESS - Today at 12:13 PM</div>
               </div>
             </div>
           </div>
@@ -622,7 +630,7 @@
             </label>
             <label>
               Description
-              <textarea id="roleListingDescription" maxlength="300" rows="4" placeholder="Limited color role, VIP community badge, unlock notes, or purchase details"></textarea>
+              <textarea id="roleListingDescription" maxlength="500" rows="5" placeholder="Limited color role, VIP community badge, unlock notes, or purchase details"></textarea>
             </label>
             <label class="dashboard-checkbox toggle-field">
               <input id="roleListingEnabled" type="checkbox" checked>
@@ -631,11 +639,29 @@
             </label>
             <button class="plan-button" id="roleListingSubmitButton" type="submit">Save Role Listing</button>
           </form>
-          <div class="role-listing-list" id="roleListingList">
-            <div class="dashboard-empty-state">
-              <div class="empty-state-icon">RS</div>
-              <h3>Select a server to begin</h3>
-              <p>Choose a server from the dropdown above to view, create, and manage its role shop listings.</p>
+          <div class="role-inventory-panel">
+            <div class="role-inventory-heading">
+              <div>
+                <span class="eyebrow">Inventory</span>
+                <h3>Current role listings</h3>
+              </div>
+              <span class="role-inventory-count" id="roleListingCount">0 roles</span>
+            </div>
+            <div class="role-listing-list" id="roleListingList">
+              <div class="role-listing-table">
+                <div class="role-listing-row role-listing-head">
+                  <span>Role</span>
+                  <span>Price</span>
+                  <span>Status</span>
+                  <span>Purchases</span>
+                  <span>Actions</span>
+                </div>
+                <div class="dashboard-empty-state role-table-empty">
+                  <div class="empty-state-icon">RS</div>
+                  <h3>Select a server to begin</h3>
+                  <p>Choose a server from the dropdown above to view, create, and manage its role shop listings.</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -737,9 +763,13 @@
         <div class="link-buttons cta-buttons">
           <a href="https://discord.gg/PG7ht4SuJy" class="link-button bot-link primary-start-cta" target="_blank">Join Official Server</a>
         </div>
-        <div class="secondary-links">
-          <a href="https://www.youtube.com/@Aurix-s8n" target="_blank">YouTube</a>
-          <a href="https://www.tiktok.com/@aurix16890" target="_blank">TikTok</a>
+        <div class="secondary-links social-icon-links" aria-label="Aurix social channels">
+          <a href="https://www.youtube.com/@Aurix-s8n" target="_blank" aria-label="Aurix on YouTube" title="YouTube">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2 31.3 31.3 0 0 0 0 12a31.3 31.3 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1A31.3 31.3 0 0 0 24 12a31.3 31.3 0 0 0-.5-5.8ZM9.6 15.6V8.4l6.3 3.6-6.3 3.6Z"/></svg>
+          </a>
+          <a href="https://www.tiktok.com/@aurix16890" target="_blank" aria-label="Aurix on TikTok" title="TikTok">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.1 1.5c.4 3.1 2.1 5 5.1 5.2v4a8.7 8.7 0 0 1-5.1-1.6v7.4c0 3.8-2.6 6.8-6.8 6.8-4 0-6.8-2.8-6.8-6.5 0-4.3 3.6-7.1 7.9-6.4v4.1c-2-.6-3.7.5-3.7 2.2 0 1.5 1.1 2.5 2.6 2.5 1.7 0 2.7-1 2.7-3V1.5h4.1Z"/></svg>
+          </a>
         </div>
       </section>
       <section class="support-section" id="support">

@@ -922,23 +922,11 @@ function escapeHtml(value) {
 
 function renderRoleListings(listings) {
   const list = document.getElementById('roleListingList');
+  const count = document.getElementById('roleListingCount');
   if (!list) return;
   list.innerHTML = '';
-
-  if (!listings.length) {
-    const hasGuild = Boolean(document.getElementById('dashboardGuildSelect')?.value);
-    list.innerHTML = hasGuild
-      ? `<div class="dashboard-empty-state">
-          <div class="empty-state-icon">RS</div>
-          <h3>No roles listed yet</h3>
-          <p>Choose a role, set an aura price, then save it to create this server's first role shop listing.</p>
-        </div>`
-      : `<div class="dashboard-empty-state">
-          <div class="empty-state-icon">RS</div>
-          <h3>Select a server to begin</h3>
-          <p>Choose a server from the dropdown above to view, create, and manage its role shop listings.</p>
-        </div>`;
-    return;
+  if (count) {
+    count.textContent = `${listings.length} ${listings.length === 1 ? 'role' : 'roles'}`;
   }
 
   const table = document.createElement('div');
@@ -952,6 +940,23 @@ function renderRoleListings(listings) {
       <span>Actions</span>
     </div>
   `;
+
+  if (!listings.length) {
+    const hasGuild = Boolean(document.getElementById('dashboardGuildSelect')?.value);
+    table.insertAdjacentHTML('beforeend', hasGuild
+      ? `<div class="dashboard-empty-state role-table-empty">
+          <div class="empty-state-icon">RS</div>
+          <h3>No roles listed yet</h3>
+          <p>Choose a role, set an aura price, then save it to create this server's first role shop listing.</p>
+        </div>`
+      : `<div class="dashboard-empty-state role-table-empty">
+          <div class="empty-state-icon">RS</div>
+          <h3>Select a server to begin</h3>
+          <p>Choose a server from the dropdown above to view, create, and manage its role shop listings.</p>
+        </div>`);
+    list.appendChild(table);
+    return;
+  }
 
   listings.forEach((listing) => {
     const item = document.createElement('article');
@@ -1130,6 +1135,8 @@ async function initRoleDashboard() {
 
 function initNavActiveState() {
   const navLinks = Array.from(document.querySelectorAll('.nav-menu a[href^="#"]'));
+  const resourceButton = document.querySelector('[data-resource-nav]');
+  const resourceSectionIds = new Set(['guide', 'roadmap', 'faq', 'support', 'community']);
   const sections = navLinks
     .map((link) => document.querySelector(link.getAttribute('href')))
     .filter(Boolean);
@@ -1146,6 +1153,16 @@ function initNavActiveState() {
         link.removeAttribute('aria-current');
       }
     });
+
+    if (resourceButton) {
+      const isResourceActive = resourceSectionIds.has(sectionId);
+      resourceButton.classList.toggle('is-active', isResourceActive);
+      if (isResourceActive) {
+        resourceButton.setAttribute('aria-current', 'page');
+      } else {
+        resourceButton.removeAttribute('aria-current');
+      }
+    }
   };
 
   if ('IntersectionObserver' in window) {
@@ -1167,6 +1184,13 @@ function initNavActiveState() {
   } else {
     setActiveLink(sections[0].id);
   }
+
+  window.addEventListener('hashchange', () => {
+    const hash = window.location.hash.replace('#', '');
+    if (hash && sections.some((section) => section.id === hash)) {
+      setActiveLink(hash);
+    }
+  });
 }
 
 function initRoadmapVoting() {
