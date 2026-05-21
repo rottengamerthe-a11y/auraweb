@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Aurix Public Rankings</title>
+    <title>Leaderboard | Aurix</title>
     <link rel="stylesheet" href="/styles.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
     <script src="/api-config.js"></script>
@@ -45,11 +45,65 @@
           <h2>Top Players</h2>
           <span id="leaderboardUpdated">Updating...</span>
         </div>
+        <div class="public-leaderboard-controls">
+          <label>
+            Search player
+            <input id="leaderboardSearchInput" type="search" placeholder="Search username" autocomplete="off">
+          </label>
+        </div>
         <div class="public-leaderboard-list" id="publicLeaderboardList">
           <div class="public-leaderboard-empty">Loading leaderboard...</div>
         </div>
+        <div class="public-leaderboard-pagination" aria-label="Leaderboard pagination">
+          <button id="leaderboardPrevButton" type="button">Previous</button>
+          <span id="leaderboardPageLabel">Page 1</span>
+          <button id="leaderboardNextButton" type="button">Next</button>
+        </div>
       </section>
     </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-section">
+            <h4>Aurix</h4>
+            <p>Discord progression, role shops, and community activity systems.</p>
+          </div>
+          <div class="footer-section">
+            <h4>Quick Links</h4>
+            <div class="social-links">
+              <a href="/#roleDashboard">Dashboard</a>
+              <a href="/#pricing">Store</a>
+              <a href="/#commands">Commands</a>
+              <a href="/#roadmap">Roadmap</a>
+            </div>
+          </div>
+          <div class="footer-section">
+            <h4>Community</h4>
+            <div class="social-links">
+              <a href="https://discord.gg/PG7ht4SuJy" target="_blank" title="Discord">Discord Server</a>
+              <a href="https://www.youtube.com/@Aurix-s8n" target="_blank" title="YouTube">YouTube</a>
+              <a href="https://www.tiktok.com/@aurix16890" target="_blank" title="TikTok">TikTok</a>
+            </div>
+          </div>
+          <div class="footer-section">
+            <h4>Legal</h4>
+            <div class="social-links">
+              <a href="/terms.html">Terms of Service</a>
+              <a href="/privacy.html">Privacy Policy</a>
+              <a href="/refund-policy.html">Refund Policy</a>
+            </div>
+          </div>
+          <div class="footer-section">
+            <h4>Support</h4>
+            <div class="social-links">
+              <a href="mailto:support@aurix.com">support@aurix.com</a>
+            </div>
+          </div>
+        </div>
+        <p class="footer-credit">© 2026 Aurix Bot. All rights reserved.</p>
+      </div>
+    </footer>
 
     <script src="/leaderboard.js"></script>
   </body>

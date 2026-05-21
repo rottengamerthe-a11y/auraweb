@@ -2,6 +2,7 @@ import os
 import secrets
 import hashlib
 import time
+import re
 from datetime import datetime
 from datetime import timedelta
 from urllib.parse import urlencode
@@ -567,13 +568,17 @@ def title_from_slug(slug):
     return " ".join(part.capitalize() for part in slugify(slug).split("-") if part) or "Leaderboard"
 
 
-def leaderboard_from_users(collection, query=None, limit=25):
+def leaderboard_from_users(collection, query=None, limit=25, skip=0, search=None):
     query = query or {}
     name_fields = leaderboard_name_fields()
+    effective_query = dict(query)
+    if search:
+        escaped = re.escape(search)
+        effective_query["$or"] = [{field: {"$regex": escaped, "$options": "i"}} for field in name_fields]
 
     for score_field in leaderboard_score_fields():
         players = list(collection.aggregate([
-            {"$match": query},
+            {"$match": effective_query},
             {
                 "$addFields": {
                     "_aurixScore": {
@@ -588,11 +593,12 @@ def leaderboard_from_users(collection, query=None, limit=25):
             },
             {"$match": {"_aurixScore": {"$gt": 0}}},
             {"$sort": {"_aurixScore": -1}},
+            {"$skip": skip},
             {"$limit": limit},
         ]))
         if players:
             leaderboard = []
-            for index, player in enumerate(players, start=1):
+            for index, player in enumerate(players, start=skip + 1):
                 leaderboard.append({
                     "rank": index,
                     "name": public_player_name(player, name_fields),
@@ -612,8 +618,11 @@ def build_public_leaderboard(slug):
             "slug": slugify(slug),
             "title": title_from_slug(slug),
             "players": [],
-            "totalPlayers": "0",
+            "totalPlayers": 0,
+            "totalPlayersLabel": "0",
             "auraTracked": "0",
+            "page": 1,
+            "limit": 10,
             "source": "missing users collection",
             "updatedAt": datetime.utcnow().isoformat() + "Z",
         }
@@ -624,18 +633,41 @@ def build_public_leaderboard(slug):
             "slug": normalized_slug,
             "title": title,
             "players": [],
-            "totalPlayers": "0",
+            "totalPlayers": 0,
+            "totalPlayersLabel": "0",
             "auraTracked": "0",
+            "page": 1,
+            "limit": 10,
             "source": player_collection.full_name,
             "updatedAt": datetime.utcnow().isoformat() + "Z",
         }
 
+    try:
+        page = max(1, int(request.args.get("page", 1)))
+    except (TypeError, ValueError):
+        page = 1
+    try:
+        limit = min(50, max(5, int(request.args.get("limit", 10))))
+    except (TypeError, ValueError):
+        limit = 10
+    search = request.args.get("q", "").strip()[:60]
+    skip = (page - 1) * limit
+    effective_query = dict(query)
+    if search:
+        escaped = re.escape(search)
+        effective_query["$or"] = [{field: {"$regex": escaped, "$options": "i"}} for field in leaderboard_name_fields()]
+    total_players = player_collection.count_documents(effective_query)
+
     return {
         "slug": normalized_slug,
         "title": title,
-        "players": leaderboard_from_users(player_collection, query),
-        "totalPlayers": format_number(player_collection.count_documents(query)),
+        "players": leaderboard_from_users(player_collection, query, limit=limit, skip=skip, search=search),
+        "totalPlayers": total_players,
+        "totalPlayersLabel": format_number(total_players),
         "auraTracked": format_number(numeric_total_scoped(player_collection, query, leaderboard_score_fields())),
+        "page": page,
+        "limit": limit,
+        "query": search,
         "source": player_collection.full_name,
         "updatedAt": datetime.utcnow().isoformat() + "Z",
     }
@@ -751,6 +783,14 @@ def serialize_listing(listing):
     }
 
 
+def discord_guild_icon_url(guild):
+    icon = guild.get("icon")
+    if not icon:
+        return None
+    ext = "gif" if str(icon).startswith("a_") else "png"
+    return f"https://cdn.discordapp.com/icons/{guild['id']}/{icon}.{ext}?size=96"
+
+
 def user_can_manage_guild(guild):
     permissions = int(guild.get("permissions", 0))
     return bool(guild.get("owner")) or bool(permissions & ADMINISTRATOR_PERMISSION) or bool(permissions & MANAGE_GUILD_PERMISSION)
@@ -768,7 +808,7 @@ def hash_dashboard_token(token):
     return hashlib.sha256(token.encode("utf-8")).hexdigest()
 
 
-def create_dashboard_session(user, access_token):
+def create_dashboard_session(user, token_payload):
     token = secrets.token_urlsafe(32)
     expires_at = datetime.utcnow() + timedelta(days=7)
     dashboard_sessions_collection().update_one(
@@ -776,7 +816,9 @@ def create_dashboard_session(user, access_token):
         {
             "$set": {
                 "user": user,
-                "accessToken": access_token,
+                "accessToken": token_payload["access_token"],
+                "refreshToken": token_payload.get("refresh_token"),
+                "tokenExpiresAt": datetime.utcnow() + timedelta(seconds=int(token_payload.get("expires_in", 604800))),
                 "expiresAt": expires_at,
                 "updatedAt": datetime.utcnow(),
             },
@@ -813,15 +855,7 @@ def consume_oauth_state(state):
 
 def require_dashboard_auth():
     user = session.get("discord_user")
-    access_token = session.get("discord_access_token")
-    if user and access_token:
-        return user, access_token, None
-
-    auth_header = request.headers.get("Authorization", "")
-    if not auth_header.startswith("Bearer "):
-        return None, None, (jsonify({"error": "Login with Discord first."}), 401)
-
-    token = auth_header.removeprefix("Bearer ").strip()
+    token = request.cookies.get("aurix_dashboard_session", "").strip()
     if not token:
         return None, None, (jsonify({"error": "Login with Discord first."}), 401)
 
@@ -832,12 +866,19 @@ def require_dashboard_auth():
     if not record:
         return None, None, (jsonify({"error": "Dashboard login expired. Login with Discord again."}), 401)
 
-    return record["user"], record["accessToken"], None
+    return user or record["user"], record["accessToken"], None
 
 
 def get_manageable_guild(access_token, guild_id):
     guilds = discord_get("/users/@me/guilds", access_token)
     return next((guild for guild in guilds if guild.get("id") == guild_id and user_can_manage_guild(guild)), None)
+
+
+def require_manageable_guild(access_token, guild_id):
+    guild = get_manageable_guild(access_token, guild_id)
+    if guild:
+        return guild, None
+    return None, (jsonify({"error": "You need active Manage Server or Administrator permissions for this server."}), 403)
 
 
 def fetch_role_dashboard_state(guild_id):
@@ -895,6 +936,53 @@ def fetch_role_dashboard_state(guild_id):
 
 def fetch_assignable_roles(guild_id):
     return fetch_role_dashboard_state(guild_id)["roles"]
+
+
+def count_collection_documents(collection_names, query):
+    collection = first_existing_collection_across_dbs(collection_names)
+    if collection is None:
+        return 0
+    try:
+        return collection.count_documents(query)
+    except Exception:
+        return 0
+
+
+def dashboard_scope_query(guild_id):
+    return {"$or": [{field: guild_id} for field in leaderboard_scope_fields()]}
+
+
+def build_dashboard_overview(guild_id):
+    player_collection = first_existing_collection_across_dbs(configured_collection_names(
+        "COMMUNITY_PLAYERS_COLLECTIONS",
+        ["players", "users", "profiles", "economy", "members"],
+    ))
+    query = dashboard_scope_query(guild_id)
+    active_farmers = 0
+    aura_tracked = "0"
+    if player_collection is not None:
+        try:
+            active_farmers = player_collection.count_documents(query)
+            aura_tracked = format_number(numeric_total_scoped(player_collection, query, leaderboard_score_fields()))
+        except Exception:
+            active_farmers = 0
+            aura_tracked = "0"
+
+    command_usage = count_collection_documents(
+        configured_collection_names("COMMAND_USAGE_COLLECTIONS", ["commandlogs", "commands", "command_usage", "interactions"]),
+        query,
+    )
+    listings = role_listings_collection().count_documents({"guildId": guild_id})
+    enabled_listings = role_listings_collection().count_documents({"guildId": guild_id, "enabled": True})
+
+    return {
+        "totalCommandUsage": format_number(command_usage),
+        "activeAuraFarmers": format_number(active_farmers),
+        "auraTracked": aura_tracked,
+        "roleListings": format_number(listings),
+        "enabledRoleListings": format_number(enabled_listings),
+        "updatedAt": datetime.utcnow().isoformat() + "Z",
+    }
 
 
 def safe_discord_error(error_body):
@@ -987,17 +1075,24 @@ def discord_callback():
         "global_name": user.get("global_name"),
         "avatar": user.get("avatar"),
     }
-    session["discord_access_token"] = token["access_token"]
-    dashboard_token = create_dashboard_session(session["discord_user"], token["access_token"])
+    dashboard_token = create_dashboard_session(session["discord_user"], token)
 
     frontend_url = state_record.get("returnTo") or os.environ.get("FRONTEND_URL", "/")
     user_query = urlencode({
         "discord_login": "1",
         "discord_user": json.dumps(session["discord_user"], separators=(",", ":")),
-        "dashboard_token": dashboard_token,
     })
     separator = "&" if "?" in frontend_url else "?"
-    return redirect(f"{frontend_url}{separator}{user_query}")
+    response = redirect(f"{frontend_url}{separator}{user_query}")
+    response.set_cookie(
+        "aurix_dashboard_session",
+        dashboard_token,
+        max_age=7 * 24 * 60 * 60,
+        httponly=True,
+        secure=app.config["SESSION_COOKIE_SECURE"],
+        samesite=app.config["SESSION_COOKIE_SAMESITE"],
+    )
+    return response
 
 
 @app.route("/logout", methods=["POST", "OPTIONS"])
@@ -1006,16 +1101,29 @@ def logout():
         return "", 204
 
     session.pop("discord_user", None)
-    session.pop("discord_access_token", None)
-    auth_header = request.headers.get("Authorization", "")
-    if auth_header.startswith("Bearer "):
-        dashboard_sessions_collection().delete_one({"tokenHash": hash_dashboard_token(auth_header.removeprefix("Bearer ").strip())})
-    return jsonify({"ok": True})
+    dashboard_token = request.cookies.get("aurix_dashboard_session", "").strip()
+    if dashboard_token:
+        dashboard_sessions_collection().delete_one({"tokenHash": hash_dashboard_token(dashboard_token)})
+    response = jsonify({"ok": True})
+    response.delete_cookie(
+        "aurix_dashboard_session",
+        secure=app.config["SESSION_COOKIE_SECURE"],
+        samesite=app.config["SESSION_COOKIE_SAMESITE"],
+    )
+    return response
 
 
 @app.route("/api/me")
 def current_user():
     user = session.get("discord_user")
+    if not user:
+        dashboard_token = request.cookies.get("aurix_dashboard_session", "").strip()
+        if dashboard_token:
+            record = dashboard_sessions_collection().find_one({
+                "tokenHash": hash_dashboard_token(dashboard_token),
+                "expiresAt": {"$gt": datetime.utcnow()},
+            })
+            user = record.get("user") if record else None
     if not user:
         return jsonify({"user": None, "authenticated": False}), 401
 
@@ -1077,6 +1185,7 @@ def dashboard_guilds():
             "id": guild["id"],
             "name": guild["name"],
             "icon": guild.get("icon"),
+            "iconUrl": discord_guild_icon_url(guild),
             "owner": bool(guild.get("owner")),
         }
         for guild in guilds
@@ -1090,8 +1199,9 @@ def dashboard_roles(guild_id):
     _user, access_token, error = require_dashboard_auth()
     if error:
         return error
-    if not get_manageable_guild(access_token, guild_id):
-        return jsonify({"error": "You need Manage Server or Administrator for this server."}), 403
+    _guild, permission_error = require_manageable_guild(access_token, guild_id)
+    if permission_error:
+        return permission_error
 
     try:
         state = fetch_role_dashboard_state(guild_id)
@@ -1105,6 +1215,18 @@ def dashboard_roles(guild_id):
         return jsonify({"error": str(error)}), 500
 
 
+@app.route("/api/dashboard/guilds/<guild_id>/overview")
+def dashboard_overview(guild_id):
+    _user, access_token, error = require_dashboard_auth()
+    if error:
+        return error
+    _guild, permission_error = require_manageable_guild(access_token, guild_id)
+    if permission_error:
+        return permission_error
+
+    return jsonify({"overview": build_dashboard_overview(guild_id)})
+
+
 @app.route("/api/dashboard/guilds/<guild_id>/role-listings", methods=["GET", "POST", "OPTIONS"])
 def dashboard_role_listings(guild_id):
     if request.method == "OPTIONS":
@@ -1113,8 +1235,9 @@ def dashboard_role_listings(guild_id):
     user, access_token, error = require_dashboard_auth()
     if error:
         return error
-    if not get_manageable_guild(access_token, guild_id):
-        return jsonify({"error": "You need Manage Server or Administrator for this server."}), 403
+    _guild, permission_error = require_manageable_guild(access_token, guild_id)
+    if permission_error:
+        return permission_error
 
     collection = role_listings_collection()
     if request.method == "GET":
@@ -1123,7 +1246,7 @@ def dashboard_role_listings(guild_id):
 
     payload = request.get_json(silent=True) or {}
     role_id = str(payload.get("roleId", "")).strip()
-    description = str(payload.get("description", "")).strip()[:300]
+    description = str(payload.get("description", "")).strip()[:500]
     try:
         price = int(payload.get("price") or 0)
     except (TypeError, ValueError):
@@ -1187,8 +1310,9 @@ def dashboard_toggle_role_listing(listing_id):
     listing = collection.find_one({"_id": object_id})
     if not listing:
         return jsonify({"error": "Listing not found."}), 404
-    if not get_manageable_guild(access_token, listing["guildId"]):
-        return jsonify({"error": "You need Manage Server or Administrator for this server."}), 403
+    _guild, permission_error = require_manageable_guild(access_token, listing["guildId"])
+    if permission_error:
+        return permission_error
 
     enabled = bool((request.get_json(silent=True) or {}).get("enabled"))
     collection.update_one({"_id": object_id}, {"$set": {"enabled": enabled, "updatedAt": datetime.utcnow()}})
@@ -1214,8 +1338,9 @@ def dashboard_delete_role_listing(listing_id):
     listing = collection.find_one({"_id": object_id})
     if not listing:
         return jsonify({"error": "Listing not found."}), 404
-    if not get_manageable_guild(access_token, listing["guildId"]):
-        return jsonify({"error": "You need Manage Server or Administrator for this server."}), 403
+    _guild, permission_error = require_manageable_guild(access_token, listing["guildId"])
+    if permission_error:
+        return permission_error
 
     collection.delete_one({"_id": object_id})
     return jsonify({"ok": True})

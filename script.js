@@ -59,9 +59,9 @@ let communityData = {};
 let communityRefreshTimer = null;
 const DISCORD_AUTH_STORAGE_KEY = 'aurixDiscordAuth';
 const PENDING_CHECKOUT_STORAGE_KEY = 'aurixPendingCheckout';
-const DASHBOARD_TOKEN_STORAGE_KEY = 'aurixDashboardToken';
 const DASHBOARD_API = {
   guilds: '/api/dashboard/guilds',
+  guildOverview: (guildId) => `/api/dashboard/guilds/${guildId}/overview`,
   guildRoles: (guildId) => `/api/dashboard/guilds/${guildId}/roles`,
   roleListings: (guildId) => `/api/dashboard/guilds/${guildId}/role-listings`,
   toggleRoleListing: (listingId) => `/api/dashboard/role-listings/${listingId}/toggle`,
@@ -100,7 +100,7 @@ const PREMIUM_PLAN_CONTENT = {
     price: '$19.99',
     term: '/year',
     badge: 'Best value - save $39.89/year',
-    anchor: 'About four months of monthly pricing.',
+    anchor: 'Get 12 months for the price of 4.',
     button: 'Get Annual - Save 66%',
     planId: 'yearly',
     getPriceId: () => CHECKOUT_PRICE_IDS.yearly(),
@@ -117,8 +117,10 @@ const PREMIUM_PLAN_CONTENT = {
 let discordUser = null;
 const appState = {
   auth: {
-    user: null,
-    dashboardToken: null
+    user: null
+  },
+  dashboard: {
+    guilds: []
   }
 };
 
@@ -129,7 +131,6 @@ function getAuthBaseUrl() {
 function setDiscordUser(user) {
   discordUser = user || null;
   appState.auth.user = discordUser;
-  appState.auth.dashboardToken = localStorage.getItem(DASHBOARD_TOKEN_STORAGE_KEY);
   updateDiscordLoginUI();
 }
 
@@ -148,14 +149,12 @@ function getStoredDiscordAuth() {
 
     if (!auth || !auth.user || !auth.expiresAt || Date.now() >= auth.expiresAt) {
       localStorage.removeItem(DISCORD_AUTH_STORAGE_KEY);
-      localStorage.removeItem(DASHBOARD_TOKEN_STORAGE_KEY);
       return null;
     }
 
     return auth;
   } catch (error) {
     localStorage.removeItem(DISCORD_AUTH_STORAGE_KEY);
-    localStorage.removeItem(DASHBOARD_TOKEN_STORAGE_KEY);
     return null;
   }
 }
@@ -177,21 +176,81 @@ function beginDiscordLogin() {
 
 async function logoutDiscord() {
   const authBaseUrl = getAuthBaseUrl();
-  const dashboardToken = localStorage.getItem(DASHBOARD_TOKEN_STORAGE_KEY);
 
   try {
     await fetch(`${authBaseUrl}/logout`, {
       method: 'POST',
       credentials: 'include',
-      headers: dashboardToken ? { Authorization: `Bearer ${dashboardToken}` } : {}
     });
   } catch (error) {
     console.warn('Logout request failed:', error);
   }
 
   localStorage.removeItem(DISCORD_AUTH_STORAGE_KEY);
-  localStorage.removeItem(DASHBOARD_TOKEN_STORAGE_KEY);
   setDiscordUser(null);
+}
+
+function setUserMenuOpen(isOpen) {
+  const loginButton = document.getElementById('discordLoginButton');
+  const dropdown = document.getElementById('userMenuDropdown');
+  if (!loginButton || !dropdown) return;
+
+  loginButton.setAttribute('aria-expanded', String(isOpen));
+  dropdown.hidden = !isOpen;
+}
+
+function toggleUserMenu() {
+  const dropdown = document.getElementById('userMenuDropdown');
+  setUserMenuOpen(Boolean(dropdown?.hidden));
+}
+
+function initUserMenu() {
+  const menu = document.getElementById('userMenu');
+  const logoutButton = document.getElementById('userMenuLogout');
+
+  logoutButton?.addEventListener('click', () => {
+    setUserMenuOpen(false);
+    logoutDiscord();
+  });
+
+  document.addEventListener('click', (event) => {
+    if (menu && !menu.contains(event.target)) {
+      setUserMenuOpen(false);
+    }
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      setUserMenuOpen(false);
+    }
+  });
+}
+
+function setSaveRoleButtonState(state) {
+  const submitButton = document.getElementById('roleListingSubmitButton');
+  if (!submitButton) return;
+
+  window.clearTimeout(setSaveRoleButtonState.resetTimer);
+  submitButton.classList.remove('is-saving', 'is-saved');
+  submitButton.disabled = state === 'saving';
+
+  if (state === 'saving') {
+    submitButton.classList.add('is-saving');
+    submitButton.textContent = 'Saving...';
+    return;
+  }
+
+  if (state === 'saved') {
+    submitButton.classList.add('is-saved');
+    submitButton.textContent = '✓ Saved!';
+    setSaveRoleButtonState.resetTimer = window.setTimeout(() => {
+      submitButton.classList.remove('is-saved');
+      submitButton.textContent = 'Save Role Listing';
+    }, 2000);
+    return;
+  }
+
+  submitButton.textContent = 'Save Role Listing';
 }
 
 function requireDiscordLogin(priceId, planId) {
@@ -238,7 +297,6 @@ function getPendingCheckout() {
 async function refreshDiscordSession() {
   const query = new URLSearchParams(window.location.search);
   const redirectedUser = query.get('discord_user');
-  const dashboardToken = query.get('dashboard_token');
 
   if (query.get('discord_login') === '1' && redirectedUser) {
     try {
@@ -247,9 +305,6 @@ async function refreshDiscordSession() {
         user,
         expiresAt: Date.now() + 7 * 24 * 60 * 60 * 1000
       }));
-      if (dashboardToken) {
-        localStorage.setItem(DASHBOARD_TOKEN_STORAGE_KEY, dashboardToken);
-      }
       history.replaceState(null, document.title, window.location.pathname);
       setDiscordUser(user);
 
@@ -341,12 +396,19 @@ function updateDiscordLoginUI() {
   if (loginButton) {
     if (user) {
       loginButton.textContent = `Logged in as ${user.global_name || user.username}`;
+      const avatarUrl = discordAvatarUrl(user);
+      loginButton.style.setProperty('--discord-avatar', avatarUrl ? `url("${avatarUrl}")` : 'none');
       loginButton.classList.add('is-logged-in');
-      loginButton.title = 'Click to log out';
-      loginButton.onclick = logoutDiscord;
+      loginButton.classList.toggle('has-avatar', Boolean(avatarUrl));
+      loginButton.title = 'Open account menu';
+      loginButton.onclick = toggleUserMenu;
     } else {
       loginButton.textContent = 'Login with Discord';
       loginButton.classList.remove('is-logged-in');
+      loginButton.classList.remove('has-avatar');
+      loginButton.style.removeProperty('--discord-avatar');
+      loginButton.setAttribute('aria-expanded', 'false');
+      setUserMenuOpen(false);
       loginButton.title = 'Login is required before buying a membership';
       loginButton.onclick = beginDiscordLogin;
     }
@@ -548,17 +610,17 @@ function initCommandSearch() {
     { name: '/profile', icon: 'PF', category: 'core', description: 'Show your profile, premium status, cosmetics, and progress.' },
     { name: '/stats', icon: 'ST', category: 'core', description: 'Review your activity, wins, economy totals, and milestones.' },
     { name: '/balance', icon: '$', category: 'core', description: 'Check your wallet, vault, and available aura balance.' },
-    { name: '/work', icon: 'WK', category: 'economy', description: 'Earn aura through repeatable jobs and economy activity.' },
-    { name: '/mine', icon: 'MN', category: 'economy', description: 'Mine resources and earn rewards through mining progression.' },
+    { name: '/work', args: [{ label: 'job', type: 'optional' }], icon: 'WK', category: 'economy', description: 'Earn aura through repeatable jobs and economy activity.' },
+    { name: '/mine', args: [{ label: 'depth', type: 'optional' }], icon: 'MN', category: 'economy', description: 'Mine resources and earn rewards through mining progression.' },
     { name: '/spin', icon: 'SP', category: 'economy', description: 'Run a progression command and climb the bot leaderboard.', featured: true, featuredRank: 1 },
-    { name: '/coinflip', icon: 'CF', category: 'economy', description: 'Wager aura on a heads-or-tails chance game.' },
-    { name: '/rob', icon: 'RB', category: 'economy', description: 'Attempt a risky steal from another player.' },
+    { name: '/coinflip', args: [{ label: 'amount', type: 'required' }, { label: 'side', type: 'optional' }], icon: 'CF', category: 'economy', description: 'Wager aura on a heads-or-tails chance game.' },
+    { name: '/rob', args: [{ label: 'user', type: 'required' }], icon: 'RB', category: 'economy', description: 'Attempt a risky steal from another player.' },
     { name: '/daily', icon: 'DY', category: 'economy', description: 'Claim your daily aura reward and streak payout.' },
-    { name: '/vault', subcommands: 'deposit|withdraw|interest', icon: 'VL', category: 'economy', description: 'Manage protected aura storage and vault interest.' },
+    { name: '/vault', subcommands: 'deposit|withdraw|interest', args: [{ label: 'amount', type: 'optional' }], icon: 'VL', category: 'economy', description: 'Manage protected aura storage and vault interest.' },
     { name: '/shop', icon: 'SH', category: 'economy', description: 'Browse purchasable items, boosts, crates, and cosmetics.' },
-    { name: '/buy', icon: 'BY', category: 'economy', description: 'Buy an item from the shop with your aura balance.' },
-    { name: '/roleshop', subcommands: 'list|buy', icon: 'RS', category: 'economy', description: 'View and purchase server roles configured by admins.', featured: true, featuredRank: 5 },
-    { name: '/gift', icon: 'GF', category: 'economy', description: 'Send aura or items to another player.' },
+    { name: '/buy', args: [{ label: 'item', type: 'required' }], icon: 'BY', category: 'economy', description: 'Buy an item from the shop with your aura balance.' },
+    { name: '/roleshop', subcommands: 'list|buy', args: [{ label: 'role', type: 'optional' }], icon: 'RS', category: 'economy', description: 'View and purchase server roles configured by admins.', featured: true, featuredRank: 5 },
+    { name: '/gift', args: [{ label: 'user', type: 'required' }, { label: 'amount', type: 'required' }], icon: 'GF', category: 'economy', description: 'Send aura or items to another player.' },
     { name: '/inventory', icon: 'IN', category: 'economy', description: 'View owned crates, items, boosts, and collectibles.' },
     { name: '/crate', icon: 'CR', category: 'economy', description: 'Open crates and claim randomized rewards.' },
     { name: '/rank', icon: 'RK', category: 'progression', description: 'Check your level, XP, and position in progression.' },
@@ -573,21 +635,33 @@ function initCommandSearch() {
     { name: '/garden', subcommands: 'status|plant|harvest', icon: 'GD', category: 'systems', description: 'Plant crops, harvest resources, and maintain your garden.' },
     { name: '/property', subcommands: 'list|buy|upgrade|claim', icon: 'PY', category: 'systems', description: 'Buy property, improve it, and claim generated rewards.' },
     { name: '/expedition', subcommands: 'status|start|claim', icon: 'EX', category: 'systems', description: 'Send parties on expeditions and collect returns.' },
-    { name: '/gear', subcommands: 'loadout|equip', icon: 'GR', category: 'systems', description: 'Equip gear and manage your active loadout.' },
+    { name: '/gear', subcommands: 'loadout|equip', args: [{ label: 'item', type: 'optional' }], icon: 'GR', category: 'systems', description: 'Equip gear and manage your active loadout.' },
     { name: '/skills', icon: 'SK', category: 'combat', description: 'View combat skills, upgrades, and battle modifiers.' },
-    { name: '/pvp', icon: 'PV', category: 'combat', description: 'Challenge other players to competitions.', featured: true, featuredRank: 3 },
+    { name: '/pvp', args: [{ label: 'user', type: 'required' }, { label: 'wager', type: 'optional' }], icon: 'PV', category: 'combat', description: 'Challenge other players to competitions.', featured: true, featuredRank: 3 },
     { name: '/boss', icon: 'BS', category: 'combat', description: 'Fight server bosses for shared loot and progression.' },
     { name: '/premium', icon: 'PM', category: 'premium', description: 'Check premium status, perks, and account-linked benefits.' },
     { name: '/premium-chest', icon: 'PC', category: 'premium', description: 'Claim premium chest rewards when eligible.' },
-    { name: '/clan', subcommands: 'create|join|apply|leave|info|members|log|kick|approve|decline|role|transfer|disband|upgrade|raid|donate|war', icon: 'CL', category: 'clan', description: 'Join or create a clan and compete with other guilds.', featured: true, featuredRank: 4 },
+    { name: '/clan', subcommands: 'create|join|apply|leave|info|members|log|kick|approve|decline|role|transfer|disband|upgrade|raid|donate|war', args: [{ label: 'clan', type: 'optional' }, { label: 'user', type: 'optional' }], icon: 'CL', category: 'clan', description: 'Join or create a clan and compete with other guilds.', featured: true, featuredRank: 4 },
     { name: '/reminders', subcommands: 'status|enable|disable', icon: 'RM', category: 'reminder', description: 'Control reminders for cooldowns, claims, and repeatable tasks.' }
   ];
 
   const renderCommands = (items, isSearchMode) => {
+    const renderArguments = (command) => {
+      const subcommands = command.subcommands
+        ? `<span class="command-subcommands" title="Available subcommands">${command.subcommands}</span>`
+        : '';
+      const args = (command.args || []).map((arg) => `
+        <span class="command-arg command-arg-${arg.type}" title="${arg.type === 'required' ? 'Required option' : 'Optional option'}">
+          ${arg.type === 'required' ? '&lt;' : '['}${arg.label}${arg.type === 'required' ? '&gt;' : ']'}
+        </span>
+      `).join('');
+      return `${subcommands}${args ? `<span class="command-args">${args}</span>` : ''}`;
+    };
+
     commandList.innerHTML = items.map((command) => `
       <div class="command-card${isSearchMode ? ' command-result-card' : ''}" data-command-category="${command.category}">
         <div class="command-icon">${command.icon}</div>
-        <h3>${command.name}${command.subcommands ? ` <span>${command.subcommands}</span>` : ''}</h3>
+        <h3>${command.name}${renderArguments(command)}</h3>
         <p>${command.description}</p>
         <span class="command-meta">${commandCategoryLabels[command.category]}</span>
       </div>
@@ -598,7 +672,7 @@ function initCommandSearch() {
     const query = searchInput.value.trim().toLowerCase();
     const isDefaultView = !query && activeFilter === 'all';
     const visibleCommands = commands.filter((command) => {
-      const searchableText = `${command.name} ${command.subcommands || ''} ${command.description} ${commandCategoryLabels[command.category]}`.toLowerCase();
+      const searchableText = `${command.name} ${command.subcommands || ''} ${(command.args || []).map((arg) => arg.label).join(' ')} ${command.description} ${commandCategoryLabels[command.category]}`.toLowerCase();
       const matchesCategory = activeFilter === 'all' || command.category === activeFilter;
       const matchesQuery = !query || searchableText.includes(query);
 
@@ -802,6 +876,7 @@ function updateFAQSafe() {
 document.addEventListener('DOMContentLoaded', loadData);
 document.addEventListener('DOMContentLoaded', () => {
   startCommunityRefresh();
+  initUserMenu();
   updateDiscordLoginUI();
   initCommandSearch();
   initPricingToggle();
@@ -816,12 +891,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function dashboardFetch(path, options = {}) {
   const authBaseUrl = getAuthBaseUrl();
-  const dashboardToken = appState.auth.dashboardToken || localStorage.getItem(DASHBOARD_TOKEN_STORAGE_KEY);
   const response = await fetch(`${authBaseUrl}${path}`, {
     credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
-      ...(dashboardToken ? { Authorization: `Bearer ${dashboardToken}` } : {}),
       ...(options.headers || {})
     },
     ...options
@@ -833,16 +906,51 @@ async function dashboardFetch(path, options = {}) {
   return payload;
 }
 
-function setDashboardStatus(message, isError = false) {
+function setDashboardStatus(message, isError = false, notify = false) {
   const status = document.getElementById('roleDashboardStatus');
   if (!status) return;
   status.textContent = message;
   status.classList.toggle('is-error', isError);
+  if (notify || isError) {
+    showToast(message, isError ? 'error' : 'success');
+  }
+}
+
+function showToast(message, type = 'info') {
+  if (!message) return;
+  let viewport = document.getElementById('toastViewport');
+  if (!viewport) {
+    viewport = document.createElement('div');
+    viewport.id = 'toastViewport';
+    viewport.className = 'toast-viewport';
+    document.body.appendChild(viewport);
+  }
+
+  const toast = document.createElement('div');
+  toast.className = `toast toast-${type}`;
+  toast.textContent = message;
+  viewport.appendChild(toast);
+  window.setTimeout(() => {
+    toast.classList.add('is-hiding');
+    window.setTimeout(() => toast.remove(), 220);
+  }, 3200);
+}
+
+function discordAvatarUrl(user) {
+  if (!user?.avatar) return '';
+  const ext = String(user.avatar).startsWith('a_') ? 'gif' : 'png';
+  return `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.${ext}?size=64`;
+}
+
+function guildFallbackInitials(name) {
+  return String(name || 'A').split(/\s+/).map((part) => part[0]).join('').slice(0, 2).toUpperCase();
 }
 
 function renderGuildOptions(guilds) {
   const select = document.getElementById('dashboardGuildSelect');
+  const grid = document.getElementById('dashboardServerGrid');
   if (!select) return;
+  appState.dashboard.guilds = guilds;
   select.innerHTML = '<option value="">Choose a server</option>';
   guilds.forEach((guild) => {
     const option = document.createElement('option');
@@ -850,6 +958,53 @@ function renderGuildOptions(guilds) {
     option.textContent = guild.name;
     select.appendChild(option);
   });
+
+  if (!grid) return;
+  if (!guilds.length) {
+    grid.innerHTML = `<div class="dashboard-empty-state">
+      <div class="empty-state-icon">A</div>
+      <h3>No manageable servers</h3>
+      <p>Servers where you hold Administrator or Manage Server will appear here.</p>
+    </div>`;
+    return;
+  }
+
+  grid.innerHTML = guilds.map((guild) => `
+    <button class="server-card" type="button" data-guild-id="${guild.id}" aria-pressed="false">
+      ${guild.iconUrl ? `<img src="${guild.iconUrl}" alt="">` : `<span>${guildFallbackInitials(guild.name)}</span>`}
+      <strong>${escapeHtml(guild.name)}</strong>
+      <small>${guild.owner ? 'Owner' : 'Manage Server'}</small>
+    </button>
+  `).join('');
+
+  grid.querySelectorAll('.server-card').forEach((card) => {
+    card.addEventListener('click', () => {
+      select.value = card.dataset.guildId;
+      select.dispatchEvent(new Event('change'));
+    });
+  });
+}
+
+function setActiveGuildCard(guildId) {
+  document.querySelectorAll('.server-card').forEach((card) => {
+    const isActive = card.dataset.guildId === guildId;
+    card.classList.toggle('is-active', isActive);
+    card.setAttribute('aria-pressed', String(isActive));
+  });
+}
+
+function renderDashboardOverview(overview, guildName) {
+  const title = document.getElementById('dashboardOverviewTitle');
+  const grid = document.getElementById('dashboardOverviewGrid');
+  if (title) title.textContent = guildName ? `${guildName} overview` : 'Server overview';
+  if (!grid) return;
+  const stats = overview || {};
+  grid.innerHTML = `
+    <article><strong>${stats.totalCommandUsage || '-'}</strong><span>Command Usage</span></article>
+    <article><strong>${stats.activeAuraFarmers || '-'}</strong><span>Active Aura Farmers</span></article>
+    <article><strong>${stats.auraTracked || '-'}</strong><span>Aura Tracked</span></article>
+    <article><strong>${stats.enabledRoleListings || '0'}/${stats.roleListings || '0'}</strong><span>Enabled Role Listings</span></article>
+  `;
 }
 
 function renderRoleOptions(roles) {
@@ -1018,6 +1173,7 @@ function renderRoleListings(listings) {
           body: JSON.stringify({ enabled: button.dataset.enabled === 'true' })
         });
         await loadRoleListings();
+        showToast('Role listing updated.', 'success');
       } catch (error) {
         setDashboardStatus(error.message, true);
       }
@@ -1035,7 +1191,7 @@ function renderRoleListings(listings) {
       try {
         await dashboardFetch(DASHBOARD_API.roleListing(button.dataset.listingId), { method: 'DELETE' });
         await loadRoleListings();
-        setDashboardStatus('Role listing deleted.');
+        setDashboardStatus('Role listing deleted.', false, true);
       } catch (error) {
         setDashboardStatus(error.message, true);
       }
@@ -1058,11 +1214,17 @@ async function loadDashboardGuildData(guildId) {
   if (!guildId) {
     renderRoleOptions([]);
     renderRoleListings([]);
+    renderDashboardOverview(null);
+    setActiveGuildCard('');
     resetRolePermissionValidation();
     return;
   }
 
+  setActiveGuildCard(guildId);
+  const guild = appState.dashboard.guilds.find((item) => item.id === guildId);
   setDashboardStatus('Loading server roles...');
+  const overviewPayload = await dashboardFetch(DASHBOARD_API.guildOverview(guildId));
+  renderDashboardOverview(overviewPayload.overview, guild?.name);
   const rolesPayload = await dashboardFetch(DASHBOARD_API.guildRoles(guildId));
   renderRoleOptions(rolesPayload.roles || []);
   renderRolePermissionValidation(rolesPayload.validation);
@@ -1107,6 +1269,7 @@ async function initRoleDashboard() {
     }
 
     try {
+      setSaveRoleButtonState('saving');
       await dashboardFetch(DASHBOARD_API.roleListings(guildId), {
         method: 'POST',
         body: JSON.stringify({ roleId, price, description, enabled })
@@ -1114,11 +1277,14 @@ async function initRoleDashboard() {
       form.reset();
       guildSelect.value = guildId;
       document.getElementById('roleListingEnabled').checked = true;
-      const submitButton = document.getElementById('roleListingSubmitButton');
-      if (submitButton) submitButton.textContent = 'Save Role Listing';
       await loadDashboardGuildData(guildId);
-      setDashboardStatus('Role listing saved.');
+      setSaveRoleButtonState('saved');
+      const overviewPayload = await dashboardFetch(DASHBOARD_API.guildOverview(guildId));
+      const guild = appState.dashboard.guilds.find((item) => item.id === guildId);
+      renderDashboardOverview(overviewPayload.overview, guild?.name);
+      setDashboardStatus('Role listing saved.', false, true);
     } catch (error) {
+      setSaveRoleButtonState('idle');
       setDashboardStatus(error.message, true);
     }
   });
@@ -1143,7 +1309,23 @@ function initNavActiveState() {
 
   if (!navLinks.length || !sections.length) return;
 
+  const pageTitles = {
+    commands: 'Command List | Aurix',
+    pricing: 'Store | Aurix',
+    roleDashboard: 'Dashboard | Aurix',
+    guide: 'Setup Guide | Aurix',
+    roadmap: 'Roadmap | Aurix',
+    faq: 'FAQ | Aurix',
+    support: 'Support | Aurix',
+    community: 'Community | Aurix',
+    legal: 'Legal | Aurix',
+    leaderboards: 'Leaderboards | Aurix',
+    proof: 'Aurix - Discord Bot'
+  };
+
   const setActiveLink = (sectionId) => {
+    document.title = pageTitles[sectionId] || 'Aurix - Discord Bot';
+
     navLinks.forEach((link) => {
       const isActive = link.getAttribute('href') === `#${sectionId}`;
       link.classList.toggle('is-active', isActive);

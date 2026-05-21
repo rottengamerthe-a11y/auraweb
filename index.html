@@ -132,7 +132,14 @@
         </ul>
         <div class="nav-actions">
           <span class="bot-status">🟢 Bot Online</span>
-          <button class="discord-login-button" id="discordLoginButton" type="button">Login with Discord</button>
+          <div class="user-menu" id="userMenu">
+            <button class="discord-login-button" id="discordLoginButton" type="button" aria-haspopup="menu" aria-expanded="false">Login with Discord</button>
+            <div class="user-menu-dropdown" id="userMenuDropdown" role="menu" hidden>
+              <a href="#roleDashboard" role="menuitem">My Servers</a>
+              <a href="#pricing" role="menuitem">Billing</a>
+              <button type="button" id="userMenuLogout" role="menuitem">Logout</button>
+            </div>
+          </div>
         </div>
       </div>
     </nav>
@@ -142,7 +149,7 @@
         <h1>Aurix</h1>
         <p>Gamify your Discord community with progression, clans, leaderboards, role shops, and repeatable reasons to come back every day.</p>
         <div class="hero-actions">
-          <a href="https://discord.com/oauth2/authorize?client_id=1492213325637877800&permissions=0&integration_type=0&scope=bot+applications.commands" class="link-button bot-link" target="_blank">Add to Discord</a>
+          <a href="https://discord.com/oauth2/authorize?client_id=1492213325637877800&permissions=0&integration_type=0&scope=bot+applications.commands" class="link-button bot-link discord-cta" target="_blank">Add to Discord</a>
           <a href="#roleDashboard" class="link-button server-link">Open Dashboard</a>
         </div>
         <div class="hero-discord-mockup" aria-label="Aurix Discord command preview">
@@ -249,6 +256,11 @@
           <p class="eyebrow">Why Aurix</p>
           <h2>Turn passive chat into a progression loop</h2>
           <p>Aurix gives server owners a complete activity system without forcing players to leave Discord.</p>
+          <div class="feature-stepper" aria-label="Feature sequence">
+            <span class="is-active">01</span>
+            <span>02</span>
+            <span>03</span>
+          </div>
         </div>
         <div class="z-feature-stack">
           <article class="z-feature">
@@ -375,7 +387,7 @@
             <div class="step-number">1</div>
             <h3>Add the Bot</h3>
             <p>Add Aurix to your Discord server first so members can create profiles and start earning aura.</p>
-            <a href="https://discord.com/oauth2/authorize?client_id=1492213325637877800&permissions=0&integration_type=0&scope=bot+applications.commands" class="link-button bot-link guide-step-cta" target="_blank">Add Bot to Your Server</a>
+            <a href="https://discord.com/oauth2/authorize?client_id=1492213325637877800&permissions=0&integration_type=0&scope=bot+applications.commands" class="link-button bot-link guide-step-cta discord-cta" target="_blank">Add Bot to Your Server</a>
           </div>
           <div class="guide-step">
             <div class="step-number">2</div>
@@ -408,7 +420,11 @@
         <div class="section-heading">
           <p class="eyebrow">Store</p>
           <h2>Premium and One-Time Drops</h2>
-          <p>Aurix Bot premium memberships are global user upgrades for the Discord account connected at checkout. Premium unlocks enhanced command settings, faster virtual progression, higher premium effect caps, premium-only shop items, profile cosmetics, extra reminder slots, profile membership status, and a premium activation announcement wherever Aurix supports your account.</p>
+          <ul class="premium-summary-list">
+            <li><span>🌍</span><strong>Global Upgrade</strong>Unlock premium across any server where Aurix supports your account.</li>
+            <li><span>⚡</span><strong>Enhanced Progression</strong>Higher caps, extra reminder slots, premium cosmetics, and faster bot progression.</li>
+            <li><span>💳</span><strong>Secure Checkout</strong>Payments are processed securely by Paddle as merchant of record.</li>
+          </ul>
           <p class="pricing-compliance-note">All Aurix points, virtual items, ranks, and progression are virtual bot features only. They have no cash value, cannot be traded, and cannot be exchanged for money, prizes, or physical goods. Aurix does not offer gambling, betting, sweepstakes, or real-money rewards.</p>
           <p class="pricing-compliance-note">Payments are processed by Paddle as reseller and merchant of record. Product support is provided by Aurix Bot at <a href="mailto:support@aurix.com">support@aurix.com</a>.</p>
           <p class="pricing-login-note" id="pricingLoginNote">Login with Discord before buying so global premium can be linked to your user account.</p>
@@ -437,7 +453,7 @@
                 <span id="premiumPlanPrice">$19.99</span>
                 <small id="premiumPlanTerm">/year</small>
               </div>
-              <p class="plan-anchor" id="premiumPlanAnchor">About four months of monthly pricing.</p>
+              <p class="plan-anchor" id="premiumPlanAnchor">Get 12 months for the price of 4.</p>
             </div>
             <ul class="plan-benefits plan-benefits-compact" id="premiumPlanBenefits">
               <li>1.54x faster command pace from shorter cooldowns</li>
@@ -611,8 +627,37 @@
             <button class="dashboard-login-button" id="dashboardLoginButton" type="button">Login with Discord</button>
             <p class="dashboard-status" id="roleDashboardStatus">Login with Discord to manage server role listings.</p>
           </div>
+          <div class="server-selection-panel">
+            <div class="role-inventory-heading">
+              <div>
+                <span class="eyebrow">Servers</span>
+                <h3>Choose a community</h3>
+              </div>
+            </div>
+            <div class="server-grid" id="dashboardServerGrid">
+              <div class="dashboard-empty-state">
+                <div class="empty-state-icon">A</div>
+                <h3>Login to load servers</h3>
+                <p>Your manageable Discord servers will appear here.</p>
+              </div>
+            </div>
+          </div>
+          <section class="dashboard-overview-panel" aria-live="polite">
+            <div class="role-inventory-heading">
+              <div>
+                <span class="eyebrow">Overview</span>
+                <h3 id="dashboardOverviewTitle">Server overview</h3>
+              </div>
+            </div>
+            <div class="dashboard-overview-grid" id="dashboardOverviewGrid">
+              <article><strong>-</strong><span>Command Usage</span></article>
+              <article><strong>-</strong><span>Active Aura Farmers</span></article>
+              <article><strong>-</strong><span>Aura Tracked</span></article>
+              <article><strong>-</strong><span>Role Listings</span></article>
+            </div>
+          </section>
           <form class="role-listing-form" id="roleListingForm">
-            <label>
+            <label class="server-select-field">
               Server
               <select id="dashboardGuildSelect">
                 <option value="">Choose a server</option>
@@ -761,7 +806,7 @@
         <h2>Community Channels</h2>
         <p>Find launch updates and community channels after you have added the bot.</p>
         <div class="link-buttons cta-buttons">
-          <a href="https://discord.gg/PG7ht4SuJy" class="link-button bot-link primary-start-cta" target="_blank">Join Official Server</a>
+          <a href="https://discord.gg/PG7ht4SuJy" class="link-button bot-link primary-start-cta discord-cta" target="_blank">Join Official Server</a>
         </div>
         <div class="secondary-links social-icon-links" aria-label="Aurix social channels">
           <a href="https://www.youtube.com/@Aurix-s8n" target="_blank" aria-label="Aurix on YouTube" title="YouTube">
@@ -781,7 +826,7 @@
       </section>
       <section class="legal-section" id="legal">
         <h2>Legal</h2>
-        <p class="legal-intro">Last updated: May 10, 2026. Aurix Bot is operated as a sole proprietor brand by Anju Sharma. For support, contact <a href="mailto:support@aurix.com">support@aurix.com</a>.</p>
+        <p class="legal-intro">Last updated: May 10, 2026. These cards open the full document-style policies with left-side navigation for payment processor review and long-form legal text.</p>
         <div class="policy-grid">
           <article class="policy-card" id="terms">
             <h3>Terms of Service</h3>
