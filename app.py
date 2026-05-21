@@ -205,6 +205,20 @@ def first_present(document, field_names):
     return None
 
 
+def normalize_metric_name(value):
+    return "".join(char for char in str(value or "").lower() if char.isalnum())
+
+
+def list_from_document(document, field_names):
+    if not document:
+        return []
+    for field_name in field_names:
+        value = document.get(field_name)
+        if isinstance(value, list):
+            return value
+    return []
+
+
 def format_stat_value(value):
     if value is None or value == "":
         return None
@@ -281,12 +295,26 @@ def collection_leaderboard(collection):
     aura_fields = ["aura", "balance", "wallet", "money", "points", "score", "xp"]
     name_fields = ["username", "displayName", "globalName", "name", "userName", "discordName"]
 
+    document = latest_document(collection)
+    embedded_players = list_from_document(document, ["leaderboard", "players", "items", "entries", "data"])
+    if embedded_players:
+        return normalize_leaderboard_players(embedded_players, rank_fields, aura_fields, name_fields)
+
     sort_field = next((field for field in rank_fields + aura_fields if collection.find_one({field: {"$exists": True}})), "_id")
     sort_direction = 1 if sort_field in rank_fields else -1
-    players = list(collection.find({}).sort(sort_field, sort_direction).limit(5))
+    return normalize_leaderboard_players(
+        list(collection.find({}).sort(sort_field, sort_direction).limit(5)),
+        rank_fields,
+        aura_fields,
+        name_fields,
+    )
 
+
+def normalize_leaderboard_players(players, rank_fields, aura_fields, name_fields):
     leaderboard = []
-    for index, player in enumerate(players, start=1):
+    for index, player in enumerate(players[:5], start=1):
+        if not isinstance(player, dict):
+            continue
         name = first_present(player, name_fields) or first_present(player, ["userId", "discordId", "id"]) or "Aurix Player"
         score = first_present(player, aura_fields) or 0
         rank = first_present(player, rank_fields) or index
@@ -299,8 +327,19 @@ def collection_leaderboard(collection):
 
 
 def collection_testimonials(collection):
+    document = latest_document(collection)
+    embedded_testimonials = list_from_document(document, ["testimonials", "reviews", "items", "entries", "data"])
+    if embedded_testimonials:
+        return normalize_testimonials(embedded_testimonials)
+
+    return normalize_testimonials(list(collection.find({}).sort("_id", -1).limit(3)))
+
+
+def normalize_testimonials(records):
     testimonials = []
-    for testimonial in collection.find({}).sort("_id", -1).limit(3):
+    for testimonial in records[:3]:
+        if not isinstance(testimonial, dict):
+            continue
         text = first_present(testimonial, ["text", "quote", "message", "body"])
         author = first_present(testimonial, ["author", "username", "name", "displayName"])
         if text:
@@ -316,6 +355,10 @@ def collection_stats(collection):
     if not document:
         return {}
 
+    metric_stats = stats_from_metric_documents(collection)
+    if metric_stats:
+        return metric_stats
+
     stats = document.get("stats") if isinstance(document.get("stats"), dict) else document
     return {
         "activePlayers": format_stat_value(first_present(stats, [
@@ -329,6 +372,30 @@ def collection_stats(collection):
         ])),
         "uptime": format_stat_value(first_present(stats, ["uptime", "uptimePercent", "availability"])),
     }
+
+
+def stats_from_metric_documents(collection):
+    stat_aliases = {
+        "activePlayers": {"activeplayers", "activeplayer", "players", "totalplayers", "totalusers", "users", "usercount"},
+        "competitions": {"competitions", "competitioncount", "matches", "pvpmatches", "events", "challenges"},
+        "auraTracked": {"auratracked", "totalaura", "aura", "economytotal", "totalbalance", "pointstracked"},
+        "uptime": {"uptime", "uptimepercent", "availability"},
+    }
+    value_fields = ["value", "count", "total", "amount", "number", "score"]
+    key_fields = ["key", "name", "metric", "label", "type", "stat"]
+    stats = {}
+
+    for document in collection.find({}).limit(50):
+        metric = normalize_metric_name(first_present(document, key_fields))
+        value = first_present(document, value_fields)
+        if not metric or value is None:
+            continue
+        for stat_name, aliases in stat_aliases.items():
+            if metric in aliases:
+                stats[stat_name] = format_stat_value(value)
+                break
+
+    return stats
 
 
 def format_number(value):

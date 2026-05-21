@@ -374,9 +374,12 @@ async function loadData() {
   try {
     // Try to load from MongoDB API first
     if (typeof API_ENDPOINT !== 'undefined' && API_ENDPOINT && API_ENDPOINT !== 'https://your-bot-name.onrender.com/api/community-data') {
-      console.log('Fetching from MongoDB API:', API_ENDPOINT);
+      const communityEndpoint = API_ENDPOINT.startsWith('http')
+        ? API_ENDPOINT
+        : `${getAuthBaseUrl()}${API_ENDPOINT.startsWith('/') ? API_ENDPOINT : `/${API_ENDPOINT}`}`;
+      console.log('Fetching from MongoDB API:', communityEndpoint);
       try {
-        const response = await fetch(API_ENDPOINT, { cache: 'no-store' });
+        const response = await fetch(communityEndpoint, { cache: 'no-store' });
         if (response.ok) {
           communityData = {
             ...FALLBACK_COMMUNITY_DATA,
@@ -386,6 +389,7 @@ async function loadData() {
           updateUI();
           return;
         }
+        console.warn('Community API returned HTTP', response.status);
       } catch (apiError) {
         console.warn('API fetch failed, trying fallback:', apiError.message);
       }
