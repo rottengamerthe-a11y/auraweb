@@ -1127,7 +1127,7 @@ function initRoadmapVoting() {
 
   voteButtons.forEach((button) => {
     const item = button.closest('[data-roadmap-id]');
-    const count = button.querySelector('span');
+    const count = button.querySelector('.roadmap-vote-count');
     const key = `aurixRoadmapVotes:${item?.dataset.roadmapId || 'unknown'}`;
     const votedKey = `${key}:voted`;
     const storedVotes = Number(localStorage.getItem(key) || 0);

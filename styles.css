@@ -2139,17 +2139,24 @@ body {
 }
 
 .microshop-art {
-  display: inline-flex;
+  display: block;
   align-items: center;
   justify-content: center;
-  width: 52px;
-  height: 52px;
+  width: 100%;
+  aspect-ratio: 1 / 1;
   margin-bottom: 1rem;
-  color: #040814;
-  background: linear-gradient(135deg, #ffc857, var(--accent));
+  overflow: hidden;
+  background: rgba(4, 8, 20, 0.58);
+  border: 1px solid rgba(255, 200, 87, 0.18);
   border-radius: 8px;
-  font-weight: 900;
   box-shadow: 0 12px 32px rgba(255, 200, 87, 0.18);
+}
+
+.microshop-art img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .microshop-header {
@@ -2630,10 +2637,11 @@ body {
 
 .roadmap-item {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 0.75rem;
-  min-height: 72px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-rows: auto 1fr;
+  align-items: start;
+  gap: 0.65rem 0.8rem;
+  min-height: 112px;
   padding: 0.9rem 1rem;
   border-radius: 8px;
   border-left: 4px solid;
@@ -2662,7 +2670,10 @@ body {
 
 .roadmap-status {
   display: inline-block;
+  grid-column: 1;
+  grid-row: 1;
   flex: 0 0 auto;
+  width: fit-content;
   padding: 0.3rem 0.55rem;
   background: rgba(98, 255, 225, 0.2);
   border-radius: 999px;
@@ -2673,8 +2684,11 @@ body {
 }
 
 .roadmap-item h3 {
+  grid-column: 1 / -1;
+  grid-row: 2;
   min-width: 0;
   margin: 0;
+  align-self: end;
   color: var(--text);
   font-size: 1rem;
   line-height: 1.25;
@@ -2684,9 +2698,12 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 64px;
-  min-height: 38px;
-  padding: 0.55rem 0.7rem;
+  grid-column: 2;
+  grid-row: 1;
+  gap: 0.35rem;
+  min-width: 58px;
+  min-height: 34px;
+  padding: 0.45rem 0.62rem;
   color: var(--text);
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(98, 255, 225, 0.18);
@@ -2699,9 +2716,26 @@ body {
   white-space: nowrap;
 }
 
+.roadmap-vote-icon {
+  color: var(--accent);
+  font-size: 1rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.roadmap-vote-count {
+  min-width: 1ch;
+  font-weight: 900;
+  line-height: 1;
+}
+
 .roadmap-vote.has-voted {
   color: #040814;
   background: linear-gradient(135deg, var(--accent), var(--primary));
+}
+
+.roadmap-vote.has-voted .roadmap-vote-icon {
+  color: #040814;
 }
 
 /* FAQ Section */
@@ -3467,6 +3501,7 @@ body {
   .roadmap-item {
     display: grid;
     grid-template-columns: 1fr auto;
+    min-height: 96px;
     gap: 0.55rem;
     padding: 0.85rem;
     border-radius: 8px;
