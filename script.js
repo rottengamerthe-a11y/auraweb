@@ -792,8 +792,8 @@ async function refreshBotStatus() {
   try {
     const response = await fetch(`${getAuthBaseUrl()}/api/status`, { credentials: 'include' });
     const payload = response.ok ? await response.json() : {};
-    const measuredLatency = Math.max(1, Math.round(performance.now() - startedAt));
-    const latency = Number.isFinite(Number(payload.latencyMs)) ? Number(payload.latencyMs) : measuredLatency;
+    const configuredLatency = Number(payload.latencyMs);
+    const latency = Number.isFinite(configuredLatency) && configuredLatency > 0 ? configuredLatency : 40;
     indicator.textContent = `Bot Online • ${latency}ms`;
     indicator.classList.remove('is-offline');
   } catch (error) {
