@@ -531,21 +531,32 @@ function initCommandSearch() {
 
   const commandCategories = {
     '/spin': 'economy',
-    '/leaderboard': 'utility',
-    '/pvp': 'social',
-    '/clan': 'social',
-    '/roleshop list': 'admin'
+    '/leaderboard': 'progression',
+    '/pvp': 'combat',
+    '/clan': 'clan',
+    '/roleshop': 'economy'
+  };
+
+  const commandCategoryLabels = {
+    core: 'Core',
+    economy: 'Economy',
+    progression: 'Progression',
+    systems: 'Systems',
+    combat: 'Combat',
+    premium: 'Premium',
+    clan: 'Clan',
+    reminder: 'Reminder'
   };
 
   cards.forEach((card) => {
     const title = card.querySelector('h3')?.textContent?.trim().toLowerCase() || '';
-    const category = Object.entries(commandCategories).find(([command]) => title.startsWith(command))?.[1] || 'utility';
+    const category = card.dataset.commandCategory || Object.entries(commandCategories).find(([command]) => title.startsWith(command))?.[1] || 'core';
     card.dataset.commandCategory = category;
 
     if (!card.querySelector('.command-meta')) {
       const meta = document.createElement('span');
       meta.className = 'command-meta';
-      meta.textContent = category === 'social' ? 'Social & Combat' : category.charAt(0).toUpperCase() + category.slice(1);
+      meta.textContent = commandCategoryLabels[category] || category.charAt(0).toUpperCase() + category.slice(1);
       card.appendChild(meta);
     }
   });
