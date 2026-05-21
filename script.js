@@ -8,7 +8,7 @@ const FALLBACK_COMMUNITY_DATA = {
   },
   leaderboard: [
     { rank: 1, name: 'ShadowGrinder', aura: '2,456,789' },
-    { rank: 2, name: 'AuraKing', aura: '2,123,456' },
+    { rank: 2, name: 'NovaRift', aura: '2,123,456' },
     { rank: 3, name: 'NoLifeHustle', aura: '1,987,654' },
     { rank: 4, name: 'GrindMaster', aura: '1,876,543' },
     { rank: 5, name: 'FarmAlchemist', aura: '1,765,432' }
@@ -16,15 +16,15 @@ const FALLBACK_COMMUNITY_DATA = {
   testimonials: [
     {
       text: 'Aurix completely changed how I engage with Discord. The competition is addictive and rewards are amazing!',
-      author: 'Player123'
+      author: 'Zxavok'
     },
     {
       text: 'Best bot for community engagement. The farming mechanics are so fun and the community is super supportive.',
-      author: 'AuraFarmer'
+      author: 'Charlotte'
     },
     {
       text: 'Finally a bot that keeps everyone active and motivated. Highly recommend joining the server!',
-      author: 'CompetitiveGamer'
+      author: 'Coven'
     }
   ],
   faqs: [
@@ -67,6 +67,15 @@ const DASHBOARD_API = {
   toggleRoleListing: (listingId) => `/api/dashboard/role-listings/${listingId}/toggle`,
   roleListing: (listingId) => `/api/dashboard/role-listings/${listingId}`
 };
+const CHECKOUT_PRICE_IDS = {
+  monthly: () => window.PADDLE_MONTHLY_PRICE_ID || '',
+  yearly: () => window.PADDLE_YEARLY_PRICE_ID || '',
+  lifetime: () => window.PADDLE_LIFETIME_PRICE_ID || '',
+  starterCrateBundle: () => window.PADDLE_STARTER_CRATE_BUNDLE_PRICE_ID || '',
+  rareCrateStack: () => window.PADDLE_RARE_CRATE_STACK_PRICE_ID || '',
+  legendaryVaultDrop: () => window.PADDLE_LEGENDARY_VAULT_DROP_PRICE_ID || '',
+  boostSupplyPack: () => window.PADDLE_BOOST_SUPPLY_PACK_PRICE_ID || ''
+};
 const PREMIUM_PLAN_CONTENT = {
   monthly: {
     title: 'Premium Monthly',
@@ -76,7 +85,7 @@ const PREMIUM_PLAN_CONTENT = {
     anchor: 'Start premium without a long-term commitment.',
     button: 'Get Monthly',
     planId: 'monthly',
-    getPriceId: () => monthlyPriceId,
+    getPriceId: () => CHECKOUT_PRICE_IDS.monthly(),
     benefits: [
       '1.33x faster command pace from shorter cooldowns',
       '1.35x bot progression from spin, work, and mining commands',
@@ -94,7 +103,7 @@ const PREMIUM_PLAN_CONTENT = {
     anchor: 'About four months of monthly pricing.',
     button: 'Get Annual - Save 66%',
     planId: 'yearly',
-    getPriceId: () => yearlyPriceId,
+    getPriceId: () => CHECKOUT_PRICE_IDS.yearly(),
     benefits: [
       '1.54x faster command pace from shorter cooldowns',
       '1.55x bot progression from spin, work, and mining commands',
@@ -393,6 +402,8 @@ async function loadData() {
       } catch (apiError) {
         console.warn('API fetch failed, trying fallback:', apiError.message);
       }
+    } else {
+      console.warn('Community API endpoint is not configured, using fallback data.');
     }
     
     // Fallback to data.json
@@ -591,6 +602,7 @@ function initPricingToggle() {
     anchor.textContent = plan.anchor;
     planButton.textContent = plan.button;
     planButton.dataset.planId = plan.planId;
+    planButton.dataset.priceKey = plan.planId;
     benefits.innerHTML = '';
 
     plan.benefits.forEach((benefit) => {
@@ -599,7 +611,6 @@ function initPricingToggle() {
       benefits.appendChild(item);
     });
 
-    planButton.onclick = () => openCheckout(plan.getPriceId(), plan.planId);
     buttons.forEach((button) => {
       button.classList.toggle('is-active', button.dataset.planCycle === cycle);
     });
@@ -634,6 +645,21 @@ function initStoreTabs() {
   });
 
   activateTab('subscriptions');
+}
+
+function initCheckoutButtons() {
+  document.querySelectorAll('[data-price-key]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const priceKey = button.dataset.priceKey;
+      const getPriceId = CHECKOUT_PRICE_IDS[priceKey];
+      const priceId = getPriceId ? getPriceId() : '';
+      const productId = button.dataset.productId;
+      const planId = button.dataset.planId;
+      const purchaseMeta = productId ? { productId } : (planId || {});
+
+      openCheckout(priceId, purchaseMeta);
+    });
+  });
 }
 
 async function refreshBotStatus() {
@@ -732,6 +758,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initCommandSearch();
   initPricingToggle();
   initStoreTabs();
+  initCheckoutButtons();
   refreshBotStatus();
   refreshDiscordSession();
   initRoleDashboard();

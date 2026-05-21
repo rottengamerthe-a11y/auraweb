@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aurix Public Rankings</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+    <script src="/api-config.js"></script>
+  </head>
+  <body>
+    <nav class="sticky-nav">
+      <div class="nav-container">
+        <a href="/" class="nav-logo">Aurix</a>
+        <ul class="nav-menu">
+          <li><a href="/">Home</a></li>
+          <li><a href="/#commands">Commands</a></li>
+          <li><a href="/#pricing">Store</a></li>
+          <li><a href="/#roleDashboard">Dashboard</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <main class="public-leaderboard-page">
+      <section class="public-leaderboard-hero">
+        <div>
+          <p class="eyebrow">Public Rankings</p>
+          <h1 id="leaderboardTitle">Loading rankings</h1>
+          <p id="leaderboardSubtitle">Live aura standings for this Aurix leaderboard.</p>
+        </div>
+        <div class="public-leaderboard-stats" aria-label="Leaderboard stats">
+          <div>
+            <strong id="leaderboardPlayerCount">-</strong>
+            <span>Players</span>
+          </div>
+          <div>
+            <strong id="leaderboardAuraTotal">-</strong>
+            <span>Aura Tracked</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="public-leaderboard-panel" aria-live="polite">
+        <div class="public-leaderboard-toolbar">
+          <h2>Top Players</h2>
+          <span id="leaderboardUpdated">Updating...</span>
+        </div>
+        <div class="public-leaderboard-list" id="publicLeaderboardList">
+          <div class="public-leaderboard-empty">Loading leaderboard...</div>
+        </div>
+      </section>
+    </main>
+
+    <script src="/leaderboard.js"></script>
+  </body>
+</html>

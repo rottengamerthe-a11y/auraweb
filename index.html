@@ -218,19 +218,19 @@
         </div>
         <div class="stats-grid">
           <article class="stat-card">
-            <div class="stat-number">12,543</div>
+            <div class="stat-number">Calculating</div>
             <div class="stat-label">Active Players</div>
           </article>
           <article class="stat-card">
-            <div class="stat-number">847</div>
+            <div class="stat-number">Calculating</div>
             <div class="stat-label">Competitions</div>
           </article>
           <article class="stat-card">
-            <div class="stat-number">15,234,567</div>
+            <div class="stat-number">Calculating</div>
             <div class="stat-label">Aura Tracked</div>
           </article>
           <article class="stat-card">
-            <div class="stat-number">99.8%</div>
+            <div class="stat-number">Checking</div>
             <div class="stat-label">Uptime</div>
           </article>
         </div>
@@ -252,7 +252,7 @@
             <div class="bot-visual leaderboard-visual" aria-label="Aurix leaderboard preview">
               <div class="visual-window-bar"><span></span><span></span><span></span></div>
               <div class="leaderboard-line is-first"><strong>1</strong><span>ShadowGrinder</span><em>2.4M aura</em></div>
-              <div class="leaderboard-line"><strong>2</strong><span>AuraKing</span><em>2.1M aura</em></div>
+              <div class="leaderboard-line"><strong>2</strong><span>NovaRift</span><em>2.1M aura</em></div>
               <div class="leaderboard-line"><strong>3</strong><span>FarmAlchemist</span><em>1.8M aura</em></div>
             </div>
           </article>
@@ -289,7 +289,7 @@
         <div class="section-heading">
           <p class="eyebrow">Command Docs</p>
           <h2>Find the command you need</h2>
-          <p>Search by name, category, or purpose. Required inputs use brackets.</p>
+          <p>Search across 41 commands by name, category, or purpose. Required inputs use brackets.</p>
         </div>
         <div class="command-search">
           <input id="commandSearchInput" type="search" placeholder="Search commands, like pvp or leaderboard" autocomplete="off">
@@ -341,17 +341,17 @@
         <div class="web-leaderboard-layout">
           <div class="leaderboard-browser">
             <div class="visual-window-bar"><span></span><span></span><span></span></div>
-            <div class="leaderboard-url">aurix.com/leaderboards/bihari-cartel</div>
+            <a class="leaderboard-url" href="/leaderboards/global">aurix.com/leaderboards/global</a>
             <div class="leaderboard-table">
               <div><strong>#1</strong><span>ShadowGrinder</span><em>2,456,789 aura</em></div>
-              <div><strong>#2</strong><span>AuraKing</span><em>2,123,456 aura</em></div>
+              <div><strong>#2</strong><span>NovaRift</span><em>2,123,456 aura</em></div>
               <div><strong>#3</strong><span>FarmAlchemist</span><em>1,765,432 aura</em></div>
             </div>
           </div>
           <div class="leaderboard-copy">
             <h3>Turn ranking checks into organic traffic</h3>
             <p>Public server pages make competition visible outside Discord and give members a reason to come back daily.</p>
-            <a class="link-button server-link" href="#roleDashboard">Configure Server Dashboard</a>
+            <a class="link-button server-link" href="/leaderboards/global">View Public Rankings</a>
           </div>
         </div>
       </section>
@@ -383,9 +383,11 @@
         </div>
         <div class="discord-preview" aria-label="Example Discord command response">
           <div class="discord-preview-header">Discord preview</div>
-          <div class="discord-message">
+          <div class="discord-message start-command-embed">
             <strong>Aurix</strong>
-            <p>/start created your profile. You now have 0 aura, Rank I, and your first daily route unlocked.</p>
+            <div class="start-embed-line"><span></span>Aurix Online</div>
+            <div class="start-embed-line"><span></span>ECONOMY</div>
+            <div class="start-embed-divider">----------------------</div>
           </div>
         </div>
       </section>
@@ -410,7 +412,7 @@
         <div class="pricing-trust-strip" aria-label="Payment and product trust signals" data-store-panel="subscriptions">
           <span>Secure checkout by Paddle</span>
           <span>Digital delivery to your Discord account</span>
-          <span data-active-player-signal>12,543 active players</span>
+          <span data-active-player-signal>Calculating active players</span>
           <span>Support: support@aurix.com</span>
         </div>
         <div class="pricing-grid pricing-grid-compact" data-store-panel="subscriptions">
@@ -434,7 +436,7 @@
               <li>Premium shop items, cosmetics, reminders, and profile status</li>
             </ul>
             <p class="plan-delivery">Delivered digitally to the Discord user account connected at checkout, not locked to one server.</p>
-            <button class="plan-button" id="premiumPlanButton" data-plan-id="yearly" data-price-id="yearly" onclick="openCheckout(yearlyPriceId, 'yearly')">Get Annual - Save 66%</button>
+            <button class="plan-button" id="premiumPlanButton" data-plan-id="yearly" data-price-key="yearly">Get Annual - Save 66%</button>
             <div class="payment-methods" aria-label="Accepted payment methods">
               <span>Visa</span><span>Mastercard</span><span>PayPal</span><span>Apple Pay</span>
             </div>
@@ -472,7 +474,7 @@
               <li>1.65x virtual item progression</li>
             </ul>
             <p class="plan-delivery">Delivered digitally to the Discord user account connected at checkout, not locked to one server.</p>
-            <button class="plan-button secondary-plan-button" onclick="openCheckout(lifetimePriceId, 'lifetime')">Get Lifetime</button>
+            <button class="plan-button secondary-plan-button" data-plan-id="lifetime" data-price-key="lifetime">Get Lifetime</button>
             <div class="payment-methods" aria-label="Accepted payment methods">
               <span>Visa</span><span>Mastercard</span><span>PayPal</span><span>Apple Pay</span>
             </div>
@@ -518,7 +520,7 @@
               <li><span class="drop-icon rarity-aura">A</span><span class="rarity-text rarity-aura-text">12,500 bonus aura</span></li>
             </ul>
             <p class="plan-delivery">Best for new profiles that want an early inventory push.</p>
-            <button class="plan-button" onclick="openCheckout(starterCrateBundlePriceId, { productId: 'starter_crate_bundle' })">Buy Bundle</button>
+            <button class="plan-button" data-product-id="starter_crate_bundle" data-price-key="starterCrateBundle">Buy Bundle</button>
           </article>
 
           <article class="microshop-card featured-plan">
@@ -534,7 +536,7 @@
               <li><span class="drop-icon rarity-aura">A</span><span class="rarity-text rarity-aura-text">30,000 bonus aura</span></li>
             </ul>
             <p class="plan-delivery">A focused crate pack for mid-game progression spikes.</p>
-            <button class="plan-button" onclick="openCheckout(rareCrateStackPriceId, { productId: 'rare_crate_stack' })">Buy Stack</button>
+            <button class="plan-button" data-product-id="rare_crate_stack" data-price-key="rareCrateStack">Buy Stack</button>
           </article>
 
           <article class="microshop-card">
@@ -551,7 +553,7 @@
               <li><span class="drop-icon rarity-epic">B</span><span class="rarity-text rarity-epic-text">Battle consumables included</span></li>
             </ul>
             <p class="plan-delivery">A larger one-time drop for active boss and PvP players.</p>
-            <button class="plan-button" onclick="openCheckout(legendaryVaultDropPriceId, { productId: 'legendary_vault_drop' })">Buy Drop</button>
+            <button class="plan-button" data-product-id="legendary_vault_drop" data-price-key="legendaryVaultDrop">Buy Drop</button>
           </article>
 
           <article class="microshop-card">
@@ -566,7 +568,7 @@
               <li><span class="drop-icon rarity-aura">A</span><span class="rarity-text rarity-aura-text">20,000 bonus aura</span></li>
             </ul>
             <p class="plan-delivery">Utility perks and combat supplies for repeated play sessions.</p>
-            <button class="plan-button" onclick="openCheckout(boostSupplyPackPriceId, { productId: 'boost_supply_pack' })">Buy Pack</button>
+            <button class="plan-button" data-product-id="boost_supply_pack" data-price-key="boostSupplyPack">Buy Pack</button>
           </article>
         </div>
       </section>
@@ -669,11 +671,11 @@
         <div class="testimonials-grid">
           <article class="testimonial-card">
             <p>"Aurix completely changed how I engage with Discord. The competition is addictive and rewards are amazing!"</p>
-            <span class="testimonial-author">- Player123</span>
+            <span class="testimonial-author">- Zxavok</span>
           </article>
           <article class="testimonial-card">
             <p>"Best bot for community engagement. The farming mechanics are so fun and the community is super supportive."</p>
-            <span class="testimonial-author">- AuraFarmer</span>
+            <span class="testimonial-author">- Charlotte</span>
           </article>
         </div>
       </section>

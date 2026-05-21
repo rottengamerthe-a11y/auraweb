@@ -459,6 +459,167 @@ def format_number(value):
     return f"{int(value):,}"
 
 
+def slugify(value):
+    text = str(value or "").strip().lower()
+    slug = []
+    previous_dash = False
+    for char in text:
+        if char.isalnum():
+            slug.append(char)
+            previous_dash = False
+        elif not previous_dash:
+            slug.append("-")
+            previous_dash = True
+    return "".join(slug).strip("-")
+
+
+def leaderboard_scope_fields():
+    return [
+        "guildId", "guild_id", "serverId", "server_id",
+        "guild.id", "server.id", "guildName", "guild_name",
+        "serverName", "server_name", "guild.name", "server.name",
+    ]
+
+
+def leaderboard_name_fields():
+    return [
+        "username", "displayName", "globalName", "global_name", "name",
+        "userName", "discordName", "discord.username", "profile.username",
+    ]
+
+
+def leaderboard_score_fields():
+    return [
+        "aura", "stats.aura", "profile.aura", "economy.aura", "currency.aura",
+        "balance", "wallet", "money", "points", "score", "xp", "totalAura",
+    ]
+
+
+def resolve_leaderboard_scope(collection, slug):
+    normalized_slug = slugify(slug)
+    if normalized_slug in {"", "global", "all"}:
+        return {}, "Global Rankings", "global"
+
+    exact_filters = [{field: slug} for field in leaderboard_scope_fields()]
+    exact_query = {"$or": exact_filters}
+    if collection.count_documents(exact_query, limit=1):
+        return exact_query, title_from_slug(slug), normalized_slug
+
+    projection = {field: 1 for field in leaderboard_scope_fields()}
+    for document in collection.find({}, projection).limit(2000):
+        for field in leaderboard_scope_fields():
+            value = field_value(document, field)
+            if value and slugify(value) == normalized_slug:
+                return {field: value}, str(value), normalized_slug
+
+    return None, title_from_slug(slug), normalized_slug
+
+
+def title_from_slug(slug):
+    return " ".join(part.capitalize() for part in slugify(slug).split("-") if part) or "Leaderboard"
+
+
+def leaderboard_from_users(collection, query=None, limit=25):
+    query = query or {}
+    name_fields = leaderboard_name_fields()
+
+    for score_field in leaderboard_score_fields():
+        players = list(collection.aggregate([
+            {"$match": query},
+            {
+                "$addFields": {
+                    "_aurixScore": {
+                        "$convert": {
+                            "input": f"${score_field}",
+                            "to": "long",
+                            "onError": 0,
+                            "onNull": 0,
+                        }
+                    }
+                }
+            },
+            {"$match": {"_aurixScore": {"$gt": 0}}},
+            {"$sort": {"_aurixScore": -1}},
+            {"$limit": limit},
+        ]))
+        if players:
+            leaderboard = []
+            for index, player in enumerate(players, start=1):
+                name = first_present(player, name_fields)
+                leaderboard.append({
+                    "rank": index,
+                    "name": str(name or player.get("userId") or player.get("discordId") or "Aurix Player"),
+                    "aura": format_number(player.get("_aurixScore", 0)),
+                })
+            return leaderboard
+    return []
+
+
+def build_public_leaderboard(slug):
+    player_collection = first_existing_collection_across_dbs(configured_collection_names(
+        "COMMUNITY_PLAYERS_COLLECTIONS",
+        ["players", "users", "profiles", "economy", "members"],
+    ))
+    if player_collection is None:
+        return {
+            "slug": slugify(slug),
+            "title": title_from_slug(slug),
+            "players": [],
+            "totalPlayers": "0",
+            "auraTracked": "0",
+            "source": "missing users collection",
+            "updatedAt": datetime.utcnow().isoformat() + "Z",
+        }
+
+    query, title, normalized_slug = resolve_leaderboard_scope(player_collection, slug)
+    if query is None:
+        return {
+            "slug": normalized_slug,
+            "title": title,
+            "players": [],
+            "totalPlayers": "0",
+            "auraTracked": "0",
+            "source": player_collection.full_name,
+            "updatedAt": datetime.utcnow().isoformat() + "Z",
+        }
+
+    return {
+        "slug": normalized_slug,
+        "title": title,
+        "players": leaderboard_from_users(player_collection, query),
+        "totalPlayers": format_number(player_collection.count_documents(query)),
+        "auraTracked": format_number(numeric_total_scoped(player_collection, query, leaderboard_score_fields())),
+        "source": player_collection.full_name,
+        "updatedAt": datetime.utcnow().isoformat() + "Z",
+    }
+
+
+def numeric_total_scoped(collection, query, field_names):
+    for field_name in field_names:
+        result = list(collection.aggregate([
+            {"$match": query},
+            {
+                "$group": {
+                    "_id": None,
+                    "total": {
+                        "$sum": {
+                            "$convert": {
+                                "input": f"${field_name}",
+                                "to": "long",
+                                "onError": 0,
+                                "onNull": 0,
+                            }
+                        }
+                    },
+                }
+            }
+        ]))
+        total = int(result[0]["total"]) if result else 0
+        if total > 0:
+            return total
+    return 0
+
+
 def build_live_community_data():
     site_content_db = get_community_db()
     stats_collection = first_existing_collection(configured_collection_names(
@@ -707,6 +868,11 @@ def home():
     return send_from_directory(".", "index.html")
 
 
+@app.route("/leaderboards/<path:server_slug>")
+def public_leaderboard_page(server_slug):
+    return send_from_directory(".", "leaderboard.html")
+
+
 @app.route("/debug/config")
 def debug_config():
     redirect_uri = get_discord_redirect_uri()
@@ -830,6 +996,18 @@ def api_community_data():
         payload = build_live_community_data()
     except (RuntimeError, ConfigurationError):
         return jsonify({"error": "Live community data is not configured."}), 503
+
+    response = jsonify(payload)
+    response.headers["Cache-Control"] = "no-store"
+    return response
+
+
+@app.route("/api/leaderboards/<path:server_slug>")
+def api_public_leaderboard(server_slug):
+    try:
+        payload = build_public_leaderboard(server_slug)
+    except (RuntimeError, ConfigurationError):
+        return jsonify({"error": "Public leaderboards are not configured."}), 503
 
     response = jsonify(payload)
     response.headers["Cache-Control"] = "no-store"
