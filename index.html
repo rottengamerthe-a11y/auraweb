@@ -64,6 +64,25 @@
       function openCheckout(priceId, purchaseMeta){
         try {
           const meta = typeof purchaseMeta === 'string' ? { planId: purchaseMeta } : (purchaseMeta || {});
+          const approvedCheckoutOrigin = String(window.PADDLE_APPROVED_CHECKOUT_ORIGIN || '').replace(/\/+$/, '');
+
+          if (approvedCheckoutOrigin && window.location.origin !== approvedCheckoutOrigin) {
+            const checkoutUrl = new URL('/', approvedCheckoutOrigin);
+            checkoutUrl.searchParams.set('checkoutPriceId', priceId || '');
+            checkoutUrl.searchParams.set('checkoutAutoOpen', '1');
+
+            if (meta.planId) {
+              checkoutUrl.searchParams.set('checkoutPlanId', meta.planId);
+            }
+
+            if (meta.productId) {
+              checkoutUrl.searchParams.set('checkoutProductId', meta.productId);
+            }
+
+            checkoutUrl.hash = 'pricing';
+            window.location.href = checkoutUrl.toString();
+            return;
+          }
 
           if (typeof requireDiscordLogin === 'function' && !requireDiscordLogin(priceId, meta)) {
             return;

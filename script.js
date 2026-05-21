@@ -784,6 +784,51 @@ function initCheckoutButtons() {
   });
 }
 
+function getCheckoutRequestFromUrl() {
+  const query = new URLSearchParams(window.location.search);
+  const priceId = query.get('checkoutPriceId') || '';
+
+  if (query.get('checkoutAutoOpen') !== '1' || !priceId) {
+    return null;
+  }
+
+  const productId = query.get('checkoutProductId') || '';
+  const planId = query.get('checkoutPlanId') || '';
+  return {
+    priceId,
+    meta: productId ? { productId } : (planId ? { planId } : {})
+  };
+}
+
+function clearCheckoutRequestFromUrl() {
+  const url = new URL(window.location.href);
+  ['checkoutPriceId', 'checkoutAutoOpen', 'checkoutPlanId', 'checkoutProductId'].forEach((key) => {
+    url.searchParams.delete(key);
+  });
+  history.replaceState(null, document.title, `${url.pathname}${url.search}${url.hash}`);
+}
+
+function resumeUrlCheckout(attempt = 0) {
+  const checkoutRequest = getCheckoutRequestFromUrl();
+
+  if (!checkoutRequest || typeof openCheckout !== 'function') {
+    return;
+  }
+
+  if (window.paddleReady === true && typeof Paddle !== 'undefined') {
+    if (getDiscordUser()) {
+      clearCheckoutRequestFromUrl();
+    }
+
+    openCheckout(checkoutRequest.priceId, checkoutRequest.meta);
+    return;
+  }
+
+  if (attempt < 20) {
+    setTimeout(() => resumeUrlCheckout(attempt + 1), 300);
+  }
+}
+
 async function refreshBotStatus() {
   const indicator = document.querySelector('.bot-status');
   if (!indicator) return;
@@ -884,6 +929,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initCheckoutButtons();
   refreshBotStatus();
   refreshDiscordSession();
+  resumeUrlCheckout();
   initRoleDashboard();
   initNavActiveState();
   initRoadmapVoting();

@@ -1,5 +1,6 @@
 window.API_ENDPOINT = '/api/community-data';
 window.AUTH_BASE_URL = 'https://aurawebsite-12gd.onrender.com';
+window.PADDLE_APPROVED_CHECKOUT_ORIGIN = 'https://auraweb16.onrender.com';
 window.PADDLE_ENVIRONMENT = 'live';
 window.PADDLE_CLIENT_TOKEN = 'live_2345bc35c0b52ee515204854e3b';
 window.PADDLE_MONTHLY_PRICE_ID = 'pri_01kr6ms7z1txvs703mf3ez9rk5';
