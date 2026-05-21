@@ -1,6 +1,7 @@
 import os
 import secrets
 import hashlib
+import time
 from datetime import datetime
 from datetime import timedelta
 from urllib.parse import urlencode
@@ -27,7 +28,10 @@ DISCORD_REQUEST_HEADERS = {
 }
 MANAGE_GUILD_PERMISSION = 0x20
 ADMINISTRATOR_PERMISSION = 0x8
+MANAGE_ROLES_PERMISSION = 0x10000000
 mongo_client = None
+memory_cache = {}
+CACHE_TTL_SECONDS = int(os.environ.get("DASHBOARD_CACHE_TTL_SECONDS", "300"))
 
 
 @app.after_request
@@ -39,7 +43,7 @@ def add_cors_headers(response):
         response.headers["Access-Control-Allow-Origin"] = origin
         response.headers["Access-Control-Allow-Credentials"] = "true"
         response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
-        response.headers["Access-Control-Allow-Methods"] = "GET,POST,OPTIONS"
+        response.headers["Access-Control-Allow-Methods"] = "GET,POST,DELETE,OPTIONS"
 
     return response
 
@@ -114,6 +118,24 @@ def discord_get(path, token, is_bot=False):
 
     with urlopen(req, timeout=15) as response:
         return json.loads(response.read().decode("utf-8"))
+
+
+def cache_get(key):
+    cached = memory_cache.get(key)
+    if not cached:
+        return None
+
+    expires_at, value = cached
+    if expires_at <= time.time():
+        memory_cache.pop(key, None)
+        return None
+
+    return value
+
+
+def cache_set(key, value, ttl=CACHE_TTL_SECONDS):
+    memory_cache[key] = (time.time() + ttl, value)
+    return value
 
 
 def get_mongo_db():
@@ -247,13 +269,30 @@ def get_manageable_guild(access_token, guild_id):
     return next((guild for guild in guilds if guild.get("id") == guild_id and user_can_manage_guild(guild)), None)
 
 
-def fetch_assignable_roles(guild_id):
+def fetch_role_dashboard_state(guild_id):
+    cache_key = f"guild_roles:{guild_id}"
+    cached_state = cache_get(cache_key)
+    if cached_state is not None:
+        return cached_state
+
     bot_token = get_bot_token()
     if not bot_token:
         raise RuntimeError("Missing DISCORD_BOT_TOKEN or DISCORD_TOKEN for dashboard role loading.")
 
     roles = discord_get(f"/guilds/{guild_id}/roles", bot_token, is_bot=True)
-    return [
+    bot_member = discord_get(f"/guilds/{guild_id}/members/@me", bot_token, is_bot=True)
+    bot_role_ids = set(bot_member.get("roles", []))
+    bot_roles = [role for role in roles if role.get("id") in bot_role_ids]
+    bot_highest_position = max((int(role.get("position", 0)) for role in bot_roles), default=0)
+    bot_permissions = 0
+    for role in bot_roles:
+        try:
+            bot_permissions |= int(role.get("permissions", 0))
+        except (TypeError, ValueError):
+            pass
+
+    bot_can_manage_roles = bool(bot_permissions & ADMINISTRATOR_PERMISSION) or bool(bot_permissions & MANAGE_ROLES_PERMISSION)
+    assignable_roles = [
         {
             "id": role["id"],
             "name": role["name"],
@@ -261,8 +300,30 @@ def fetch_assignable_roles(guild_id):
             "managed": bool(role.get("managed")),
         }
         for role in roles
-        if role.get("id") != guild_id and not role.get("managed")
+        if role.get("id") != guild_id
+        and not role.get("managed")
+        and int(role.get("position", 0)) < bot_highest_position
     ]
+    validation = {
+        "canManageRoles": bot_can_manage_roles,
+        "botHighestPosition": bot_highest_position,
+        "assignableRoleCount": len(assignable_roles),
+        "ok": bot_can_manage_roles and bot_highest_position > 0,
+    }
+    if not bot_can_manage_roles:
+        validation["message"] = "Aurix needs the Manage Roles permission before role listings can be saved."
+    elif bot_highest_position <= 0:
+        validation["message"] = "Aurix needs a server role above the roles you want to sell."
+    elif not assignable_roles:
+        validation["message"] = "No assignable roles found. Move the Aurix bot role above the roles you want to sell."
+    else:
+        validation["message"] = "Aurix can assign the roles shown in the dropdown."
+
+    return cache_set(cache_key, {"roles": assignable_roles, "validation": validation})
+
+
+def fetch_assignable_roles(guild_id):
+    return fetch_role_dashboard_state(guild_id)["roles"]
 
 
 def safe_discord_error(error_body):
@@ -385,6 +446,21 @@ def current_user():
     return jsonify({"user": user, "authenticated": True})
 
 
+@app.route("/api/status")
+def api_status():
+    configured_latency = os.environ.get("BOT_LATENCY_MS", "").strip()
+    try:
+        latency_ms = int(configured_latency) if configured_latency else None
+    except ValueError:
+        latency_ms = None
+
+    return jsonify({
+        "online": True,
+        "latencyMs": latency_ms,
+        "checkedAt": datetime.utcnow().isoformat() + "Z",
+    })
+
+
 @app.route("/api/dashboard/guilds")
 def dashboard_guilds():
     _user, access_token, error = require_dashboard_auth()
@@ -418,7 +494,11 @@ def dashboard_roles(guild_id):
         return jsonify({"error": "You need Manage Server or Administrator for this server."}), 403
 
     try:
-        return jsonify({"roles": sorted(fetch_assignable_roles(guild_id), key=lambda role: role["position"], reverse=True)})
+        state = fetch_role_dashboard_state(guild_id)
+        return jsonify({
+            "roles": sorted(state["roles"], key=lambda role: role["position"], reverse=True),
+            "validation": state["validation"],
+        })
     except HTTPError as error:
         return jsonify({"error": f"Aurix could not load roles for this server. Make sure the bot is in the server. HTTP {error.code}."}), 502
     except RuntimeError as error:
@@ -443,7 +523,7 @@ def dashboard_role_listings(guild_id):
 
     payload = request.get_json(silent=True) or {}
     role_id = str(payload.get("roleId", "")).strip()
-    description = str(payload.get("description", "")).strip()[:180]
+    description = str(payload.get("description", "")).strip()[:300]
     try:
         price = int(payload.get("price") or 0)
     except (TypeError, ValueError):
@@ -514,6 +594,31 @@ def dashboard_toggle_role_listing(listing_id):
     collection.update_one({"_id": object_id}, {"$set": {"enabled": enabled, "updatedAt": datetime.utcnow()}})
     listing = collection.find_one({"_id": object_id})
     return jsonify({"listing": serialize_listing(listing)})
+
+
+@app.route("/api/dashboard/role-listings/<listing_id>", methods=["DELETE", "OPTIONS"])
+def dashboard_delete_role_listing(listing_id):
+    if request.method == "OPTIONS":
+        return "", 204
+
+    _user, access_token, error = require_dashboard_auth()
+    if error:
+        return error
+
+    try:
+        object_id = ObjectId(listing_id)
+    except Exception:
+        return jsonify({"error": "Invalid listing id."}), 400
+
+    collection = role_listings_collection()
+    listing = collection.find_one({"_id": object_id})
+    if not listing:
+        return jsonify({"error": "Listing not found."}), 404
+    if not get_manageable_guild(access_token, listing["guildId"]):
+        return jsonify({"error": "You need Manage Server or Administrator for this server."}), 403
+
+    collection.delete_one({"_id": object_id})
+    return jsonify({"ok": True})
 
 
 @app.route("/<path:path>")

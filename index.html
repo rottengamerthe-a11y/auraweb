@@ -114,18 +114,21 @@
   <body>
     <nav class="sticky-nav">
       <div class="nav-container">
-        <div class="nav-brand">Aurix</div>
+        <div class="nav-brand"><span class="brand-mark">A</span><span>Aurix</span></div>
         <button class="nav-toggle" id="navToggle">☰</button>
         <ul class="nav-menu" id="navMenu">
           <li><a href="#commands">Commands</a></li>
-          <li><a href="#guide">Guide</a></li>
-          <li><a href="#pricing">Pricing</a></li>
-          <li><a href="#microshop">Drops</a></li>
+          <li><a href="#pricing">Store</a></li>
           <li><a href="#roleDashboard">Dashboard</a></li>
-          <li><a href="#roadmap">Roadmap</a></li>
-          <li><a href="#links">Links</a></li>
-          <li><a href="#faq">FAQ</a></li>
-          <li><a href="#legal">Legal</a></li>
+          <li class="nav-dropdown">
+            <button type="button">Resources</button>
+            <div class="nav-dropdown-menu">
+              <a href="#guide">Guide</a>
+              <a href="#roadmap">Roadmap</a>
+              <a href="#faq">FAQ</a>
+              <a href="#support">Support</a>
+            </div>
+          </li>
         </ul>
         <div class="nav-actions">
           <span class="bot-status">🟢 Bot Online</span>
@@ -137,29 +140,127 @@
     <header class="site-header">
       <div class="container">
         <h1>Aurix</h1>
-        <p>Welcome to Aurix, a Discord bot for server engagement, progression tracking, leaderboards, and community activities.</p>
+        <p>Gamify your Discord community with progression, clans, leaderboards, role shops, and repeatable reasons to come back every day.</p>
+        <div class="hero-actions">
+          <a href="https://discord.com/oauth2/authorize?client_id=1492213325637877800&permissions=0&integration_type=0&scope=bot+applications.commands" class="link-button bot-link" target="_blank">Add to Discord</a>
+          <a href="#roleDashboard" class="link-button server-link">Open Dashboard</a>
+        </div>
+        <div class="hero-discord-mockup" aria-label="Aurix Discord command preview">
+          <div class="mockup-sidebar">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <div class="mockup-channel">
+            <div class="mockup-channel-header"># aurix-progression</div>
+            <div class="mockup-message user-message">
+              <strong>Zxavok</strong>
+              <p>/spin</p>
+            </div>
+            <div class="mockup-message bot-message">
+              <strong>Aurix</strong>
+              <p>You earned 2,450 aura, 180 XP, and advanced your daily streak. Rank progress: 74% to Silver III.</p>
+              <div class="mockup-progress"><span></span></div>
+            </div>
+          </div>
+        </div>
       </div>
     </header>
 
     <main class="container">
-      <section>
-        <h2>About Aurix</h2>
-        <p>
-          Aurix helps Discord communities run progression-based bot activities, leaderboards, clans, and server engagement features. Whether you're just starting out or aiming for the top leaderboard spot, Aurix gives your community a structured bot experience.
-        </p>
-        <ul>
-          <li>Compete with other players and track your progress</li>
-          <li>Stay updated with new features, updates, and events</li>
-          <li>Get help, tips, and strategies to grow faster</li>
-          <li>Participate in server-only bot activities and progression events</li>
-          <li>Connect with a community of grinders just like you</li>
-        </ul>
-        <p>Join now and start your journey toward the top of the leaderboard.</p>
+      <section class="stats-section" id="proof">
+        <div class="section-heading">
+          <p class="eyebrow">Live Community Signal</p>
+          <h2>Built for active servers</h2>
+          <p>Show players the loop immediately: earn aura, climb rankings, join clans, and spend progress on server roles.</p>
+        </div>
+        <div class="stats-grid">
+          <article class="stat-card">
+            <div class="stat-number">12,543</div>
+            <div class="stat-label">Active Players</div>
+          </article>
+          <article class="stat-card">
+            <div class="stat-number">847</div>
+            <div class="stat-label">Competitions</div>
+          </article>
+          <article class="stat-card">
+            <div class="stat-number">15,234,567</div>
+            <div class="stat-label">Aura Tracked</div>
+          </article>
+          <article class="stat-card">
+            <div class="stat-number">99.8%</div>
+            <div class="stat-label">Uptime</div>
+          </article>
+        </div>
+      </section>
+
+      <section class="about-section">
+        <div class="section-heading">
+          <p class="eyebrow">Why Aurix</p>
+          <h2>Turn passive chat into a progression loop</h2>
+          <p>Aurix gives server owners a complete activity system without forcing players to leave Discord.</p>
+        </div>
+        <div class="z-feature-stack">
+          <article class="z-feature">
+            <div class="z-feature-copy">
+              <span class="feature-icon">01</span>
+              <h3>Progression that sticks</h3>
+              <p>Profiles, aura, XP, cooldowns, crates, and ranks give members a reason to return without leaving Discord.</p>
+            </div>
+            <div class="bot-visual leaderboard-visual" aria-label="Aurix leaderboard preview">
+              <div class="visual-window-bar"><span></span><span></span><span></span></div>
+              <div class="leaderboard-line is-first"><strong>1</strong><span>ShadowGrinder</span><em>2.4M aura</em></div>
+              <div class="leaderboard-line"><strong>2</strong><span>AuraKing</span><em>2.1M aura</em></div>
+              <div class="leaderboard-line"><strong>3</strong><span>FarmAlchemist</span><em>1.8M aura</em></div>
+            </div>
+          </article>
+          <article class="z-feature is-reversed">
+            <div class="z-feature-copy">
+              <span class="feature-icon">02</span>
+              <h3>Competitive community loops</h3>
+              <p>Leaderboards, PvP, clans, and boss activity turn everyday chat into visible team momentum.</p>
+            </div>
+            <div class="bot-visual battle-visual" aria-label="Aurix battle preview">
+              <div class="visual-window-bar"><span></span><span></span><span></span></div>
+              <div class="battle-row"><span>Guild Wars</span><strong>82%</strong></div>
+              <div class="battle-meter"><span></span></div>
+              <div class="battle-stats"><span>Boss Activity 1.75x</span><span>PvP Activity 1.60x</span></div>
+            </div>
+          </article>
+          <article class="z-feature">
+            <div class="z-feature-copy">
+              <span class="feature-icon">03</span>
+              <h3>Admin-controlled role shops</h3>
+              <p>Server admins can list roles, set aura prices, and keep storefront inventory under control from the dashboard.</p>
+            </div>
+            <div class="bot-visual shop-visual" aria-label="Aurix role shop preview">
+              <div class="visual-window-bar"><span></span><span></span><span></span></div>
+              <div class="shop-line"><span>VIP Color Role</span><strong>25,000 aura</strong></div>
+              <div class="shop-line"><span>Storm Nameplate</span><strong>40,000 aura</strong></div>
+              <div class="shop-line"><span>Executive Badge</span><strong>75,000 aura</strong></div>
+            </div>
+          </article>
+        </div>
       </section>
 
       <section class="commands-section" id="commands">
+        <div class="section-heading">
+          <p class="eyebrow">Command Docs</p>
+          <h2>Find the command you need</h2>
+          <p>Search by name, category, or purpose. Required inputs use brackets.</p>
+        </div>
+        <div class="command-search">
+          <input id="commandSearchInput" type="search" placeholder="Search commands, like pvp or leaderboard" autocomplete="off">
+          <div class="command-tabs" aria-label="Command categories">
+            <button class="command-filter is-active" type="button" data-command-filter="all">All</button>
+            <button class="command-filter" type="button" data-command-filter="economy">Economy</button>
+            <button class="command-filter" type="button" data-command-filter="social">Social</button>
+            <button class="command-filter" type="button" data-command-filter="utility">Utility</button>
+            <button class="command-filter" type="button" data-command-filter="admin">Admin</button>
+          </div>
+        </div>
         <h2>⚙️ Bot Commands</h2>
-        <div class="commands-grid">
+        <div class="commands-grid command-list">
           <div class="command-card">
             <div class="command-icon">📈</div>
             <h3>/spin</h3>
@@ -180,6 +281,36 @@
             <h3>/clan</h3>
             <p>Join or create a clan and compete with other guilds</p>
           </div>
+          <div class="command-card">
+            <div class="command-icon">RS</div>
+            <h3>/roleshop list</h3>
+            <p>Show purchasable server roles configured by admins</p>
+          </div>
+        </div>
+        <p class="command-empty" id="commandEmpty" hidden>No commands match that search.</p>
+      </section>
+
+      <section class="web-leaderboard-section" id="leaderboards">
+        <div class="section-heading">
+          <p class="eyebrow">Public Rankings</p>
+          <h2>Web leaderboards built for repeat visits</h2>
+          <p>Give every server a shareable ranking page with a clean vanity URL, so players can check aura standings, PvP momentum, and seasonal rank movement from the web.</p>
+        </div>
+        <div class="web-leaderboard-layout">
+          <div class="leaderboard-browser">
+            <div class="visual-window-bar"><span></span><span></span><span></span></div>
+            <div class="leaderboard-url">aurix.com/leaderboards/bihari-cartel</div>
+            <div class="leaderboard-table">
+              <div><strong>#1</strong><span>ShadowGrinder</span><em>2,456,789 aura</em></div>
+              <div><strong>#2</strong><span>AuraKing</span><em>2,123,456 aura</em></div>
+              <div><strong>#3</strong><span>FarmAlchemist</span><em>1,765,432 aura</em></div>
+            </div>
+          </div>
+          <div class="leaderboard-copy">
+            <h3>Turn ranking checks into organic traffic</h3>
+            <p>Public server pages make competition visible outside Discord and give members a reason to come back daily.</p>
+            <a class="link-button server-link" href="#roleDashboard">Configure Server Dashboard</a>
+          </div>
         </div>
       </section>
 
@@ -189,7 +320,8 @@
           <div class="guide-step">
             <div class="step-number">1</div>
             <h3>Add the Bot</h3>
-            <p>Use the link below to add Aurix to your Discord server or join our official server.</p>
+            <p>Add Aurix to your Discord server first so members can create profiles and start earning aura.</p>
+            <a href="https://discord.com/oauth2/authorize?client_id=1492213325637877800&permissions=0&integration_type=0&scope=bot+applications.commands" class="link-button bot-link guide-step-cta" target="_blank">Add Bot to Your Server</a>
           </div>
           <div class="guide-step">
             <div class="step-number">2</div>
@@ -207,90 +339,75 @@
             <p>Unlock in-bot badges, profile status, and virtual progression features.</p>
           </div>
         </div>
+        <div class="discord-preview" aria-label="Example Discord command response">
+          <div class="discord-preview-header">Discord preview</div>
+          <div class="discord-message">
+            <strong>Aurix</strong>
+            <p>/start created your profile. You now have 0 aura, Rank I, and your first daily route unlocked.</p>
+          </div>
+        </div>
       </section>
 
       <section class="pricing-section" id="pricing">
         <div class="section-heading">
-          <p class="eyebrow">Premium Plans</p>
-          <h2>Upgrade Your Aura Grind</h2>
-          <p>Aurix Bot premium memberships are digital software upgrades for the Aurix Discord bot. Premium unlocks enhanced command settings, faster virtual progression, higher premium effect caps, premium-only shop items, profile cosmetics, extra reminder slots, profile membership status, and a premium activation announcement for the Discord account connected at checkout.</p>
+          <p class="eyebrow">Store</p>
+          <h2>Premium and One-Time Drops</h2>
+          <p>Aurix Bot premium memberships are global user upgrades for the Discord account connected at checkout. Premium unlocks enhanced command settings, faster virtual progression, higher premium effect caps, premium-only shop items, profile cosmetics, extra reminder slots, profile membership status, and a premium activation announcement wherever Aurix supports your account.</p>
           <p class="pricing-compliance-note">All Aurix points, virtual items, ranks, and progression are virtual bot features only. They have no cash value, cannot be traded, and cannot be exchanged for money, prizes, or physical goods. Aurix does not offer gambling, betting, sweepstakes, or real-money rewards.</p>
-          <p class="pricing-compliance-note">Payments are processed by Paddle as reseller and merchant of record. Product support is provided by Aurix Bot at <a href="mailto:zxavokaurix@gmail.com">zxavokaurix@gmail.com</a>.</p>
-          <p class="pricing-login-note" id="pricingLoginNote">Login with Discord before buying so your membership can be linked to your account.</p>
+          <p class="pricing-compliance-note">Payments are processed by Paddle as reseller and merchant of record. Product support is provided by Aurix Bot at <a href="mailto:support@aurix.com">support@aurix.com</a>.</p>
+          <p class="pricing-login-note" id="pricingLoginNote">Login with Discord before buying so global premium can be linked to your user account.</p>
         </div>
-        <div class="pricing-grid">
-          <article class="pricing-card">
+        <div class="store-tabs" role="tablist" aria-label="Store categories">
+          <button class="store-tab is-active" type="button" role="tab" aria-selected="true" data-store-tab="subscriptions">Subscriptions</button>
+          <button class="store-tab" type="button" role="tab" aria-selected="false" data-store-tab="drops">One-Time Drops</button>
+        </div>
+        <div class="pricing-toggle" role="group" aria-label="Premium billing cycle" data-store-panel="subscriptions">
+          <button class="pricing-toggle-button" type="button" data-plan-cycle="monthly">Monthly</button>
+          <button class="pricing-toggle-button is-active" type="button" data-plan-cycle="yearly">Annual <span>Save 66%</span></button>
+        </div>
+        <div class="pricing-trust-strip" aria-label="Payment and product trust signals" data-store-panel="subscriptions">
+          <span>Secure checkout by Paddle</span>
+          <span>Digital delivery to your Discord account</span>
+          <span>12,543 active players</span>
+          <span>Support: support@aurix.com</span>
+        </div>
+        <div class="pricing-grid pricing-grid-compact" data-store-panel="subscriptions">
+          <article class="pricing-card featured-plan premium-toggle-card">
             <div class="plan-header">
-              <h3>Monthly</h3>
+              <div class="plan-badge" id="premiumPlanBadge">Best value - save $39.89/year</div>
+              <p class="plan-type">Global User Premium</p>
+              <h3 id="premiumPlanTitle">Premium Annual</h3>
               <div class="plan-price">
-                <span>$4.99</span>
-                <small>/month</small>
+                <span id="premiumPlanPrice">$19.99</span>
+                <small id="premiumPlanTerm">/year</small>
               </div>
+              <p class="plan-anchor" id="premiumPlanAnchor">About four months of monthly pricing.</p>
             </div>
-            <ul class="plan-benefits">
-              <li>1.33x faster command pace from shorter cooldowns</li>
-              <li>1.35x bot progression from spin commands</li>
-              <li>1.35x bot progression from work commands, 1.25x XP</li>
-              <li>1.35x bot progression from mining commands, 1.22x mining XP</li>
-              <li>1.60x daily bot progression and XP</li>
-              <li>+2 bonus virtual item bundles from /daily</li>
-              <li>Premium Chest every 16 hours with bonus aura, XP, materials, rare crates, and epic/legendary crate chances</li>
-              <li>Welcome bundle: 6,000 aura, 3 rare crates, and 1 epic crate</li>
-              <li>3 total garden plots for faster material farming</li>
-              <li>Premium-only shop items: Premium Supply Drop, Executive Badge, and Storm Pass</li>
-              <li>Premium cosmetics: Aurix VIP Title, Gold Profile Frame, and Storm Nameplate</li>
-              <li>Premium activation announcement in the configured Aurix channel</li>
-              <li>Higher premium effect caps so membership boosts still apply to advanced profiles</li>
-              <li>7 ready-state reminder slots</li>
-              <li>Premium profile status</li>
-              <li>1.06x/hr vault progression rate</li>
-              <li>1.30x boss activity progression, 1.25x PvP activity progression</li>
-              <li>1.25x virtual item progression</li>
-            </ul>
-            <p class="plan-delivery">Delivered digitally to the Discord account connected at checkout.</p>
-            <button class="plan-button" onclick="openCheckout(monthlyPriceId, 'monthly')">Get Monthly</button>
-          </article>
-
-          <article class="pricing-card featured-plan">
-            <div class="plan-badge">Best value</div>
-            <div class="plan-header">
-              <h3>Yearly</h3>
-              <div class="plan-price">
-                <span>$19.99</span>
-                <small>/year</small>
-              </div>
-            </div>
-            <ul class="plan-benefits">
+            <ul class="plan-benefits plan-benefits-compact" id="premiumPlanBenefits">
               <li>1.54x faster command pace from shorter cooldowns</li>
-              <li>1.55x bot progression from spin commands</li>
-              <li>1.55x bot progression from work commands, 1.45x XP</li>
-              <li>1.55x bot progression from mining commands, 1.35x mining XP</li>
+              <li>1.55x bot progression from spin, work, and mining commands</li>
               <li>2x daily bot progression and XP</li>
-              <li>+3 bonus virtual item bundles from /daily</li>
-              <li>Premium Chest every 12 hours with larger aura, XP, materials, rare crates, and epic/legendary crate chances</li>
-              <li>Welcome bundle: 18,000 aura, 5 rare crates, 2 epic crates, and 1 legendary crate</li>
-              <li>4 total garden plots for faster material farming</li>
-              <li>Premium-only shop items: Premium Supply Drop, Executive Badge, and Storm Pass</li>
-              <li>Premium cosmetics: Aurix VIP Title, Gold Profile Frame, and Storm Nameplate</li>
-              <li>Premium activation announcement in the configured Aurix channel</li>
-              <li>Higher premium effect caps so membership boosts still apply to advanced profiles</li>
-              <li>7 ready-state reminder slots</li>
-              <li>Premium profile status</li>
-              <li>1.10x/hr vault progression rate</li>
-              <li>1.50x boss activity progression, 1.40x PvP activity progression</li>
-              <li>1.45x virtual item progression</li>
+              <li>Premium Chest every 12 hours</li>
+              <li>Welcome bundle: 18,000 aura, rare crates, epic crates, and 1 legendary crate</li>
+              <li>Premium shop items, cosmetics, reminders, and profile status</li>
             </ul>
-            <p class="plan-delivery">Delivered digitally to the Discord account connected at checkout.</p>
-            <button class="plan-button" onclick="openCheckout(yearlyPriceId, 'yearly')">Get Yearly</button>
+            <p class="plan-delivery">Delivered digitally to the Discord user account connected at checkout, not locked to one server.</p>
+            <button class="plan-button" id="premiumPlanButton" data-plan-id="yearly" data-price-id="yearly" onclick="openCheckout(yearlyPriceId, 'yearly')">Get Annual - Save 66%</button>
+            <div class="payment-methods" aria-label="Accepted payment methods">
+              <span>Visa</span><span>Mastercard</span><span>PayPal</span><span>Apple Pay</span>
+            </div>
           </article>
 
-          <article class="pricing-card">
+          <article class="pricing-card lifetime-card">
             <div class="plan-header">
+              <p class="plan-type">Global User Premium</p>
               <h3>Lifetime</h3>
               <div class="plan-price">
                 <span>$49.99</span>
                 <small>one-time</small>
               </div>
+              <p class="plan-anchor">Own premium for the long run.</p>
+              <p class="plan-roi">Pays for itself in just 10 months.</p>
             </div>
             <ul class="plan-benefits">
               <li>2x faster command pace from shorter cooldowns</li>
@@ -312,29 +429,51 @@
               <li>1.75x boss activity progression, 1.60x PvP activity progression</li>
               <li>1.65x virtual item progression</li>
             </ul>
-            <p class="plan-delivery">Delivered digitally to the Discord account connected at checkout.</p>
-            <button class="plan-button" onclick="openCheckout(lifetimePriceId, 'lifetime')">Get Lifetime</button>
+            <p class="plan-delivery">Delivered digitally to the Discord user account connected at checkout, not locked to one server.</p>
+            <button class="plan-button secondary-plan-button" onclick="openCheckout(lifetimePriceId, 'lifetime')">Get Lifetime</button>
+            <div class="payment-methods" aria-label="Accepted payment methods">
+              <span>Visa</span><span>Mastercard</span><span>PayPal</span><span>Apple Pay</span>
+            </div>
           </article>
+        </div>
+        <div class="pricing-faq" aria-label="Billing questions" data-store-panel="subscriptions">
+          <h3>Billing Questions</h3>
+          <div class="pricing-faq-items">
+            <details>
+              <summary>Can I transfer premium status to another server?</summary>
+              <p>Premium is linked to the Discord account used at checkout. Server-specific setup can be changed from the dashboard when you manage that server.</p>
+            </details>
+            <details>
+              <summary>How are refunds handled?</summary>
+              <p>Refund requests are reviewed under the refund policy for duplicate charges, billing mistakes, or undelivered digital access.</p>
+            </details>
+            <details>
+              <summary>When do I receive premium benefits?</summary>
+              <p>Benefits are delivered digitally to the connected Discord account after Paddle confirms checkout.</p>
+            </details>
+          </div>
         </div>
       </section>
 
-      <section class="microshop-section" id="microshop">
+      <section class="microshop-section" id="microshop" data-store-panel="drops" hidden>
         <div class="section-heading">
           <p class="eyebrow">One-Time Drops</p>
           <h2>Crates, Boosts, and Supply Packs</h2>
           <p>Pick up optional digital item packs for the Aurix Discord bot. These purchases deliver virtual crates, aura, and consumable boost items to the Discord account connected at checkout.</p>
+          <p class="pricing-login-note delivery-account-note" id="deliveryAccountNote">Login with Discord first so packs deliver to the right account.</p>
           <p class="pricing-compliance-note">All packs are optional gameplay convenience items. They do not grant cash value, real-money rewards, withdrawals, gambling entries, prizes, physical goods, cryptocurrency, gift cards, or stored value.</p>
         </div>
         <div class="microshop-grid">
           <article class="microshop-card">
+            <div class="microshop-art">C1</div>
             <div class="microshop-header">
               <h3>Starter Crate Bundle</h3>
               <div class="microshop-price">$0.99</div>
             </div>
             <ul class="plan-benefits microshop-benefits">
-              <li>8 common crates</li>
-              <li>2 rare crates</li>
-              <li>12,500 bonus aura</li>
+              <li><span class="drop-icon rarity-common">C</span><span class="rarity-text rarity-common-text">8 common crates</span></li>
+              <li><span class="drop-icon rarity-rare">R</span><span class="rarity-text rarity-rare-text">2 rare crates</span></li>
+              <li><span class="drop-icon rarity-aura">A</span><span class="rarity-text rarity-aura-text">12,500 bonus aura</span></li>
             </ul>
             <p class="plan-delivery">Best for new profiles that want an early inventory push.</p>
             <button class="plan-button" onclick="openCheckout(starterCrateBundlePriceId, { productId: 'starter_crate_bundle' })">Buy Bundle</button>
@@ -342,44 +481,47 @@
 
           <article class="microshop-card featured-plan">
             <div class="plan-badge">Popular</div>
+            <div class="microshop-art">R2</div>
             <div class="microshop-header">
               <h3>Rare Crate Stack</h3>
               <div class="microshop-price">$2.99</div>
             </div>
             <ul class="plan-benefits microshop-benefits">
-              <li>8 rare crates</li>
-              <li>2 epic crates</li>
-              <li>30,000 bonus aura</li>
+              <li><span class="drop-icon rarity-rare">R</span><span class="rarity-text rarity-rare-text">8 rare crates</span></li>
+              <li><span class="drop-icon rarity-epic">E</span><span class="rarity-text rarity-epic-text">2 epic crates</span></li>
+              <li><span class="drop-icon rarity-aura">A</span><span class="rarity-text rarity-aura-text">30,000 bonus aura</span></li>
             </ul>
             <p class="plan-delivery">A focused crate pack for mid-game progression spikes.</p>
             <button class="plan-button" onclick="openCheckout(rareCrateStackPriceId, { productId: 'rare_crate_stack' })">Buy Stack</button>
           </article>
 
           <article class="microshop-card">
+            <div class="microshop-art">L3</div>
             <div class="microshop-header">
               <h3>Legendary Vault Drop</h3>
               <div class="microshop-price">$4.99</div>
             </div>
             <ul class="plan-benefits microshop-benefits">
-              <li>6 rare crates</li>
-              <li>3 epic crates</li>
-              <li>1 legendary crate</li>
-              <li>90,000 bonus aura</li>
-              <li>Battle consumables included</li>
+              <li><span class="drop-icon rarity-rare">R</span><span class="rarity-text rarity-rare-text">6 rare crates</span></li>
+              <li><span class="drop-icon rarity-epic">E</span><span class="rarity-text rarity-epic-text">3 epic crates</span></li>
+              <li><span class="drop-icon rarity-legendary">L</span><span class="rarity-text rarity-legendary-text">1 legendary crate</span></li>
+              <li><span class="drop-icon rarity-aura">A</span><span class="rarity-text rarity-aura-text">90,000 bonus aura</span></li>
+              <li><span class="drop-icon rarity-epic">B</span><span class="rarity-text rarity-epic-text">Battle consumables included</span></li>
             </ul>
             <p class="plan-delivery">A larger one-time drop for active boss and PvP players.</p>
             <button class="plan-button" onclick="openCheckout(legendaryVaultDropPriceId, { productId: 'legendary_vault_drop' })">Buy Drop</button>
           </article>
 
           <article class="microshop-card">
+            <div class="microshop-art">B4</div>
             <div class="microshop-header">
               <h3>Boost Supply Pack</h3>
               <div class="microshop-price">$2.99</div>
             </div>
             <ul class="plan-benefits microshop-benefits">
-              <li>Lucky Charm, Vault Key, and Coinflip Gloves</li>
-              <li>2 Adrenaline Tonics</li>
-              <li>20,000 bonus aura</li>
+              <li><span class="drop-icon rarity-legendary">L</span><span class="rarity-text rarity-legendary-text">Lucky Charm, Vault Key, and Coinflip Gloves</span></li>
+              <li><span class="drop-icon rarity-epic">E</span><span class="rarity-text rarity-epic-text">2 Adrenaline Tonics</span></li>
+              <li><span class="drop-icon rarity-aura">A</span><span class="rarity-text rarity-aura-text">20,000 bonus aura</span></li>
             </ul>
             <p class="plan-delivery">Utility perks and combat supplies for repeated play sessions.</p>
             <button class="plan-button" onclick="openCheckout(boostSupplyPackPriceId, { productId: 'boost_supply_pack' })">Buy Pack</button>
@@ -388,6 +530,11 @@
       </section>
 
       <section class="role-dashboard-section" id="roleDashboard">
+        <nav class="dashboard-breadcrumbs" aria-label="Dashboard breadcrumbs">
+          <a href="#roleDashboard">Dashboard</a>
+          <span>Economy</span>
+          <span aria-current="page">Role Shop</span>
+        </nav>
         <div class="section-heading">
           <p class="eyebrow">Server Dashboard</p>
           <h2>Role Shop Manager</h2>
@@ -395,6 +542,7 @@
           <p class="pricing-compliance-note">Aurix can only assign roles below the bot's highest role and needs the Manage Roles permission in your server.</p>
         </div>
         <div class="dashboard-shell">
+          <div class="dashboard-validation-banner" id="rolePermissionBanner" hidden></div>
           <div class="dashboard-toolbar">
             <button class="dashboard-login-button" id="dashboardLoginButton" type="button">Login with Discord</button>
             <p class="dashboard-status" id="roleDashboardStatus">Login with Discord to manage server role listings.</p>
@@ -414,73 +562,103 @@
             </label>
             <label>
               Aura Price
-              <input id="roleListingPrice" type="number" min="1" step="1" placeholder="25000" required>
+              <input id="roleListingPrice" type="text" inputmode="numeric" pattern="[0-9,]*" placeholder="25,000" required>
             </label>
             <label>
               Description
-              <input id="roleListingDescription" type="text" maxlength="180" placeholder="Limited color role or VIP community badge">
+              <textarea id="roleListingDescription" maxlength="300" rows="4" placeholder="Limited color role, VIP community badge, unlock notes, or purchase details"></textarea>
             </label>
-            <label class="dashboard-checkbox">
+            <label class="dashboard-checkbox toggle-field">
               <input id="roleListingEnabled" type="checkbox" checked>
-              Enabled
+              <span class="toggle-track" aria-hidden="true"></span>
+              <span>Enabled</span>
             </label>
-            <button class="plan-button" type="submit">Save Role Listing</button>
+            <button class="plan-button" id="roleListingSubmitButton" type="submit">Save Role Listing</button>
           </form>
           <div class="role-listing-list" id="roleListingList">
-            <p class="dashboard-empty">No server selected.</p>
+            <div class="dashboard-empty-state">
+              <div class="empty-state-icon">RS</div>
+              <h3>Select a server to begin</h3>
+              <p>Choose a server from the dropdown above to view, create, and manage its role shop listings.</p>
+            </div>
           </div>
         </div>
       </section>
 
       <section class="roadmap-section" id="roadmap">
         <h2>🗺️ Upcoming Features</h2>
-        <div class="roadmap-items">
-          <div class="roadmap-item completed">
+        <div class="roadmap-actions">
+          <a class="submit-idea-button" href="mailto:support@aurix.com?subject=Aurix%20Feature%20Idea">Submit Idea</a>
+        </div>
+        <div class="roadmap-items compact-roadmap">
+          <div class="roadmap-item completed" data-roadmap-id="core-farming">
             <span class="roadmap-status">✓ Released</span>
             <h3>Core Farming System</h3>
+            <button class="roadmap-vote" type="button" aria-label="Upvote Core Farming System">Up <span>0</span></button>
           </div>
-          <div class="roadmap-item in-progress">
+          <div class="roadmap-item in-progress" data-roadmap-id="guild-wars">
             <span class="roadmap-status">✓ Released</span>
             <h3>Guild Wars & Team Battles</h3>
+            <button class="roadmap-vote" type="button" aria-label="Upvote Guild Wars and Team Battles">Up <span>0</span></button>
           </div>
-          <div class="roadmap-item upcoming">
-            <span class="roadmap-status">🚀 Coming Soon</span>
+          <div class="roadmap-item completed" data-roadmap-id="web-dashboard">
+            <span class="roadmap-status">✓ Released</span>
             <h3>Web Dashboard</h3>
+            <button class="roadmap-vote" type="button" aria-label="Upvote Web Dashboard">Up <span>0</span></button>
           </div>
-          <div class="roadmap-item upcoming">
+          <div class="roadmap-item upcoming" data-roadmap-id="premium-bot-features">
             <span class="roadmap-status">🚀 Coming Soon</span>
             <h3>Premium Bot Features</h3>
+            <button class="roadmap-vote" type="button" aria-label="Upvote Premium Bot Features">Up <span>0</span></button>
           </div>
-          <div class="roadmap-item upcoming">
+          <div class="roadmap-item upcoming" data-roadmap-id="seasonal-events">
             <span class="roadmap-status">🚀 Coming Soon</span>
             <h3>Seasonal Events</h3>
+            <button class="roadmap-vote" type="button" aria-label="Upvote Seasonal Events">Up <span>0</span></button>
           </div>
+        </div>
+      </section>
+
+      <section class="testimonials-section">
+        <div class="section-heading">
+          <p class="eyebrow">Player Feedback</p>
+          <h2>Momentum from the community</h2>
+        </div>
+        <div class="testimonials-grid">
+          <article class="testimonial-card">
+            <p>"Aurix completely changed how I engage with Discord. The competition is addictive and rewards are amazing!"</p>
+            <span class="testimonial-author">- Player123</span>
+          </article>
+          <article class="testimonial-card">
+            <p>"Best bot for community engagement. The farming mechanics are so fun and the community is super supportive."</p>
+            <span class="testimonial-author">- AuraFarmer</span>
+          </article>
         </div>
       </section>
 
       <section class="faq-section" id="faq">
         <h2>❓ Frequently Asked Questions</h2>
-        <div class="faq-items">
-          <div class="faq-item">
-            <h3>How do I start using Aurix?</h3>
+        <div class="faq-items accordion-list">
+          <details class="faq-item" open>
+            <summary>How do I start using Aurix?</summary>
             <p>Use the /start command in a Discord server where Aurix is active. This creates your bot profile and starts tracking virtual progression.</p>
-          </div>
-          <div class="faq-item">
-            <h3>Can I use Aurix on my own server?</h3>
-            <p>Yes! Click the "Add Bot to Your Server" button and authorize Aurix. You'll have full access to all features.</p>
-          </div>
-          <div class="faq-item">
-            <h3>What happens when I rank up?</h3>
+          </details>
+          <details class="faq-item">
+            <summary>Can I use Aurix on my own server?</summary>
+            <p>Yes. Use the Add Bot to Your Server button and authorize Aurix for your server.</p>
+          </details>
+          <details class="faq-item">
+            <summary>What happens when I rank up?</summary>
             <p>Higher ranks can unlock in-bot badges, profile status, and progression modifiers. These are virtual bot features only and have no cash value.</p>
-          </div>
-          <div class="faq-item">
-            <h3>Is Aurix free to use?</h3>
-            <p>Yes, Aurix has free core features. Premium plans add enhanced command settings, virtual progression modifiers, higher premium effect caps, premium-only shop items, profile cosmetics, extra reminder slots, profile membership status, and a premium activation announcement for users who want more bot features.</p>
-          </div>
-          <div class="faq-item">
-            <h3>How can I report bugs or suggest features?</h3>
-            <p>Join our official Discord server and use the #suggestions and #bug-reports channels. We read and respond to all feedback!</p>
-          </div>
+          </details>
+          <details class="faq-item">
+            <summary>Is Aurix free to use?</summary>
+            <p>Yes, Aurix has free core features. Premium plans add enhanced command settings, virtual progression modifiers, profile cosmetics, reminders, and premium status.</p>
+          </details>
+          <details class="faq-item">
+            <summary>How can I report bugs or suggest features?</summary>
+            <p>Join the official Discord server and use the suggestions or bug-report channels.</p>
+          </details>
         </div>
       </section>
 
@@ -489,27 +667,35 @@
         <p>Subscribe to get notified about new features, events, and major updates</p>
         <form class="newsletter-form" id="newsletterForm">
           <input type="email" placeholder="your@email.com" required>
+          <label class="newsletter-consent">
+            <input type="checkbox" id="newsletterConsent" required>
+            <span>I agree to receive marketing emails from Aurix and understand I can unsubscribe at any time.</span>
+          </label>
           <button type="submit">Subscribe</button>
         </form>
       </section>
 
-      <section class="links-section" id="links">
-        <h2>🔗 Get Started</h2>
-        <p>Choose your next step:</p>
-        <div class="link-buttons">
-          <a href="https://discord.gg/PG7ht4SuJy" class="link-button server-link" target="_blank">Join Official Server</a>
-           <a href="https://www.youtube.com/@Aurix-s8n" class="link-button youtube-link" target="_blank">Subscribe to our Youtube</a>
-           <a href="https://www.tiktok.com/@aurix16890" class="link-button tiktok-link" target="_blank">Follow us on TikTok</a>
-          <a href="https://discord.com/oauth2/authorize?client_id=1492213325637877800&permissions=0&integration_type=0&scope=bot+applications.commands" class="link-button bot-link" target="_blank">Add Bot to Your Server</a>
+      <section class="links-section onboarding-secondary" id="community">
+        <h2>Community Channels</h2>
+        <p>Find launch updates and community channels after you have added the bot.</p>
+        <div class="link-buttons cta-buttons">
+          <a href="https://discord.gg/PG7ht4SuJy" class="link-button bot-link primary-start-cta" target="_blank">Join Official Server</a>
+        </div>
+        <div class="secondary-links">
+          <a href="https://www.youtube.com/@Aurix-s8n" target="_blank">YouTube</a>
+          <a href="https://www.tiktok.com/@aurix16890" target="_blank">TikTok</a>
         </div>
       </section>
       <section class="support-section" id="support">
         <h2>Support</h2>
-        <p>Aurix Bot is operated as a sole proprietor brand by Anju Sharma. For product support, billing questions, refund requests, or privacy questions, email <a href="mailto:zxavokaurix@gmail.com">zxavokaurix@gmail.com</a>.</p>
+        <div class="support-compact">
+          <p>Aurix Bot is operated as a sole proprietor brand by Anju Sharma.</p>
+          <a href="mailto:support@aurix.com">support@aurix.com</a>
+        </div>
       </section>
       <section class="legal-section" id="legal">
         <h2>Legal</h2>
-        <p class="legal-intro">Last updated: May 10, 2026. Aurix Bot is operated as a sole proprietor brand by Anju Sharma. For support, contact <a href="mailto:zxavokaurix@gmail.com">zxavokaurix@gmail.com</a>.</p>
+        <p class="legal-intro">Last updated: May 10, 2026. Aurix Bot is operated as a sole proprietor brand by Anju Sharma. For support, contact <a href="mailto:support@aurix.com">support@aurix.com</a>.</p>
         <div class="policy-grid">
           <article class="policy-card" id="terms">
             <h3>Terms of Service</h3>
@@ -534,8 +720,22 @@
       <div class="container">
         <div class="footer-content">
           <div class="footer-section">
-            <h4>Follow Us</h4>
+            <h4>Aurix</h4>
+            <p>Discord progression, role shops, and community activity systems.</p>
+          </div>
+          <div class="footer-section">
+            <h4>Quick Links</h4>
             <div class="social-links">
+              <a href="#roleDashboard">Dashboard</a>
+              <a href="#pricing">Store</a>
+              <a href="#commands">Commands</a>
+              <a href="#roadmap">Roadmap</a>
+            </div>
+          </div>
+          <div class="footer-section">
+            <h4>Community</h4>
+            <div class="social-links">
+              <a href="https://discord.gg/PG7ht4SuJy" target="_blank" title="Discord">Discord Server</a>
               <a href="https://www.youtube.com/@Aurix-s8n" target="_blank" title="YouTube">YouTube</a>
               <a href="https://www.tiktok.com/@aurix16890" target="_blank" title="TikTok">TikTok</a>
             </div>
@@ -551,7 +751,7 @@
           <div class="footer-section">
             <h4>Support</h4>
             <div class="social-links">
-              <a href="mailto:zxavokaurix@gmail.com">zxavokaurix@gmail.com</a>
+              <a href="mailto:support@aurix.com">support@aurix.com</a>
             </div>
           </div>
         </div>
