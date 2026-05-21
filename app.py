@@ -5,7 +5,7 @@ import time
 import re
 from datetime import datetime
 from datetime import timedelta
-from urllib.parse import urlencode
+from urllib.parse import urlencode, urlparse
 from urllib.request import Request, urlopen
 from urllib.error import HTTPError, URLError
 import json
@@ -16,10 +16,16 @@ from pymongo import MongoClient
 from pymongo.errors import ConfigurationError
 
 app = Flask(__name__)
-app.secret_key = os.environ.get("SESSION_SECRET", "dev-session-secret-change-me")
+is_production = os.environ.get("FLASK_ENV", "").strip().lower() == "production" or os.environ.get("RENDER", "").strip()
+session_secret = os.environ.get("SESSION_SECRET", "").strip()
+if is_production and not session_secret:
+    raise RuntimeError("SESSION_SECRET must be set in production.")
+
+app.secret_key = session_secret or "dev-session-secret-change-me"
 app.config.update(
     SESSION_COOKIE_SAMESITE=os.environ.get("SESSION_COOKIE_SAMESITE", "None"),
     SESSION_COOKIE_SECURE=os.environ.get("SESSION_COOKIE_SECURE", "true").strip().lower() != "false",
+    SESSION_COOKIE_HTTPONLY=True,
 )
 
 DISCORD_API_BASE = "https://discord.com/api/v10"
@@ -33,6 +39,78 @@ MANAGE_ROLES_PERMISSION = 0x10000000
 mongo_client = None
 memory_cache = {}
 CACHE_TTL_SECONDS = int(os.environ.get("DASHBOARD_CACHE_TTL_SECONDS", "300"))
+ALLOWED_STATIC_FILES = {
+    "api-config.js",
+    "data.json",
+    "index.html",
+    "leaderboard.html",
+    "leaderboard.js",
+    "paddle.js",
+    "privacy.html",
+    "refund-policy.html",
+    "script.js",
+    "styles.css",
+    "terms.html",
+}
+ALLOWED_STATIC_PREFIXES = ("image/",)
+ALLOWED_RETURN_PATHS = ("/", "/leaderboards/")
+
+
+def get_allowed_origins():
+    origins = {request.host_url.rstrip("/")}
+    frontend_url = os.environ.get("FRONTEND_URL", "").strip().rstrip("/")
+    if frontend_url:
+        origins.add(frontend_url)
+    return origins
+
+
+def is_safe_return_to(value):
+    if not value:
+        return False
+
+    parsed = urlparse(value)
+    if not parsed.netloc:
+        return value.startswith(ALLOWED_RETURN_PATHS)
+
+    origin = f"{parsed.scheme}://{parsed.netloc}".rstrip("/")
+    return parsed.scheme == "https" and origin in get_allowed_origins()
+
+
+def safe_return_to(value):
+    fallback = os.environ.get("FRONTEND_URL", "").strip().rstrip("/") or "/"
+    return value if is_safe_return_to(value) else fallback
+
+
+def is_allowed_static_path(path):
+    normalized = path.replace("\\", "/").lstrip("/")
+    if ".." in normalized.split("/"):
+        return False
+    return normalized in ALLOWED_STATIC_FILES or normalized.startswith(ALLOWED_STATIC_PREFIXES)
+
+
+@app.before_request
+def protect_state_changing_requests():
+    if request.method not in {"POST", "PUT", "PATCH", "DELETE"}:
+        return None
+    if request.path == "/contact":
+        return None
+
+    origin = request.headers.get("Origin", "").rstrip("/")
+    referer = request.headers.get("Referer", "")
+    allowed_origins = get_allowed_origins()
+
+    if origin:
+        if origin not in allowed_origins:
+            return jsonify({"error": "Request origin is not allowed."}), 403
+        return None
+
+    if referer:
+        parsed = urlparse(referer)
+        referer_origin = f"{parsed.scheme}://{parsed.netloc}".rstrip("/")
+        if referer_origin in allowed_origins:
+            return None
+
+    return jsonify({"error": "Missing trusted request origin."}), 403
 
 
 @app.after_request
@@ -45,6 +123,24 @@ def add_cors_headers(response):
         response.headers["Access-Control-Allow-Credentials"] = "true"
         response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
         response.headers["Access-Control-Allow-Methods"] = "GET,POST,DELETE,OPTIONS"
+
+    response.headers.setdefault("X-Content-Type-Options", "nosniff")
+    response.headers.setdefault("X-Frame-Options", "DENY")
+    response.headers.setdefault("Referrer-Policy", "strict-origin-when-cross-origin")
+    response.headers.setdefault("Permissions-Policy", "camera=(), microphone=(), geolocation=(), payment=(self)")
+    response.headers.setdefault(
+        "Content-Security-Policy",
+        "default-src 'self'; "
+        "base-uri 'self'; "
+        "object-src 'none'; "
+        "frame-ancestors 'none'; "
+        "script-src 'self' 'unsafe-inline' https://cdn.paddle.com; "
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
+        "font-src 'self' https://fonts.gstatic.com data:; "
+        "img-src 'self' https://cdn.discordapp.com data:; "
+        "connect-src 'self' https://discord.com https://*.paddle.com; "
+        "frame-src https://buy.paddle.com https://sandbox-buy.paddle.com;"
+    )
 
     return response
 
@@ -1010,6 +1106,9 @@ def public_leaderboard_page(server_slug):
 
 @app.route("/debug/config")
 def debug_config():
+    if os.environ.get("ENABLE_DEBUG_CONFIG", "").strip().lower() != "true":
+        return jsonify({"error": "Not found."}), 404
+
     redirect_uri = get_discord_redirect_uri()
     frontend_url = os.environ.get("FRONTEND_URL", "").strip()
 
@@ -1024,7 +1123,8 @@ def debug_config():
 
 @app.route("/auth/discord")
 def discord_login():
-    return_to = request.args.get("return_to", "").strip() or os.environ.get("FRONTEND_URL", "/")
+    requested_return_to = request.args.get("return_to", "").strip()
+    return_to = safe_return_to(requested_return_to)
     state = create_oauth_state(return_to)
     session["discord_oauth_state"] = state
     params = {
@@ -1077,7 +1177,7 @@ def discord_callback():
     }
     dashboard_token = create_dashboard_session(session["discord_user"], token)
 
-    frontend_url = state_record.get("returnTo") or os.environ.get("FRONTEND_URL", "/")
+    frontend_url = safe_return_to(state_record.get("returnTo") or os.environ.get("FRONTEND_URL", "/"))
     user_query = urlencode({
         "discord_login": "1",
         "discord_user": json.dumps(session["discord_user"], separators=(",", ":")),
@@ -1348,6 +1448,8 @@ def dashboard_delete_role_listing(listing_id):
 
 @app.route("/<path:path>")
 def static_files(path):
+    if not is_allowed_static_path(path):
+        return jsonify({"error": "Not found."}), 404
     return send_from_directory(".", path)
 
 

@@ -1,7 +1,5 @@
 window.API_ENDPOINT = '/api/community-data';
 window.AUTH_BASE_URL = 'https://aurawebsite-12gd.onrender.com';
-window.DISCORD_CLIENT_ID = '1492213325637877800';
-window.DISCORD_REDIRECT_URI = 'https://aurawebsite-12gd.onrender.com/auth/discord/callback';
 window.PADDLE_ENVIRONMENT = 'live';
 window.PADDLE_CLIENT_TOKEN = 'live_2345bc35c0b52ee515204854e3b';
 window.PADDLE_MONTHLY_PRICE_ID = 'pri_01kr6ms7z1txvs703mf3ez9rk5';
@@ -11,4 +9,3 @@ window.PADDLE_STARTER_CRATE_BUNDLE_PRICE_ID = 'pri_01ks07y1a91q88qhst5b9rq3jn';
 window.PADDLE_RARE_CRATE_STACK_PRICE_ID = 'pri_01ks08gmz47chycg1cn8t5b6km';
 window.PADDLE_LEGENDARY_VAULT_DROP_PRICE_ID = 'pri_01ks08qr7dn2h864arjgb6g10c';
 window.PADDLE_BOOST_SUPPLY_PACK_PRICE_ID = 'pri_01ks08tq0jvn9dep0fv8sf1zd3';
-window.AUTH_BASE_URL = 'https://aurawebsite-12gd.onrender.com';
