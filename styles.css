@@ -946,6 +946,11 @@ body {
   text-transform: none;
 }
 
+.dashboard-login-button.is-logged-in {
+  color: #040814;
+  background: linear-gradient(135deg, var(--accent), var(--primary));
+}
+
 .dashboard-status {
   margin: 0;
   color: var(--muted);

@@ -264,6 +264,7 @@ async function fetchDiscordUser(accessToken) {
 
 function updateDiscordLoginUI() {
   const loginButton = document.getElementById('discordLoginButton');
+  const dashboardLoginButton = document.getElementById('dashboardLoginButton');
   const pricingLoginNote = document.getElementById('pricingLoginNote');
   const user = getDiscordUser();
 
@@ -278,6 +279,20 @@ function updateDiscordLoginUI() {
       loginButton.classList.remove('is-logged-in');
       loginButton.title = 'Login is required before buying a membership';
       loginButton.onclick = beginDiscordLogin;
+    }
+  }
+
+  if (dashboardLoginButton) {
+    if (user) {
+      dashboardLoginButton.textContent = `Logged in as ${user.global_name || user.username}`;
+      dashboardLoginButton.classList.add('is-logged-in');
+      dashboardLoginButton.title = 'Click to log out';
+      dashboardLoginButton.onclick = logoutDiscord;
+    } else {
+      dashboardLoginButton.textContent = 'Login with Discord';
+      dashboardLoginButton.classList.remove('is-logged-in');
+      dashboardLoginButton.title = 'Login with Discord to manage role listings';
+      dashboardLoginButton.onclick = beginDiscordLogin;
     }
   }
 
@@ -551,7 +566,9 @@ async function initRoleDashboard() {
   const guildSelect = document.getElementById('dashboardGuildSelect');
   const form = document.getElementById('roleListingForm');
 
-  loginButton?.addEventListener('click', beginDiscordLogin);
+  if (loginButton) {
+    updateDiscordLoginUI();
+  }
   guildSelect?.addEventListener('change', () => {
     loadDashboardGuildData(guildSelect.value).catch((error) => setDashboardStatus(error.message, true));
   });
