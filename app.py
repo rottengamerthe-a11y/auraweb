@@ -331,10 +331,9 @@ def latest_leaderboard(collection):
         if players:
             leaderboard = []
             for index, player in enumerate(players, start=1):
-                name = first_present(player, name_fields)
                 leaderboard.append({
                     "rank": index,
-                    "name": str(name or player.get("userId") or player.get("discordId") or "Aurix Player"),
+                    "name": public_player_name(player, name_fields),
                     "aura": format_number(player.get("_aurixScore", 0)),
                 })
             return leaderboard
@@ -495,6 +494,55 @@ def leaderboard_score_fields():
     ]
 
 
+def looks_like_discord_id(value):
+    text = str(value or "").strip()
+    return text.isdigit() and 15 <= len(text) <= 22
+
+
+def player_discord_id(player):
+    value = first_present(player, [
+        "discordId", "discord_id", "discordUserId", "discord_user_id",
+        "userId", "user_id", "id", "discord.id", "user.id",
+    ])
+    return str(value).strip() if looks_like_discord_id(value) else None
+
+
+def fetch_discord_username(user_id):
+    if not looks_like_discord_id(user_id):
+        return None
+
+    cache_key = f"discord_user:{user_id}"
+    cached = cache_get(cache_key)
+    if cached:
+        return cached
+
+    bot_token = get_bot_token()
+    if not bot_token:
+        return None
+
+    try:
+        user = discord_get(f"/users/{user_id}", bot_token, is_bot=True)
+    except (HTTPError, URLError, TimeoutError, ValueError):
+        return None
+
+    username = user.get("global_name") or user.get("username")
+    return cache_set(cache_key, username, ttl=86400) if username else None
+
+
+def public_player_name(player, name_fields):
+    name = first_present(player, name_fields)
+    user_id = player_discord_id(player) or (str(name).strip() if looks_like_discord_id(name) else None)
+
+    if name and not looks_like_discord_id(name):
+        return str(name)
+
+    discord_name = fetch_discord_username(user_id)
+    if discord_name:
+        return discord_name
+
+    return f"Player {str(user_id)[-4:]}" if user_id else "Aurix Player"
+
+
 def resolve_leaderboard_scope(collection, slug):
     normalized_slug = slugify(slug)
     if normalized_slug in {"", "global", "all"}:
@@ -545,10 +593,9 @@ def leaderboard_from_users(collection, query=None, limit=25):
         if players:
             leaderboard = []
             for index, player in enumerate(players, start=1):
-                name = first_present(player, name_fields)
                 leaderboard.append({
                     "rank": index,
-                    "name": str(name or player.get("userId") or player.get("discordId") or "Aurix Player"),
+                    "name": public_player_name(player, name_fields),
                     "aura": format_number(player.get("_aurixScore", 0)),
                 })
             return leaderboard
