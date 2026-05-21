@@ -11,3 +11,4 @@ window.PADDLE_STARTER_CRATE_BUNDLE_PRICE_ID = 'pri_01ks07y1a91q88qhst5b9rq3jn';
 window.PADDLE_RARE_CRATE_STACK_PRICE_ID = 'pri_01ks08gmz47chycg1cn8t5b6km';
 window.PADDLE_LEGENDARY_VAULT_DROP_PRICE_ID = 'pri_01ks08qr7dn2h864arjgb6g10c';
 window.PADDLE_BOOST_SUPPLY_PACK_PRICE_ID = 'pri_01ks08tq0jvn9dep0fv8sf1zd3';
+window.AUTH_BASE_URL = 'https://aurawebsite-12gd.onrender.com';

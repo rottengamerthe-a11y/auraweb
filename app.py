@@ -38,7 +38,7 @@ def add_cors_headers(response):
     if frontend_url and origin == frontend_url:
         response.headers["Access-Control-Allow-Origin"] = origin
         response.headers["Access-Control-Allow-Credentials"] = "true"
-        response.headers["Access-Control-Allow-Headers"] = "Content-Type"
+        response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
         response.headers["Access-Control-Allow-Methods"] = "GET,POST,OPTIONS"
 
     return response
@@ -136,6 +136,10 @@ def dashboard_sessions_collection():
     return get_mongo_db()["dashboardsessions"]
 
 
+def oauth_states_collection():
+    return get_mongo_db()["oauthstates"]
+
+
 def get_bot_token():
     return os.environ.get("DISCORD_BOT_TOKEN", "").strip() or os.environ.get("DISCORD_TOKEN", "").strip()
 
@@ -188,6 +192,30 @@ def create_dashboard_session(user, access_token):
         upsert=True,
     )
     return token
+
+
+def create_oauth_state(return_to):
+    state = secrets.token_urlsafe(24)
+    oauth_states_collection().update_one(
+        {"state": state},
+        {
+            "$set": {
+                "returnTo": return_to,
+                "expiresAt": datetime.utcnow() + timedelta(minutes=10),
+                "createdAt": datetime.utcnow(),
+            },
+        },
+        upsert=True,
+    )
+    return state
+
+
+def consume_oauth_state(state):
+    record = oauth_states_collection().find_one_and_delete({
+        "state": state,
+        "expiresAt": {"$gt": datetime.utcnow()},
+    })
+    return record or {}
 
 
 def require_dashboard_auth():
@@ -271,7 +299,8 @@ def debug_config():
 
 @app.route("/auth/discord")
 def discord_login():
-    state = secrets.token_urlsafe(24)
+    return_to = request.args.get("return_to", "").strip() or os.environ.get("FRONTEND_URL", "/")
+    state = create_oauth_state(return_to)
     session["discord_oauth_state"] = state
     params = {
         "client_id": require_env("DISCORD_CLIENT_ID"),
@@ -289,6 +318,7 @@ def discord_callback():
     code = request.args.get("code", "")
     state = request.args.get("state", "")
     expected_state = session.get("discord_oauth_state")
+    state_record = consume_oauth_state(state) if state else {}
 
     if not code:
         return send_from_directory(".", "index.html")
@@ -297,7 +327,7 @@ def discord_callback():
         print("Discord login failed: callback missing state")
         return "Discord login failed: missing state.", 400
 
-    if state != expected_state:
+    if state != expected_state and not state_record:
         print("Discord login failed: state mismatch")
         return "Discord login failed: session expired. Please start login again.", 400
 
@@ -323,7 +353,7 @@ def discord_callback():
     session["discord_access_token"] = token["access_token"]
     dashboard_token = create_dashboard_session(session["discord_user"], token["access_token"])
 
-    frontend_url = os.environ.get("FRONTEND_URL", "/")
+    frontend_url = state_record.get("returnTo") or os.environ.get("FRONTEND_URL", "/")
     user_query = urlencode({
         "discord_login": "1",
         "discord_user": json.dumps(session["discord_user"], separators=(",", ":")),

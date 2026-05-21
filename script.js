@@ -88,7 +88,8 @@ function getStoredDiscordAuth() {
 
 function buildDiscordLoginUrl() {
   const authBaseUrl = window.AUTH_BASE_URL || window.location.origin;
-  return `${authBaseUrl}/auth/discord`;
+  const returnTo = `${window.location.origin}${window.location.pathname}`;
+  return `${authBaseUrl}/auth/discord?return_to=${encodeURIComponent(returnTo)}`;
 }
 
 function beginDiscordLogin() {
