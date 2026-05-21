@@ -1,4 +1,4 @@
-window.API_ENDPOINT = '';
+window.API_ENDPOINT = '/api/community-data';
 window.AUTH_BASE_URL = 'https://aurawebsite-12gd.onrender.com';
 window.DISCORD_CLIENT_ID = '1492213325637877800';
 window.DISCORD_REDIRECT_URI = 'https://aurawebsite-12gd.onrender.com/auth/discord/callback';

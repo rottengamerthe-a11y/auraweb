@@ -150,6 +150,15 @@ def get_mongo_db():
     return db if db is not None else mongo_client["aurix"]
 
 
+def get_community_db():
+    global mongo_client
+    if mongo_client is None:
+        mongo_client = MongoClient(require_env("MONGODB_URI"))
+
+    configured = os.environ.get("COMMUNITY_DB_NAME", "aurixDB").strip()
+    return mongo_client[configured] if configured else get_mongo_db()
+
+
 def role_listings_collection():
     return get_mongo_db()["rolelistings"]
 
@@ -160,6 +169,228 @@ def dashboard_sessions_collection():
 
 def oauth_states_collection():
     return get_mongo_db()["oauthstates"]
+
+
+def configured_collection_names(env_name, defaults):
+    configured = os.environ.get(env_name, "").strip()
+    if not configured:
+        return defaults
+    return [name.strip() for name in configured.split(",") if name.strip()]
+
+
+def first_existing_collection(collection_names, db=None):
+    db = get_mongo_db() if db is None else db
+    existing = set(db.list_collection_names())
+    for name in collection_names:
+        if name in existing:
+            return db[name]
+    return None
+
+
+def latest_document(collection):
+    for sort_field in ("updatedAt", "createdAt", "checkedAt", "_id"):
+        document = collection.find_one(sort=[(sort_field, -1)])
+        if document:
+            return document
+    return collection.find_one()
+
+
+def first_present(document, field_names):
+    if not document:
+        return None
+    for field_name in field_names:
+        value = document.get(field_name)
+        if value is not None and value != "":
+            return value
+    return None
+
+
+def format_stat_value(value):
+    if value is None or value == "":
+        return None
+    if isinstance(value, str):
+        return value
+    try:
+        return format_number(value)
+    except (TypeError, ValueError):
+        return str(value)
+
+
+def numeric_total(collection, field_names):
+    for field_name in field_names:
+        result = list(collection.aggregate([
+            {
+                "$group": {
+                    "_id": None,
+                    "total": {
+                        "$sum": {
+                            "$convert": {
+                                "input": f"${field_name}",
+                                "to": "long",
+                                "onError": 0,
+                                "onNull": 0,
+                            }
+                        }
+                    },
+                }
+            }
+        ]))
+        total = int(result[0]["total"]) if result else 0
+        if total > 0:
+            return total
+    return 0
+
+
+def latest_leaderboard(collection):
+    aura_fields = ["aura", "balance", "wallet", "money", "points", "score", "xp"]
+    name_fields = ["username", "displayName", "globalName", "name", "userName", "discordName"]
+
+    for aura_field in aura_fields:
+        players = list(collection.aggregate([
+            {
+                "$addFields": {
+                    "_aurixScore": {
+                        "$convert": {
+                            "input": f"${aura_field}",
+                            "to": "long",
+                            "onError": 0,
+                            "onNull": 0,
+                        }
+                    }
+                }
+            },
+            {"$match": {"_aurixScore": {"$gt": 0}}},
+            {"$sort": {"_aurixScore": -1}},
+            {"$limit": 5},
+        ]))
+        if players:
+            leaderboard = []
+            for index, player in enumerate(players, start=1):
+                name = next((player.get(field) for field in name_fields if player.get(field)), None)
+                leaderboard.append({
+                    "rank": index,
+                    "name": str(name or player.get("userId") or player.get("discordId") or "Aurix Player"),
+                    "aura": format_number(player.get("_aurixScore", 0)),
+                })
+            return leaderboard
+    return []
+
+
+def collection_leaderboard(collection):
+    rank_fields = ["rank", "position", "place"]
+    aura_fields = ["aura", "balance", "wallet", "money", "points", "score", "xp"]
+    name_fields = ["username", "displayName", "globalName", "name", "userName", "discordName"]
+
+    sort_field = next((field for field in rank_fields + aura_fields if collection.find_one({field: {"$exists": True}})), "_id")
+    sort_direction = 1 if sort_field in rank_fields else -1
+    players = list(collection.find({}).sort(sort_field, sort_direction).limit(5))
+
+    leaderboard = []
+    for index, player in enumerate(players, start=1):
+        name = first_present(player, name_fields) or first_present(player, ["userId", "discordId", "id"]) or "Aurix Player"
+        score = first_present(player, aura_fields) or 0
+        rank = first_present(player, rank_fields) or index
+        leaderboard.append({
+            "rank": rank,
+            "name": str(name),
+            "aura": format_stat_value(score) or "0",
+        })
+    return leaderboard
+
+
+def collection_testimonials(collection):
+    testimonials = []
+    for testimonial in collection.find({}).sort("_id", -1).limit(3):
+        text = first_present(testimonial, ["text", "quote", "message", "body"])
+        author = first_present(testimonial, ["author", "username", "name", "displayName"])
+        if text:
+            testimonials.append({
+                "text": str(text),
+                "author": str(author or "Aurix Player"),
+            })
+    return testimonials
+
+
+def collection_stats(collection):
+    document = latest_document(collection)
+    if not document:
+        return {}
+
+    stats = document.get("stats") if isinstance(document.get("stats"), dict) else document
+    return {
+        "activePlayers": format_stat_value(first_present(stats, [
+            "activePlayers", "active_players", "players", "totalPlayers", "totalUsers", "users", "userCount",
+        ])),
+        "competitions": format_stat_value(first_present(stats, [
+            "competitions", "competitionCount", "matches", "pvpMatches", "events", "challenges",
+        ])),
+        "auraTracked": format_stat_value(first_present(stats, [
+            "auraTracked", "totalAura", "aura", "economyTotal", "totalBalance", "pointsTracked",
+        ])),
+        "uptime": format_stat_value(first_present(stats, ["uptime", "uptimePercent", "availability"])),
+    }
+
+
+def format_number(value):
+    return f"{int(value):,}"
+
+
+def build_live_community_data():
+    community_db = get_community_db()
+    stats_collection = first_existing_collection(configured_collection_names(
+        "COMMUNITY_STATS_COLLECTIONS",
+        ["stats"],
+    ), community_db)
+    leaderboard_collection = first_existing_collection(configured_collection_names(
+        "COMMUNITY_LEADERBOARD_COLLECTIONS",
+        ["leaderboard"],
+    ), community_db)
+    testimonials_collection = first_existing_collection(configured_collection_names(
+        "COMMUNITY_TESTIMONIALS_COLLECTIONS",
+        ["testimonials"],
+    ), community_db)
+    player_collection = first_existing_collection(configured_collection_names(
+        "COMMUNITY_PLAYERS_COLLECTIONS",
+        ["players", "users", "profiles", "economy", "members"],
+    ), community_db)
+    competition_collection = first_existing_collection(configured_collection_names(
+        "COMMUNITY_COMPETITIONS_COLLECTIONS",
+        ["competitions", "challenges", "duels", "battles", "events"],
+    ), community_db)
+
+    stats = collection_stats(stats_collection) if stats_collection is not None else {}
+    active_players = stats.get("activePlayers") or (
+        format_number(player_collection.count_documents({})) if player_collection is not None else "0"
+    )
+    competitions = stats.get("competitions") or (
+        format_number(competition_collection.count_documents({})) if competition_collection is not None else "0"
+    )
+    aura_tracked = stats.get("auraTracked") or (
+        format_number(numeric_total(player_collection, ["aura", "balance", "wallet", "money", "points", "score", "xp"]))
+        if player_collection is not None else "0"
+    )
+    leaderboard = (
+        collection_leaderboard(leaderboard_collection)
+        if leaderboard_collection is not None
+        else latest_leaderboard(player_collection) if player_collection is not None else []
+    )
+    testimonials = collection_testimonials(testimonials_collection) if testimonials_collection is not None else []
+    uptime = os.environ.get("COMMUNITY_UPTIME", "99.8%").strip() or "99.8%"
+
+    payload = {
+        "stats": {
+            "activePlayers": active_players,
+            "competitions": competitions,
+            "auraTracked": aura_tracked,
+            "uptime": stats.get("uptime") or uptime,
+        },
+        "updatedAt": datetime.utcnow().isoformat() + "Z",
+    }
+    if leaderboard:
+        payload["leaderboard"] = leaderboard
+    if testimonials:
+        payload["testimonials"] = testimonials
+    return payload
 
 
 def get_bot_token():
@@ -459,6 +690,18 @@ def api_status():
         "latencyMs": latency_ms,
         "checkedAt": datetime.utcnow().isoformat() + "Z",
     })
+
+
+@app.route("/api/community-data")
+def api_community_data():
+    try:
+        payload = build_live_community_data()
+    except (RuntimeError, ConfigurationError):
+        return jsonify({"error": "Live community data is not configured."}), 503
+
+    response = jsonify(payload)
+    response.headers["Cache-Control"] = "no-store"
+    return response
 
 
 @app.route("/api/dashboard/guilds")

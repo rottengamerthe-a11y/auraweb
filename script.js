@@ -56,6 +56,7 @@ const FALLBACK_COMMUNITY_DATA = {
 };
 
 let communityData = {};
+let communityRefreshTimer = null;
 const DISCORD_AUTH_STORAGE_KEY = 'aurixDiscordAuth';
 const PENDING_CHECKOUT_STORAGE_KEY = 'aurixPendingCheckout';
 const DASHBOARD_TOKEN_STORAGE_KEY = 'aurixDashboardToken';
@@ -375,9 +376,12 @@ async function loadData() {
     if (typeof API_ENDPOINT !== 'undefined' && API_ENDPOINT && API_ENDPOINT !== 'https://your-bot-name.onrender.com/api/community-data') {
       console.log('Fetching from MongoDB API:', API_ENDPOINT);
       try {
-        const response = await fetch(API_ENDPOINT);
+        const response = await fetch(API_ENDPOINT, { cache: 'no-store' });
         if (response.ok) {
-          communityData = await response.json();
+          communityData = {
+            ...FALLBACK_COMMUNITY_DATA,
+            ...(await response.json())
+          };
           console.log('✅ Data loaded from API');
           updateUI();
           return;
@@ -434,6 +438,16 @@ function updateStats() {
       card.querySelector('.stat-label').textContent = stats[index].label;
     }
   });
+
+  const activePlayerSignal = document.querySelector('[data-active-player-signal]');
+  if (activePlayerSignal && communityData.stats.activePlayers) {
+    activePlayerSignal.textContent = `${communityData.stats.activePlayers} active players`;
+  }
+}
+
+function startCommunityRefresh() {
+  if (communityRefreshTimer) return;
+  communityRefreshTimer = window.setInterval(loadData, 60000);
 }
 
 function updateLeaderboard() {
@@ -709,6 +723,7 @@ function updateFAQSafe() {
 // Load data on page load
 document.addEventListener('DOMContentLoaded', loadData);
 document.addEventListener('DOMContentLoaded', () => {
+  startCommunityRefresh();
   updateDiscordLoginUI();
   initCommandSearch();
   initPricingToggle();
