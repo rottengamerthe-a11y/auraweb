@@ -307,66 +307,31 @@
         </div>
         <h2>⚙️ Bot Commands</h2>
         <div class="commands-grid command-list">
-          <div class="command-card">
+          <div class="command-card" data-command-category="economy">
             <div class="command-icon">📈</div>
             <h3>/spin</h3>
             <p>Run a progression command and climb the bot leaderboard</p>
           </div>
-          <div class="command-card">
+          <div class="command-card" data-command-category="progression">
             <div class="command-icon">🏆</div>
             <h3>/leaderboard</h3>
             <p>View top players and their scores</p>
           </div>
-          <div class="command-card">
+          <div class="command-card" data-command-category="combat">
             <div class="command-icon">⚔️</div>
             <h3>/pvp</h3>
             <p>Challenge other players to competitions</p>
           </div>
-          <div class="command-card">
+          <div class="command-card" data-command-category="clan">
             <div class="command-icon">👥</div>
             <h3>/clan <span>create|join|apply|leave|info|members|log|kick|approve|decline|role|transfer|disband|upgrade|raid|donate|war</span></h3>
             <p>Join or create a clan and compete with other guilds</p>
           </div>
-          <div class="command-card">
+          <div class="command-card" data-command-category="economy">
             <div class="command-icon">RS</div>
             <h3>/roleshop <span>list|buy</span></h3>
             <p>View and purchase server roles configured by admins</p>
           </div>
-          <div class="command-card" data-command-category="core"><div class="command-icon">?</div><h3>/help</h3><p>Open the command guide and get quick help inside Discord.</p></div>
-          <div class="command-card" data-command-category="core"><div class="command-icon">EV</div><h3>/event</h3><p>View active server events and limited-time activity.</p></div>
-          <div class="command-card" data-command-category="core"><div class="command-icon">SU</div><h3>/setup</h3><p>Configure Aurix for the server and enable core systems.</p></div>
-          <div class="command-card" data-command-category="core"><div class="command-icon">GO</div><h3>/start</h3><p>Create your player profile and begin earning progress.</p></div>
-          <div class="command-card" data-command-category="core"><div class="command-icon">PF</div><h3>/profile</h3><p>Show your profile, premium status, cosmetics, and progress.</p></div>
-          <div class="command-card" data-command-category="core"><div class="command-icon">ST</div><h3>/stats</h3><p>Review your activity, wins, economy totals, and milestones.</p></div>
-          <div class="command-card" data-command-category="core"><div class="command-icon">$</div><h3>/balance</h3><p>Check your wallet, vault, and available aura balance.</p></div>
-          <div class="command-card" data-command-category="economy"><div class="command-icon">WK</div><h3>/work</h3><p>Earn aura through repeatable jobs and economy activity.</p></div>
-          <div class="command-card" data-command-category="economy"><div class="command-icon">MN</div><h3>/mine</h3><p>Mine resources and earn rewards through mining progression.</p></div>
-          <div class="command-card" data-command-category="economy"><div class="command-icon">CF</div><h3>/coinflip</h3><p>Wager aura on a heads-or-tails chance game.</p></div>
-          <div class="command-card" data-command-category="economy"><div class="command-icon">RB</div><h3>/rob</h3><p>Attempt a risky steal from another player's wallet.</p></div>
-          <div class="command-card" data-command-category="economy"><div class="command-icon">DY</div><h3>/daily</h3><p>Claim your daily aura reward and streak payout.</p></div>
-          <div class="command-card" data-command-category="economy"><div class="command-icon">VL</div><h3>/vault <span>deposit|withdraw|interest</span></h3><p>Manage protected aura storage and vault interest.</p></div>
-          <div class="command-card" data-command-category="economy"><div class="command-icon">SH</div><h3>/shop</h3><p>Browse purchasable items, boosts, crates, and cosmetics.</p></div>
-          <div class="command-card" data-command-category="economy"><div class="command-icon">BY</div><h3>/buy</h3><p>Buy an item from the shop with your aura balance.</p></div>
-          <div class="command-card" data-command-category="economy"><div class="command-icon">GF</div><h3>/gift</h3><p>Send aura or items to another player.</p></div>
-          <div class="command-card" data-command-category="economy"><div class="command-icon">IN</div><h3>/inventory</h3><p>View owned crates, items, boosts, and collectibles.</p></div>
-          <div class="command-card" data-command-category="economy"><div class="command-icon">CR</div><h3>/crate</h3><p>Open crates and claim randomized rewards.</p></div>
-          <div class="command-card" data-command-category="progression"><div class="command-icon">RK</div><h3>/rank</h3><p>Check your level, XP, and position in progression.</p></div>
-          <div class="command-card" data-command-category="progression"><div class="command-icon">PR</div><h3>/prestige</h3><p>Reset for prestige rewards and long-term status.</p></div>
-          <div class="command-card" data-command-category="progression"><div class="command-icon">AC</div><h3>/achievements</h3><p>Track unlocked achievements and remaining goals.</p></div>
-          <div class="command-card" data-command-category="progression"><div class="command-icon">QS</div><h3>/quests</h3><p>View active quests and claim completed objectives.</p></div>
-          <div class="command-card" data-command-category="progression"><div class="command-icon">AU</div><h3>/authority</h3><p>Inspect authority progress, influence, and server status.</p></div>
-          <div class="command-card" data-command-category="systems"><div class="command-icon">CT</div><h3>/craft</h3><p>Combine materials into usable items and upgrades.</p></div>
-          <div class="command-card" data-command-category="systems"><div class="command-icon">FG</div><h3>/forge <span>status|upgrade|repair</span></h3><p>Upgrade, repair, and inspect your forge progress.</p></div>
-          <div class="command-card" data-command-category="systems"><div class="command-icon">CG</div><h3>/crafting-guide</h3><p>Review recipes, materials, and crafting requirements.</p></div>
-          <div class="command-card" data-command-category="systems"><div class="command-icon">GD</div><h3>/garden <span>status|plant|harvest</span></h3><p>Plant crops, harvest resources, and maintain your garden.</p></div>
-          <div class="command-card" data-command-category="systems"><div class="command-icon">PY</div><h3>/property <span>list|buy|upgrade|claim</span></h3><p>Buy property, improve it, and claim generated rewards.</p></div>
-          <div class="command-card" data-command-category="systems"><div class="command-icon">EX</div><h3>/expedition <span>status|start|claim</span></h3><p>Send parties on expeditions and collect returns.</p></div>
-          <div class="command-card" data-command-category="systems"><div class="command-icon">GR</div><h3>/gear <span>loadout|equip</span></h3><p>Equip gear and manage your active loadout.</p></div>
-          <div class="command-card" data-command-category="combat"><div class="command-icon">SK</div><h3>/skills</h3><p>View combat skills, upgrades, and battle modifiers.</p></div>
-          <div class="command-card" data-command-category="combat"><div class="command-icon">BS</div><h3>/boss</h3><p>Fight server bosses for shared loot and progression.</p></div>
-          <div class="command-card" data-command-category="premium"><div class="command-icon">PM</div><h3>/premium</h3><p>Check premium status, perks, and account-linked benefits.</p></div>
-          <div class="command-card" data-command-category="premium"><div class="command-icon">PC</div><h3>/premium-chest</h3><p>Claim premium chest rewards when eligible.</p></div>
-          <div class="command-card" data-command-category="reminder"><div class="command-icon">RM</div><h3>/reminders <span>status|enable|disable</span></h3><p>Control reminders for cooldowns, claims, and repeatable tasks.</p></div>
         </div>
         <p class="command-empty" id="commandEmpty" hidden>No commands match that search.</p>
       </section>

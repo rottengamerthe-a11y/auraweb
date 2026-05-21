@@ -524,19 +524,10 @@ function initCommandSearch() {
   const searchInput = document.getElementById('commandSearchInput');
   const filters = document.querySelectorAll('[data-command-filter]');
   const commandList = document.querySelector('.command-list');
-  const sourceCards = Array.from(document.querySelectorAll('.command-card'));
   const empty = document.getElementById('commandEmpty');
   let activeFilter = 'all';
 
-  if (!searchInput || !commandList || !sourceCards.length) return;
-
-  const commandCategories = {
-    '/spin': 'economy',
-    '/leaderboard': 'progression',
-    '/pvp': 'combat',
-    '/clan': 'clan',
-    '/roleshop': 'economy'
-  };
+  if (!searchInput || !commandList) return;
 
   const commandCategoryLabels = {
     core: 'Core',
@@ -549,58 +540,79 @@ function initCommandSearch() {
     reminder: 'Reminder'
   };
 
-  const groupedCommands = {};
+  const commands = [
+    { name: '/help', icon: '?', category: 'core', description: 'Open the command guide and get quick help inside Discord.' },
+    { name: '/event', icon: 'EV', category: 'core', description: 'View active server events and limited-time activity.' },
+    { name: '/setup', icon: 'SU', category: 'core', description: 'Configure Aurix for the server and enable core systems.' },
+    { name: '/start', icon: 'GO', category: 'core', description: 'Create your player profile and begin earning progress.' },
+    { name: '/profile', icon: 'PF', category: 'core', description: 'Show your profile, premium status, cosmetics, and progress.' },
+    { name: '/stats', icon: 'ST', category: 'core', description: 'Review your activity, wins, economy totals, and milestones.' },
+    { name: '/balance', icon: '$', category: 'core', description: 'Check your wallet, vault, and available aura balance.' },
+    { name: '/work', icon: 'WK', category: 'economy', description: 'Earn aura through repeatable jobs and economy activity.' },
+    { name: '/mine', icon: 'MN', category: 'economy', description: 'Mine resources and earn rewards through mining progression.' },
+    { name: '/spin', icon: 'SP', category: 'economy', description: 'Run a progression command and climb the bot leaderboard.', featured: true, featuredRank: 1 },
+    { name: '/coinflip', icon: 'CF', category: 'economy', description: 'Wager aura on a heads-or-tails chance game.' },
+    { name: '/rob', icon: 'RB', category: 'economy', description: 'Attempt a risky steal from another player.' },
+    { name: '/daily', icon: 'DY', category: 'economy', description: 'Claim your daily aura reward and streak payout.' },
+    { name: '/vault', subcommands: 'deposit|withdraw|interest', icon: 'VL', category: 'economy', description: 'Manage protected aura storage and vault interest.' },
+    { name: '/shop', icon: 'SH', category: 'economy', description: 'Browse purchasable items, boosts, crates, and cosmetics.' },
+    { name: '/buy', icon: 'BY', category: 'economy', description: 'Buy an item from the shop with your aura balance.' },
+    { name: '/roleshop', subcommands: 'list|buy', icon: 'RS', category: 'economy', description: 'View and purchase server roles configured by admins.', featured: true, featuredRank: 5 },
+    { name: '/gift', icon: 'GF', category: 'economy', description: 'Send aura or items to another player.' },
+    { name: '/inventory', icon: 'IN', category: 'economy', description: 'View owned crates, items, boosts, and collectibles.' },
+    { name: '/crate', icon: 'CR', category: 'economy', description: 'Open crates and claim randomized rewards.' },
+    { name: '/rank', icon: 'RK', category: 'progression', description: 'Check your level, XP, and position in progression.' },
+    { name: '/prestige', icon: 'PR', category: 'progression', description: 'Reset for prestige rewards and long-term status.' },
+    { name: '/achievements', icon: 'AC', category: 'progression', description: 'Track unlocked achievements and remaining goals.' },
+    { name: '/quests', icon: 'QS', category: 'progression', description: 'View active quests and claim completed objectives.' },
+    { name: '/leaderboard', icon: 'LB', category: 'progression', description: 'View top players and their scores.', featured: true, featuredRank: 2 },
+    { name: '/authority', icon: 'AU', category: 'progression', description: 'Inspect authority progress, influence, and server status.' },
+    { name: '/craft', icon: 'CT', category: 'systems', description: 'Combine materials into usable items and upgrades.' },
+    { name: '/forge', subcommands: 'status|upgrade|repair', icon: 'FG', category: 'systems', description: 'Upgrade, repair, and inspect your forge progress.' },
+    { name: '/crafting-guide', icon: 'CG', category: 'systems', description: 'Review recipes, materials, and crafting requirements.' },
+    { name: '/garden', subcommands: 'status|plant|harvest', icon: 'GD', category: 'systems', description: 'Plant crops, harvest resources, and maintain your garden.' },
+    { name: '/property', subcommands: 'list|buy|upgrade|claim', icon: 'PY', category: 'systems', description: 'Buy property, improve it, and claim generated rewards.' },
+    { name: '/expedition', subcommands: 'status|start|claim', icon: 'EX', category: 'systems', description: 'Send parties on expeditions and collect returns.' },
+    { name: '/gear', subcommands: 'loadout|equip', icon: 'GR', category: 'systems', description: 'Equip gear and manage your active loadout.' },
+    { name: '/skills', icon: 'SK', category: 'combat', description: 'View combat skills, upgrades, and battle modifiers.' },
+    { name: '/pvp', icon: 'PV', category: 'combat', description: 'Challenge other players to competitions.', featured: true, featuredRank: 3 },
+    { name: '/boss', icon: 'BS', category: 'combat', description: 'Fight server bosses for shared loot and progression.' },
+    { name: '/premium', icon: 'PM', category: 'premium', description: 'Check premium status, perks, and account-linked benefits.' },
+    { name: '/premium-chest', icon: 'PC', category: 'premium', description: 'Claim premium chest rewards when eligible.' },
+    { name: '/clan', subcommands: 'create|join|apply|leave|info|members|log|kick|approve|decline|role|transfer|disband|upgrade|raid|donate|war', icon: 'CL', category: 'clan', description: 'Join or create a clan and compete with other guilds.', featured: true, featuredRank: 4 },
+    { name: '/reminders', subcommands: 'status|enable|disable', icon: 'RM', category: 'reminder', description: 'Control reminders for cooldowns, claims, and repeatable tasks.' }
+  ];
 
-  sourceCards.forEach((card) => {
-    const title = card.querySelector('h3')?.textContent?.trim().toLowerCase() || '';
-    const category = card.dataset.commandCategory || Object.entries(commandCategories).find(([command]) => title.startsWith(command))?.[1] || 'core';
-    const commandTitle = card.querySelector('h3')?.textContent?.trim() || '';
-    const description = card.querySelector('p')?.textContent?.trim() || '';
-
-    if (!groupedCommands[category]) groupedCommands[category] = [];
-    groupedCommands[category].push({ commandTitle, description });
-  });
-
-  commandList.innerHTML = Object.entries(commandCategoryLabels)
-    .filter(([category]) => groupedCommands[category]?.length)
-    .map(([category, label]) => `
-      <article class="command-card command-group-card" data-command-category="${category}">
-        <div class="command-group-heading">
-          <h3>${label}</h3>
-          <span class="command-meta">${groupedCommands[category].length} commands</span>
-        </div>
-        <div class="command-chips">
-          ${groupedCommands[category].map(({ commandTitle, description }) => `
-            <span class="command-chip" title="${description}">${commandTitle}</span>
-          `).join('')}
-        </div>
-      </article>
+  const renderCommands = (items, isSearchMode) => {
+    commandList.innerHTML = items.map((command) => `
+      <div class="command-card${isSearchMode ? ' command-result-card' : ''}" data-command-category="${command.category}">
+        <div class="command-icon">${command.icon}</div>
+        <h3>${command.name}${command.subcommands ? ` <span>${command.subcommands}</span>` : ''}</h3>
+        <p>${command.description}</p>
+        <span class="command-meta">${commandCategoryLabels[command.category]}</span>
+      </div>
     `).join('');
-
-  const cards = Array.from(commandList.querySelectorAll('.command-card'));
+  };
 
   const applyFilter = () => {
     const query = searchInput.value.trim().toLowerCase();
-    let visibleCount = 0;
+    const isDefaultView = !query && activeFilter === 'all';
+    const visibleCommands = commands.filter((command) => {
+      const searchableText = `${command.name} ${command.subcommands || ''} ${command.description} ${commandCategoryLabels[command.category]}`.toLowerCase();
+      const matchesCategory = activeFilter === 'all' || command.category === activeFilter;
+      const matchesQuery = !query || searchableText.includes(query);
 
-    cards.forEach((card) => {
-      const matchesCategory = activeFilter === 'all' || card.dataset.commandCategory === activeFilter;
-      let visibleChips = 0;
-
-      card.querySelectorAll('.command-chip').forEach((chip) => {
-        const matchesQuery = !query || chip.textContent.toLowerCase().includes(query) || chip.title.toLowerCase().includes(query);
-        chip.hidden = !matchesQuery;
-        if (matchesQuery) visibleChips += 1;
-      });
-
-      const isVisible = matchesCategory && visibleChips > 0;
-
-      card.hidden = !isVisible;
-      if (isVisible) visibleCount += visibleChips;
+      return isDefaultView ? command.featured : matchesCategory && matchesQuery;
     });
 
+    if (isDefaultView) {
+      visibleCommands.sort((a, b) => a.featuredRank - b.featuredRank);
+    }
+
+    renderCommands(visibleCommands, !isDefaultView);
+
     if (empty) {
-      empty.hidden = visibleCount > 0;
+      empty.hidden = visibleCommands.length > 0;
     }
   };
 
