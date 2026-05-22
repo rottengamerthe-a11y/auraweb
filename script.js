@@ -30,7 +30,7 @@ const FALLBACK_COMMUNITY_DATA = {
   faqs: [
     {
       question: 'How do I start farming aura?',
-      answer: 'Simply use the /farm command in any channel where Aurix is active. The more you interact, the more aura you accumulate!'
+      answer: 'Simply use the /spin command in any channel where Aurix is active. The more you interact, the more aura you accumulate!'
     },
     {
       question: 'Can I use Aurix on my own server?',
