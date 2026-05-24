@@ -1,28 +1,28 @@
-{
-  "faqs": [
-    {
-      "question": "How do I start farming aura?",
-      "answer": "Simply use the /start command in any channel where Aurix is active. The more you interact, the more aura you accumulate!"
-    },
-    {
-      "question": "Can I use Aurix on my own server?",
-      "answer": "Yes! Click the Add Bot to Your Server button and authorize Aurix. You'll have full access to all features."
-    },
-    {
-      "question": "What are the rewards for ranking up?",
-      "answer": "Higher ranks unlock exclusive roles, badges, bonus aura multipliers, and access to premium competitions."
-    },
-    {
-      "question": "How often does the leaderboard reset?",
-      "answer": "The global leaderboard resets monthly, while seasonal leaderboards reset quarterly. Your stats are always preserved!"
-    },
-    {
-      "question": "Is Aurix free to use?",
-      "answer": "Yes, Aurix has free core features. Premium plans add stronger boosts and bonus rewards for players who want to progress faster."
-    },
-    {
-      "question": "How can I report bugs or suggest features?",
-      "answer": "Join our official Discord server and use the #suggestions and #bug-reports channels. We read and respond to all feedback!"
-    }
-  ]
+﻿{
+    "faqs":  [
+                 {
+                     "question":  "How do I start using Aurix?",
+                     "answer":  "Use /start in a server where Aurix is active, then join factions, projects, relic hunts, heists, bounties, and world events."
+                 },
+                 {
+                     "question":  "Can I use Aurix on my own server?",
+                     "answer":  "Yes! Click the Add Bot to Your Server button and authorize Aurix. You will have access to the core world, economy, role shop, and community systems."
+                 },
+                 {
+                     "question":  "What are the rewards for ranking up?",
+                     "answer":  "Higher ranks unlock badges, profile status, cosmetics, identity perks, and long-term prestige. Rewards have no cash value."
+                 },
+                 {
+                     "question":  "How often does the leaderboard reset?",
+                     "answer":  "Global and seasonal leaderboards can rotate, while profile history, achievements, relic stories, and server memories remain part of your identity."
+                 },
+                 {
+                     "question":  "Is Aurix free to use?",
+                     "answer":  "Yes, Aurix has free core features. Premium adds cosmetics, profile status, convenience, reminders, and modest capped boosts without paid PvP dominance."
+                 },
+                 {
+                     "question":  "How can I report bugs or suggest features?",
+                     "answer":  "Join our official Discord server and use the suggestions and bug-reports channels. We read and respond to all feedback!"
+                 }
+             ]
 }

@@ -1,4 +1,4 @@
-// Load Community Data (from MongoDB via API or data.json fallback)
+﻿// Load Community Data (from MongoDB via API or data.json fallback)
 const FALLBACK_COMMUNITY_DATA = {
   stats: {
     activePlayers: '12,543',
@@ -7,50 +7,50 @@ const FALLBACK_COMMUNITY_DATA = {
     uptime: '99.8%'
   },
   leaderboard: [
-    { rank: 1, name: 'ShadowGrinder', aura: '2,456,789' },
+    { rank: 1, name: 'StormCrown', aura: '2,456,789' },
     { rank: 2, name: 'NovaRift', aura: '2,123,456' },
-    { rank: 3, name: 'NoLifeHustle', aura: '1,987,654' },
-    { rank: 4, name: 'GrindMaster', aura: '1,876,543' },
-    { rank: 5, name: 'FarmAlchemist', aura: '1,765,432' }
+    { rank: 3, name: 'VaultKing', aura: '1,987,654' },
+    { rank: 4, name: 'RelicWarden', aura: '1,876,543' },
+    { rank: 5, name: 'FactionGhost', aura: '1,765,432' }
   ],
   testimonials: [
     {
-      text: 'Aurix completely changed how I engage with Discord. The competition is addictive and rewards are amazing!',
+      text: 'Aurix gave our server rivalries, relic flexes, and moments people actually talked about the next day.',
       author: 'Zxavok'
     },
     {
-      text: 'Best bot for community engagement. The farming mechanics are so fun and the community is super supportive.',
+      text: 'The faction drama and shared projects made our community feel alive without turning chat into command spam.',
       author: 'Charlotte'
     },
     {
-      text: 'Finally a bot that keeps everyone active and motivated. Highly recommend joining the server!',
+      text: 'Finally a bot where progression feels social instead of lonely. The server stories are the best part.',
       author: 'Coven'
     }
   ],
   faqs: [
     {
-      question: 'How do I start farming aura?',
-      answer: 'Simply use the /spin command in any channel where Aurix is active. The more you interact, the more aura you accumulate!'
+      question: 'How do I start using Aurix?',
+      answer: 'Use /start in any server where Aurix is active, then join factions, projects, relic hunts, heists, bounties, and world events.'
     },
     {
       question: 'Can I use Aurix on my own server?',
-      answer: 'Yes! Click the Add Bot to Your Server button and authorize Aurix. You\'ll have full access to all features.'
+      answer: 'Yes! Click the Add Bot to Your Server button and authorize Aurix. You will have access to the core world, economy, role shop, and community systems.'
     },
     {
       question: 'What are the rewards for ranking up?',
-      answer: 'Higher ranks unlock exclusive roles, badges, bonus aura multipliers, and access to premium competitions.'
+      answer: 'Higher ranks unlock badges, profile status, cosmetics, identity perks, and long-term prestige. Rewards have no cash value.'
     },
     {
       question: 'How often does the leaderboard reset?',
-      answer: 'The global leaderboard resets monthly, while seasonal leaderboards reset quarterly. Your stats are always preserved!'
+      answer: 'Global and seasonal leaderboards can rotate, while profile history, achievements, relic stories, and server memories remain part of your identity.'
     },
     {
       question: 'Is Aurix free to use?',
-      answer: 'Yes, Aurix has free core features. Premium plans add stronger boosts and bonus rewards for players who want to progress faster.'
+      answer: 'Yes, Aurix has free core features. Premium adds cosmetics, profile status, convenience, reminders, and modest capped boosts without paid PvP dominance.'
     },
     {
       question: 'How can I report bugs or suggest features?',
-      answer: 'Join our official Discord server and use the #suggestions and #bug-reports channels. We read and respond to all feedback!'
+      answer: 'Join our official Discord server and use the suggestions and bug-reports channels. We read and respond to all feedback!'
     }
   ]
 };
@@ -82,17 +82,17 @@ const PREMIUM_PLAN_CONTENT = {
     price: '$4.99',
     term: '/month',
     badge: 'Flexible monthly access',
-    anchor: 'Start premium without a long-term commitment.',
+    anchor: 'Fair prestige, cosmetics, and convenience without paid PvP dominance.',
     button: 'Get Monthly',
     planId: 'monthly',
     getPriceId: () => CHECKOUT_PRICE_IDS.monthly(),
     benefits: [
-      '1.33x faster command pace from shorter cooldowns',
-      '1.35x bot progression from spin, work, and mining commands',
-      '1.60x daily bot progression and XP',
-      'Premium Chest every 16 hours',
-      'Welcome bundle: 6,000 aura, rare crates, and 1 epic crate',
-      'Premium shop items, cosmetics, reminders, and profile status'
+      'No paid PvP damage, crit, robbery, or bounty advantage',
+      '1.08x daily aura and XP boost with economy-safe caps',
+      'Premium Chest every 24 hours with capped aura, cosmetics, materials, and crate chances',
+      'Welcome bundle: 2,000 aura and 1 rare cosmetic crate',
+      '3 total garden plots plus extra reminder slots for convenience',
+      'Premium cosmetics, profile status, titles, and activation announcement'
     ]
   },
   yearly: {
@@ -100,17 +100,17 @@ const PREMIUM_PLAN_CONTENT = {
     price: '$19.99',
     term: '/year',
     badge: 'Best value - save $39.89/year',
-    anchor: 'Get 12 months for the price of 4.',
+    anchor: 'Get 12 months of fair prestige for the price of 4.',
     button: 'Get Annual - Save 66%',
     planId: 'yearly',
     getPriceId: () => CHECKOUT_PRICE_IDS.yearly(),
     benefits: [
-      '1.54x faster command pace from shorter cooldowns',
-      '1.55x bot progression from spin, work, and mining commands',
-      '2x daily bot progression and XP',
-      'Premium Chest every 12 hours',
-      'Welcome bundle: 18,000 aura, rare crates, epic crates, and 1 legendary crate',
-      'Premium shop items, cosmetics, reminders, and profile status'
+      'Fair premium with no paid PvP damage, crit, or robbery advantage',
+      '1.12x daily aura and XP boost with economy-safe caps',
+      'Premium Chest every 22 hours with capped aura, cosmetics, materials, and crate chances',
+      'Welcome bundle: 5,000 aura, 2 rare crates, and 1 epic crate',
+      '4 total garden plots plus extra reminder slots for convenience',
+      'Premium cosmetics, profile status, titles, and activation announcement'
     ]
   }
 };
@@ -242,7 +242,7 @@ function setSaveRoleButtonState(state) {
 
   if (state === 'saved') {
     submitButton.classList.add('is-saved');
-    submitButton.textContent = '✓ Saved!';
+    submitButton.textContent = 'âœ“ Saved!';
     setSaveRoleButtonState.resetTimer = window.setTimeout(() => {
       submitButton.classList.remove('is-saved');
       submitButton.textContent = 'Save Role Listing';
@@ -456,7 +456,7 @@ async function loadData() {
             ...FALLBACK_COMMUNITY_DATA,
             ...(await response.json())
           };
-          console.log('✅ Data loaded from API');
+          console.log('âœ… Data loaded from API');
           updateUI();
           return;
         }
@@ -474,7 +474,7 @@ async function loadData() {
       const response = await fetch('data.json');
       if (response.ok) {
         communityData = await response.json();
-        console.log('✅ Data loaded from data.json');
+        console.log('âœ… Data loaded from data.json');
         updateUI();
         return;
       }
@@ -484,10 +484,10 @@ async function loadData() {
 
     // Use inline fallback if data.json cannot be loaded from file://
     communityData = FALLBACK_COMMUNITY_DATA;
-    console.log('✅ Data loaded from inline fallback');
+    console.log('âœ… Data loaded from inline fallback');
     updateUI();
   } catch (error) {
-    console.error('❌ Error loading data:', error);
+    console.error('âŒ Error loading data:', error);
   }
 }
 
@@ -540,7 +540,7 @@ function updateLeaderboard() {
     item.innerHTML = `
       <span class="rank">${player.rank}</span>
       <span class="player-name">${player.name}</span>
-      <span class="aura-count">${player.aura} ✨</span>
+      <span class="aura-count">${player.aura} âœ¨</span>
     `;
     leaderboard.appendChild(item);
   });
@@ -599,35 +599,41 @@ function initCommandSearch() {
     combat: 'Combat',
     premium: 'Premium',
     clan: 'Clan',
-    reminder: 'Reminder'
+    reminder: 'Reminder',
+    world: 'World',
+    social: 'Social'
   };
 
   const commands = [
     { name: '/help', icon: '?', category: 'core', description: 'Open the command guide and get quick help inside Discord.' },
-    { name: '/event', icon: 'EV', category: 'core', description: 'View active server events and limited-time activity.' },
+    { name: '/event', icon: 'EV', category: 'world', description: 'View active server events and limited-time activity.' },
+    { name: '/world', icon: 'WD', category: 'world', description: 'Check server world state, market weather, faction pressure, and active story hooks.', featured: true, featuredRank: 1 },
+    { name: '/relic', subcommands: 'inspect|codex|attune|risk|bounty', icon: 'RW', category: 'world', description: 'Discover and manage evolving relics with ownership history and world effects.', featured: true, featuredRank: 2 },
     { name: '/setup', icon: 'SU', category: 'core', description: 'Configure Aurix for the server and enable core systems.' },
-    { name: '/start', icon: 'GO', category: 'core', description: 'Create your player profile and begin earning progress.' },
-    { name: '/profile', icon: 'PF', category: 'core', description: 'Show your profile, premium status, cosmetics, and progress.' },
+    { name: '/start', icon: 'GO', category: 'core', description: 'Create your player profile and enter the Aurix world.' },
+    { name: '/profile', icon: 'PF', category: 'core', description: 'Show your profile, premium status, cosmetics, relics, and progress.' },
     { name: '/stats', icon: 'ST', category: 'core', description: 'Review your activity, wins, economy totals, and milestones.' },
-    { name: '/balance', icon: '$', category: 'core', description: 'Check your wallet, vault, and available aura balance.' },
-    { name: '/work', args: [{ label: 'job', type: 'optional' }], icon: 'WK', category: 'economy', description: 'Earn aura through repeatable jobs and economy activity.' },
-    { name: '/mine', args: [{ label: 'depth', type: 'optional' }], icon: 'MN', category: 'economy', description: 'Mine resources and earn rewards through mining progression.' },
-    { name: '/spin', icon: 'SP', category: 'economy', description: 'Run a progression command and climb the bot leaderboard.', featured: true, featuredRank: 1 },
+    { name: '/balance', icon: 'AU', category: 'core', description: 'Check your wallet, vault, and available aura balance.' },
+    { name: '/work', args: [{ label: 'job', type: 'optional' }], icon: 'WK', category: 'economy', description: 'Earn aura through jobs and economy activity.' },
+    { name: '/mine', args: [{ label: 'depth', type: 'optional' }], icon: 'MN', category: 'economy', description: 'Mine resources and support crafting progression.' },
+    { name: '/spin', icon: 'SP', category: 'economy', description: 'Claim a light economy roll without making the bot only about cooldown grinding.' },
     { name: '/coinflip', args: [{ label: 'amount', type: 'required' }, { label: 'side', type: 'optional' }], icon: 'CF', category: 'economy', description: 'Wager aura on a heads-or-tails chance game.' },
-    { name: '/rob', args: [{ label: 'user', type: 'required' }], icon: 'RB', category: 'economy', description: 'Attempt a risky steal from another player.' },
-    { name: '/daily', icon: 'DY', category: 'economy', description: 'Claim your daily aura reward and streak payout.' },
+    { name: '/rob', args: [{ label: 'user', type: 'required' }], icon: 'RB', category: 'combat', description: 'Attempt strategic theft with protection, notoriety, counterplay, and revenge hooks.', featured: true, featuredRank: 3 },
+    { name: '/bounty', icon: 'BH', category: 'combat', description: 'Create and chase bounties that turn rivalry into public stories.' },
+    { name: '/daily', icon: 'DY', category: 'economy', description: 'Claim your daily aura reward without losing long-term identity progress.' },
     { name: '/vault', subcommands: 'deposit|withdraw|interest', args: [{ label: 'amount', type: 'optional' }], icon: 'VL', category: 'economy', description: 'Manage protected aura storage and vault interest.' },
     { name: '/shop', icon: 'SH', category: 'economy', description: 'Browse purchasable items, boosts, crates, and cosmetics.' },
     { name: '/buy', args: [{ label: 'item', type: 'required' }], icon: 'BY', category: 'economy', description: 'Buy an item from the shop with your aura balance.' },
-    { name: '/roleshop', subcommands: 'list|buy', args: [{ label: 'role', type: 'optional' }], icon: 'RS', category: 'economy', description: 'View and purchase server roles configured by admins.', featured: true, featuredRank: 5 },
-    { name: '/gift', args: [{ label: 'user', type: 'required' }, { label: 'amount', type: 'required' }], icon: 'GF', category: 'economy', description: 'Send aura or items to another player.' },
-    { name: '/inventory', icon: 'IN', category: 'economy', description: 'View owned crates, items, boosts, and collectibles.' },
+    { name: '/blackmarket', icon: 'BM', category: 'economy', description: 'Browse unstable underground offers shaped by heat, scarcity, and economy pressure.' },
+    { name: '/roleshop', subcommands: 'list|buy', args: [{ label: 'role', type: 'optional' }], icon: 'RS', category: 'economy', description: 'View and purchase server roles configured by admins.' },
+    { name: '/gift', args: [{ label: 'user', type: 'required' }, { label: 'amount', type: 'required' }], icon: 'GF', category: 'social', description: 'Send aura or items to another player.' },
+    { name: '/inventory', icon: 'IN', category: 'economy', description: 'View owned crates, items, boosts, collectibles, and relics.' },
     { name: '/crate', icon: 'CR', category: 'economy', description: 'Open crates and claim randomized rewards.' },
     { name: '/rank', icon: 'RK', category: 'progression', description: 'Check your level, XP, and position in progression.' },
     { name: '/prestige', icon: 'PR', category: 'progression', description: 'Reset for prestige rewards and long-term status.' },
     { name: '/achievements', icon: 'AC', category: 'progression', description: 'Track unlocked achievements and remaining goals.' },
     { name: '/quests', icon: 'QS', category: 'progression', description: 'View active quests and claim completed objectives.' },
-    { name: '/leaderboard', icon: 'LB', category: 'progression', description: 'View top players and their scores.', featured: true, featuredRank: 2 },
+    { name: '/leaderboard', icon: 'LB', category: 'progression', description: 'View top players, aura standings, and public status.', featured: true, featuredRank: 5 },
     { name: '/authority', icon: 'AU', category: 'progression', description: 'Inspect authority progress, influence, and server status.' },
     { name: '/craft', icon: 'CT', category: 'systems', description: 'Combine materials into usable items and upgrades.' },
     { name: '/forge', subcommands: 'status|upgrade|repair', icon: 'FG', category: 'systems', description: 'Upgrade, repair, and inspect your forge progress.' },
@@ -636,15 +642,21 @@ function initCommandSearch() {
     { name: '/property', subcommands: 'list|buy|upgrade|claim', icon: 'PY', category: 'systems', description: 'Buy property, improve it, and claim generated rewards.' },
     { name: '/expedition', subcommands: 'status|start|claim', icon: 'EX', category: 'systems', description: 'Send parties on expeditions and collect returns.' },
     { name: '/gear', subcommands: 'loadout|equip', args: [{ label: 'item', type: 'optional' }], icon: 'GR', category: 'systems', description: 'Equip gear and manage your active loadout.' },
+    { name: '/project', icon: 'PJ', category: 'social', description: 'Contribute to server-wide projects for shared unlocks and identity.' },
+    { name: '/partyquest', icon: 'PQ', category: 'social', description: 'Run cooperative quests where contribution matters more than spam.' },
+    { name: '/appreciate', icon: 'AP', category: 'social', description: 'Recognize another member and build positive server memory.' },
+    { name: '/campfire', icon: 'CF', category: 'social', description: 'Create relaxed social prompts and server memories.' },
+    { name: '/identity', icon: 'ID', category: 'social', description: 'Express titles, profile frames, cosmetics, and personal status.' },
     { name: '/skills', icon: 'SK', category: 'combat', description: 'View combat skills, upgrades, and battle modifiers.' },
-    { name: '/pvp', args: [{ label: 'user', type: 'required' }, { label: 'wager', type: 'optional' }], icon: 'PV', category: 'combat', description: 'Challenge other players to competitions.', featured: true, featuredRank: 3 },
+    { name: '/pvp', args: [{ label: 'user', type: 'required' }, { label: 'wager', type: 'optional' }], icon: 'PV', category: 'combat', description: 'Challenge other players with risk, counterplay, and fair competitive tension.' },
+    { name: '/heist', icon: 'HS', category: 'combat', description: 'Coordinate high-risk group operations with roles and contribution rewards.' },
     { name: '/boss', icon: 'BS', category: 'combat', description: 'Fight server bosses for shared loot and progression.' },
-    { name: '/premium', icon: 'PM', category: 'premium', description: 'Check premium status, perks, and account-linked benefits.' },
-    { name: '/premium-chest', icon: 'PC', category: 'premium', description: 'Claim premium chest rewards when eligible.' },
-    { name: '/clan', subcommands: 'create|join|apply|leave|info|members|log|kick|approve|decline|role|transfer|disband|upgrade|raid|donate|war', args: [{ label: 'clan', type: 'optional' }, { label: 'user', type: 'optional' }], icon: 'CL', category: 'clan', description: 'Join or create a clan and compete with other guilds.', featured: true, featuredRank: 4 },
+    { name: '/premium', icon: 'PM', category: 'premium', description: 'Check premium status, fair perks, and account-linked benefits.' },
+    { name: '/premium-chest', icon: 'PC', category: 'premium', description: 'Claim capped premium chest rewards when eligible.' },
+    { name: '/faction', icon: 'FC', category: 'clan', description: 'Join faction politics, protection, reputation, and territory pressure.', featured: true, featuredRank: 4 },
+    { name: '/clan', subcommands: 'create|join|apply|leave|info|members|log|kick|approve|decline|role|transfer|disband|upgrade|raid|donate|war', args: [{ label: 'clan', type: 'optional' }, { label: 'user', type: 'optional' }], icon: 'CL', category: 'clan', description: 'Join or create a clan and compete with other guilds.' },
     { name: '/reminders', subcommands: 'status|enable|disable', icon: 'RM', category: 'reminder', description: 'Control reminders for cooldowns, claims, and repeatable tasks.' }
   ];
-
   const renderCommands = (items, isSearchMode) => {
     const renderArguments = (command) => {
       const subcommands = command.subcommands
@@ -839,7 +851,7 @@ async function refreshBotStatus() {
     const payload = response.ok ? await response.json() : {};
     const configuredLatency = Number(payload.latencyMs);
     const latency = Number.isFinite(configuredLatency) && configuredLatency > 0 ? configuredLatency : 40;
-    indicator.textContent = `Bot Online • ${latency}ms`;
+    indicator.textContent = `Bot Online â€¢ ${latency}ms`;
     indicator.classList.remove('is-offline');
   } catch (error) {
     indicator.textContent = 'Bot Status Unknown';
@@ -1494,7 +1506,7 @@ if (newsletterForm) {
     }
     
     // Simulate submission
-    button.textContent = 'Subscribed! ✓';
+    button.textContent = 'Subscribed! âœ“';
     button.style.opacity = '0.8';
     
     setTimeout(() => {
@@ -1522,3 +1534,5 @@ const observer = new IntersectionObserver(function(entries) {
 document.querySelectorAll('main section').forEach(section => {
   observer.observe(section);
 });
+
+
