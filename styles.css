@@ -1153,6 +1153,7 @@ body {
 }
 
 .stat-card {
+  min-width: 0;
   background: rgba(98, 255, 225, 0.08);
   border: 1px solid rgba(98, 255, 225, 0.15);
   border-radius: 1rem;
@@ -1168,10 +1169,14 @@ body {
 }
 
 .stat-number {
-  font-size: 3rem;
+  max-width: 100%;
+  font-size: clamp(2rem, 6vw, 3rem);
   font-weight: 800;
   color: var(--primary);
   margin-bottom: 0.5rem;
+  line-height: 1.05;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .stat-label {
@@ -1670,8 +1675,11 @@ body {
 .public-leaderboard-stats strong {
   display: block;
   color: var(--accent);
-  font-size: 1.4rem;
+  max-width: 100%;
+  font-size: clamp(1.05rem, 3vw, 1.4rem);
   line-height: 1.2;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .public-leaderboard-stats span {
@@ -2849,6 +2857,7 @@ body {
 }
 
 .dashboard-overview-grid article {
+  min-width: 0;
   padding: 1rem;
   background: rgba(4, 8, 20, 0.62);
   border: 1px solid rgba(98, 255, 225, 0.16);
@@ -2858,8 +2867,11 @@ body {
 .dashboard-overview-grid strong {
   display: block;
   color: var(--accent);
-  font-size: 1.35rem;
+  max-width: 100%;
+  font-size: clamp(1.05rem, 3vw, 1.35rem);
   line-height: 1.2;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .dashboard-overview-grid span {

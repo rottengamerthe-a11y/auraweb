@@ -54,9 +54,9 @@
           });
           paddleReady = true;
           window.paddleReady = true;
-          console.log('âœ… Paddle initialized successfully');
+          console.log('Paddle initialized successfully');
         } catch (error) {
-          console.error('âŒ Paddle initialization error:', error);
+          console.error('Paddle initialization error:', error);
         }
       }
       
@@ -134,7 +134,7 @@
     <nav class="sticky-nav">
       <div class="nav-container">
         <div class="nav-brand"><span class="brand-mark">A</span><span>Aurix</span></div>
-        <button class="nav-toggle" id="navToggle">â˜°</button>
+        <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">&#9776;</button>
         <ul class="nav-menu" id="navMenu">
           <li><a href="#commands">Commands</a></li>
           <li><a href="#pricing">Store</a></li>
@@ -150,7 +150,7 @@
           </li>
         </ul>
         <div class="nav-actions">
-          <span class="bot-status">ðŸŸ¢ Bot Online</span>
+          <span class="bot-status">Bot Online</span>
           <div class="user-menu" id="userMenu">
             <button class="discord-login-button" id="discordLoginButton" type="button" aria-haspopup="menu" aria-expanded="false">Login with Discord</button>
             <div class="user-menu-dropdown" id="userMenuDropdown" role="menu" hidden>
@@ -346,7 +346,7 @@
             <button class="command-filter" type="button" data-command-filter="social">Social</button>
           </div>
         </div>
-        <h2>âš™ï¸ Bot Commands</h2>
+        <h2>Bot Commands</h2>
         <div class="commands-grid command-list">
           <div class="command-card" data-command-category="world">
             <div class="command-icon">RW</div>
@@ -398,7 +398,8 @@
             <h3>/roleshop <span>list|buy</span></h3>
             <p>View and purchase server roles configured by admins.</p>
           </div>
-        </div>`r`n        <p class="command-empty" id="commandEmpty" hidden>No commands match that search.</p>
+        </div>
+        <p class="command-empty" id="commandEmpty" hidden>No commands match that search.</p>
       </section>
 
       <section class="web-leaderboard-section" id="leaderboards">
@@ -426,7 +427,7 @@
       </section>
 
       <section class="guide-section" id="guide">
-        <h2>ðŸ“– Getting Started Guide</h2>
+        <h2>Getting Started Guide</h2>
         <div class="guide-steps">
           <div class="guide-step">
             <div class="step-number">1</div>
@@ -466,9 +467,9 @@
           <p class="eyebrow">Store</p>
           <h2>Premium, Prestige, and One-Time Drops</h2>
           <ul class="premium-summary-list">
-            <li><span>ðŸŒ</span><strong>Global Upgrade</strong>Unlock premium across any server where Aurix supports your account.</li>
+            <li><span>GU</span><strong>Global Upgrade</strong>Unlock premium across any server where Aurix supports your account.</li>
             <li><span>FP</span><strong>Fair Prestige</strong>Cosmetics, identity perks, modest capped boosts, and convenience without paid PvP dominance.</li>
-            <li><span>ðŸ’³</span><strong>Secure Checkout</strong>Payments are processed securely by Paddle as merchant of record.</li>
+            <li><span>SC</span><strong>Secure Checkout</strong>Payments are processed securely by Paddle as merchant of record.</li>
           </ul>
           <p class="pricing-compliance-note">All Aurix points, virtual items, ranks, and progression are virtual bot features only. They have no cash value, cannot be traded, and cannot be exchanged for money, prizes, or physical goods. Aurix does not offer gambling, betting, sweepstakes, or real-money rewards.</p>
           <p class="pricing-compliance-note">Payments are processed by Paddle as reseller and merchant of record. Product support is provided by Aurix Bot at <a href="mailto:zxavokaurix@gmail.com">zxavokaurix@gmail.com</a>.</p>
@@ -754,29 +755,29 @@
         </div>
         <div class="roadmap-items compact-roadmap">
           <div class="roadmap-item completed" data-roadmap-id="core-farming">
-            <span class="roadmap-status">âœ“ Released</span>
+            <span class="roadmap-status">Released</span>
             <h3>Core Economy System</h3>
-            <button class="roadmap-vote" type="button" aria-label="Upvote Core Economy System"><span class="roadmap-vote-icon" aria-hidden="true">â†‘</span><span class="roadmap-vote-count">0</span></button>
+            <button class="roadmap-vote" type="button" aria-label="Upvote Core Economy System"><span class="roadmap-vote-icon" aria-hidden="true">&#8593;</span><span class="roadmap-vote-count">0</span></button>
           </div>
           <div class="roadmap-item in-progress" data-roadmap-id="guild-wars">
-            <span class="roadmap-status">âœ“ Released</span>
+            <span class="roadmap-status">Released</span>
             <h3>Guild Wars & Team Battles</h3>
-            <button class="roadmap-vote" type="button" aria-label="Upvote Guild Wars and Team Battles"><span class="roadmap-vote-icon" aria-hidden="true">â†‘</span><span class="roadmap-vote-count">0</span></button>
+            <button class="roadmap-vote" type="button" aria-label="Upvote Guild Wars and Team Battles"><span class="roadmap-vote-icon" aria-hidden="true">&#8593;</span><span class="roadmap-vote-count">0</span></button>
           </div>
           <div class="roadmap-item completed" data-roadmap-id="web-dashboard">
-            <span class="roadmap-status">âœ“ Released</span>
+            <span class="roadmap-status">Released</span>
             <h3>Web Dashboard</h3>
-            <button class="roadmap-vote" type="button" aria-label="Upvote Web Dashboard"><span class="roadmap-vote-icon" aria-hidden="true">â†‘</span><span class="roadmap-vote-count">0</span></button>
+            <button class="roadmap-vote" type="button" aria-label="Upvote Web Dashboard"><span class="roadmap-vote-icon" aria-hidden="true">&#8593;</span><span class="roadmap-vote-count">0</span></button>
           </div>
           <div class="roadmap-item upcoming" data-roadmap-id="premium-bot-features">
             <span class="roadmap-status">Released</span>
             <h3>Fair Premium Prestige</h3>
-            <button class="roadmap-vote" type="button" aria-label="Upvote Fair Premium Prestige"><span class="roadmap-vote-icon" aria-hidden="true">â†‘</span><span class="roadmap-vote-count">0</span></button>
+            <button class="roadmap-vote" type="button" aria-label="Upvote Fair Premium Prestige"><span class="roadmap-vote-icon" aria-hidden="true">&#8593;</span><span class="roadmap-vote-count">0</span></button>
           </div>
           <div class="roadmap-item upcoming" data-roadmap-id="seasonal-events">
             <span class="roadmap-status">Released</span>
             <h3>Living World Seasons</h3>
-            <button class="roadmap-vote" type="button" aria-label="Upvote Living World Seasons"><span class="roadmap-vote-icon" aria-hidden="true">â†‘</span><span class="roadmap-vote-count">0</span></button>
+            <button class="roadmap-vote" type="button" aria-label="Upvote Living World Seasons"><span class="roadmap-vote-icon" aria-hidden="true">&#8593;</span><span class="roadmap-vote-count">0</span></button>
           </div>
         </div>
       </section>
@@ -799,7 +800,7 @@
       </section>
 
       <section class="faq-section" id="faq">
-        <h2>â“ Frequently Asked Questions</h2>
+        <h2>Frequently Asked Questions</h2>
         <div class="faq-items accordion-list">
           <details class="faq-item" open>
             <summary>How do I start using Aurix?</summary>
@@ -825,7 +826,7 @@
       </section>
 
       <section class="newsletter-section">
-        <h2>ðŸ“¬ Stay Updated</h2>
+        <h2>Stay Updated</h2>
         <p>Subscribe to get notified about new features, events, and major updates</p>
         <form class="newsletter-form" id="newsletterForm">
           <input type="email" placeholder="your@email.com" required>
@@ -921,7 +922,7 @@
             </div>
           </div>
         </div>
-        <p class="footer-credit">Â© 2026 Aurix Bot. All rights reserved.</p>
+        <p class="footer-credit">&copy; 2026 Aurix Bot. All rights reserved.</p>
       </div>
     </footer>
 

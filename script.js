@@ -242,7 +242,7 @@ function setSaveRoleButtonState(state) {
 
   if (state === 'saved') {
     submitButton.classList.add('is-saved');
-    submitButton.textContent = 'âœ“ Saved!';
+    submitButton.textContent = 'Saved!';
     setSaveRoleButtonState.resetTimer = window.setTimeout(() => {
       submitButton.classList.remove('is-saved');
       submitButton.textContent = 'Save Role Listing';
@@ -456,7 +456,7 @@ async function loadData() {
             ...FALLBACK_COMMUNITY_DATA,
             ...(await response.json())
           };
-          console.log('âœ… Data loaded from API');
+          console.log('Data loaded from API');
           updateUI();
           return;
         }
@@ -474,7 +474,7 @@ async function loadData() {
       const response = await fetch('data.json');
       if (response.ok) {
         communityData = await response.json();
-        console.log('âœ… Data loaded from data.json');
+        console.log('Data loaded from data.json');
         updateUI();
         return;
       }
@@ -484,10 +484,10 @@ async function loadData() {
 
     // Use inline fallback if data.json cannot be loaded from file://
     communityData = FALLBACK_COMMUNITY_DATA;
-    console.log('âœ… Data loaded from inline fallback');
+    console.log('Data loaded from inline fallback');
     updateUI();
   } catch (error) {
-    console.error('âŒ Error loading data:', error);
+    console.error('Error loading data:', error);
   }
 }
 
@@ -540,7 +540,7 @@ function updateLeaderboard() {
     item.innerHTML = `
       <span class="rank">${player.rank}</span>
       <span class="player-name">${player.name}</span>
-      <span class="aura-count">${player.aura} âœ¨</span>
+      <span class="aura-count">${player.aura} aura</span>
     `;
     leaderboard.appendChild(item);
   });
@@ -851,7 +851,7 @@ async function refreshBotStatus() {
     const payload = response.ok ? await response.json() : {};
     const configuredLatency = Number(payload.latencyMs);
     const latency = Number.isFinite(configuredLatency) && configuredLatency > 0 ? configuredLatency : 40;
-    indicator.textContent = `Bot Online â€¢ ${latency}ms`;
+    indicator.textContent = `Bot Online - ${latency}ms`;
     indicator.classList.remove('is-offline');
   } catch (error) {
     indicator.textContent = 'Bot Status Unknown';
@@ -1506,7 +1506,7 @@ if (newsletterForm) {
     }
     
     // Simulate submission
-    button.textContent = 'Subscribed! âœ“';
+    button.textContent = 'Subscribed!';
     button.style.opacity = '0.8';
     
     setTimeout(() => {
