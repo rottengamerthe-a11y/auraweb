@@ -79,7 +79,7 @@ const CHECKOUT_PRICE_IDS = {
 const PREMIUM_PLAN_CONTENT = {
   monthly: {
     title: 'Premium Monthly',
-    price: '$4.99',
+    price: '$2.99',
     term: '/month',
     badge: 'Flexible monthly access',
     anchor: 'Fair prestige, cosmetics, and convenience without paid PvP dominance.',
@@ -99,9 +99,9 @@ const PREMIUM_PLAN_CONTENT = {
     title: 'Premium Annual',
     price: '$19.99',
     term: '/year',
-    badge: 'Best value - save $39.89/year',
-    anchor: 'Get 12 months of fair prestige for the price of 4.',
-    button: 'Get Annual - Save 66%',
+    badge: 'Best value - save $15.89/year',
+    anchor: 'Save compared with monthly billing.',
+    button: 'Get Annual - Save 44%',
     planId: 'yearly',
     getPriceId: () => CHECKOUT_PRICE_IDS.yearly(),
     benefits: [
