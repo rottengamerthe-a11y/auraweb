@@ -1136,6 +1136,284 @@ html {
   }
 }
 
+/* Consumer journey density */
+@media (min-width: 769px) {
+  main.container {
+    padding-top: 2rem;
+  }
+
+  main.container > section {
+    margin-top: 3.5rem;
+  }
+
+  .stats-section,
+  .about-section {
+    padding: 1.5rem 0;
+  }
+
+  .stats-section {
+    display: grid;
+    grid-template-columns: minmax(260px, 0.72fr) minmax(0, 1.28fr);
+    align-items: end;
+    gap: 2rem;
+  }
+
+  .stats-section .section-heading {
+    margin-bottom: 0;
+  }
+
+  .stats-grid {
+    gap: 0.65rem;
+  }
+
+  .stat-card {
+    min-height: 108px;
+    padding: 1rem;
+  }
+
+  .about-section .section-heading {
+    max-width: 820px;
+    margin-bottom: 1.25rem;
+  }
+
+  .z-feature-stack {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+
+  .z-feature,
+  .z-feature.is-reversed {
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-rows: auto auto;
+    gap: 0.9rem;
+    padding: 1rem;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .z-feature.is-reversed .z-feature-copy {
+    order: 0;
+  }
+
+  .z-feature-copy h3 {
+    font-size: 1.15rem;
+  }
+
+  .z-feature-copy p {
+    font-size: 0.9rem;
+    line-height: 1.45;
+  }
+
+  .bot-visual {
+    min-height: 150px;
+    padding: 0.8rem;
+  }
+
+  .commands-section .section-heading,
+  .guide-section > h2,
+  .pricing-section .section-heading {
+    margin-bottom: 1.25rem;
+  }
+
+  .container > #pricing .premium-summary-list,
+  .container > #pricing .pricing-compliance-note {
+    display: none;
+  }
+
+  .container > #pricing .section-heading {
+    max-width: 720px;
+  }
+
+  .container > #pricing .pricing-card {
+    min-height: 0;
+  }
+
+  .container > #pricing .plan-benefits {
+    max-height: 220px;
+    overflow: hidden;
+  }
+
+  .container > #pricing .lifetime-card,
+  .container > #pricing .pricing-faq {
+    display: none;
+  }
+
+  .container > #pricing .pricing-grid {
+    grid-template-columns: minmax(0, 760px);
+  }
+
+  .container > #roleDashboard {
+    max-height: 560px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .container > #roleDashboard::after {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 140px;
+    background: linear-gradient(transparent, var(--bg));
+    content: '';
+    pointer-events: none;
+  }
+
+  .container > #roleDashboard:target {
+    max-height: none;
+    overflow: visible;
+  }
+
+  .container > #roleDashboard:target::after {
+    display: none;
+  }
+
+  .container > #proof {
+    padding-block: 0.75rem;
+  }
+
+  .container > #proof .section-heading > p:not(.eyebrow) {
+    display: none;
+  }
+
+  .container > .about-section .bot-visual {
+    display: none;
+  }
+
+  .container > .about-section .z-feature-stack {
+    grid-template-columns: 1fr;
+  }
+
+  .container > .about-section .z-feature,
+  .container > .about-section .z-feature.is-reversed {
+    min-height: 0;
+    padding: 0.85rem;
+  }
+
+  .container > #commands .command-card p {
+    display: none;
+  }
+
+  .container > #commands .commands-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .container > #commands .command-card {
+    min-height: 88px;
+    padding: 0.7rem;
+  }
+
+  .container > #leaderboards .leaderboard-browser {
+    display: none;
+  }
+
+  .container > #leaderboards .web-leaderboard-layout {
+    min-height: 0;
+  }
+
+  .container > #pricing .plan-benefits {
+    max-height: 135px;
+    overflow: hidden;
+  }
+
+  .container > #pricing .pricing-faq {
+    display: none;
+  }
+
+  .container > #pricing .lifetime-card {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  main.container {
+    padding-top: 1rem;
+  }
+
+  main.container > section {
+    margin-top: 2.25rem;
+  }
+
+  .stats-section,
+  .about-section {
+    padding-block: 0.85rem;
+  }
+
+  .stats-section .section-heading {
+    margin-bottom: 1rem;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+  }
+
+  .stat-card {
+    min-height: 82px;
+    padding: 0.75rem;
+  }
+
+  .stat-number {
+    font-size: 1.25rem;
+  }
+
+  .stat-label {
+    font-size: 0.72rem;
+  }
+
+  .about-section .section-heading {
+    margin-bottom: 1rem;
+  }
+
+  .z-feature-stack {
+    gap: 0.5rem;
+  }
+
+  .z-feature,
+  .z-feature.is-reversed {
+    gap: 0.55rem;
+  }
+
+  .z-feature .bot-visual {
+    min-height: 120px;
+  }
+
+  .container > #pricing .premium-summary-list,
+  .container > #pricing .pricing-compliance-note {
+    display: none;
+  }
+
+  .container > #pricing .pricing-card {
+    min-height: 0;
+  }
+
+  .container > #roleDashboard {
+    max-height: 430px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .container > #roleDashboard::after {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 120px;
+    background: linear-gradient(transparent, var(--bg));
+    content: '';
+    pointer-events: none;
+  }
+
+  .container > #roleDashboard:target {
+    max-height: none;
+    overflow: visible;
+  }
+
+  .container > #roleDashboard:target::after {
+    display: none;
+  }
+}
+
 .bot-status {
   display: inline-flex;
   align-items: center;
@@ -4680,8 +4958,8 @@ h3 {
 }
 
 .site-header {
-  min-height: 680px;
-  padding: 7rem 0 4rem;
+  min-height: calc(100svh - 76px);
+  padding: clamp(3rem, 7vh, 6rem) 0 clamp(2rem, 5vh, 4rem);
   text-align: left;
   background: transparent;
 }
@@ -4698,7 +4976,8 @@ h3 {
 
 .site-header > .container {
   display: grid;
-  grid-template-columns: minmax(0, 0.82fr) minmax(420px, 1.18fr);
+  width: min(1480px, calc(100% - 7rem));
+  grid-template-columns: minmax(440px, 0.76fr) minmax(560px, 1.24fr);
   gap: clamp(2rem, 6vw, 6rem);
   align-items: center;
 }
@@ -4707,7 +4986,7 @@ h3 {
   max-width: 8ch;
   margin-bottom: 1.25rem;
   color: var(--text);
-  font-size: clamp(4.4rem, 9vw, 8.4rem);
+  font-size: clamp(5rem, 9vw, 10rem);
   line-height: 0.82;
   text-shadow: none;
 }
@@ -4727,7 +5006,8 @@ h3 {
 
 .hero-discord-mockup {
   width: 100%;
-  height: 480px;
+  height: min(54vh, 540px);
+  min-height: 420px;
   min-height: 0;
   margin: 0;
   border: 1px solid var(--line);
@@ -4912,6 +5192,7 @@ main.container > section {
 
 @media (max-width: 900px) {
   .site-header > .container {
+    width: min(1180px, calc(100% - 3rem));
     grid-template-columns: 1fr;
   }
 
@@ -4940,7 +5221,12 @@ main.container > section {
   }
 
   .site-header {
+    min-height: auto;
     padding: 4rem 0 2.5rem;
+  }
+
+  .site-header > .container {
+    width: min(100% - 1.5rem, 1180px);
   }
 
   .site-header h1 {
@@ -5089,5 +5375,175 @@ main.container > section {
 
   .site-header h1 {
     font-size: 2.25rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .container > #proof .section-heading > p:not(.eyebrow),
+  .container > #pricing .premium-summary-list,
+  .container > #pricing .pricing-compliance-note {
+    display: none;
+  }
+
+  .container > #proof {
+    padding-block: 0.75rem;
+  }
+
+  .container > .about-section .bot-visual {
+    display: none;
+  }
+
+  .container > .about-section .z-feature-stack {
+    grid-template-columns: 1fr;
+  }
+
+  .container > .about-section .z-feature,
+  .container > .about-section .z-feature.is-reversed {
+    min-height: 0;
+    padding: 0.85rem;
+  }
+
+  .container > #commands .command-card p {
+    display: none;
+  }
+
+  .container > #commands .commands-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .container > #commands .command-card {
+    min-height: 88px;
+    padding: 0.7rem;
+  }
+
+  .container > #leaderboards .leaderboard-browser {
+    display: none;
+  }
+
+  .container > #leaderboards .web-leaderboard-layout {
+    min-height: 0;
+  }
+
+  .container > #pricing .plan-benefits {
+    max-height: 135px;
+    overflow: hidden;
+  }
+
+  .container > #pricing .pricing-faq,
+  .container > #pricing .lifetime-card {
+    display: none;
+  }
+}
+
+/* Keep the landing page focused; full policies and support remain in the footer. */
+.container > .newsletter-section,
+.container > #community,
+.container > #support,
+.container > #legal {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .guide-section {
+    padding: 1.25rem 0.85rem;
+  }
+
+  .guide-section > h2 {
+    margin-bottom: 0.35rem;
+  }
+
+  .guide-steps {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.55rem;
+    margin-top: 1rem;
+  }
+
+  .guide-step {
+    display: block;
+    min-width: 0;
+    padding: 0.85rem 0.65rem;
+    text-align: left;
+  }
+
+  .guide-step:first-child {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: 38px minmax(0, 1fr);
+    gap: 0.15rem 0.7rem;
+    align-items: start;
+    padding: 0.9rem;
+  }
+
+  .guide-step:first-child .step-number {
+    grid-row: span 2;
+  }
+
+  .guide-step h3 {
+    margin: 0.2rem 0 0.35rem;
+    font-size: 0.95rem;
+  }
+
+  .guide-step p {
+    font-size: 0.78rem;
+    line-height: 1.32;
+  }
+
+  .guide-step:first-child p,
+  .guide-step:first-child .guide-step-cta {
+    grid-column: 1 / -1;
+  }
+
+  .guide-step-cta {
+    display: flex;
+    width: 100%;
+    min-width: 0;
+    min-height: 44px;
+    margin-top: 0.7rem;
+    padding: 0.7rem 0.55rem;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    white-space: normal;
+    line-height: 1.15;
+  }
+
+  .discord-preview {
+    min-width: 0;
+    margin-top: 1rem;
+    padding: 0.75rem;
+    overflow: hidden;
+    border-radius: 9px;
+  }
+
+  .discord-preview-header {
+    margin-bottom: 0.55rem;
+    font-size: 0.68rem;
+  }
+
+  .start-command-embed.discord-message {
+    display: grid;
+    width: 100%;
+    max-width: none;
+    min-width: 0;
+    gap: 0.45rem;
+    padding: 0.75rem;
+    overflow: hidden;
+  }
+
+  .start-command-embed strong {
+    font-size: 0.86rem;
+  }
+
+  .start-embed-line {
+    gap: 0.45rem;
+    font-size: 0.88rem;
+  }
+
+  .start-embed-divider {
+    max-width: 100%;
+    overflow: hidden;
+    font-size: 0.72rem;
+    white-space: nowrap;
   }
 }
