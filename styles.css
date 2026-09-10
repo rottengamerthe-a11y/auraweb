@@ -1333,6 +1333,34 @@ html {
 
 .container > #proof,
 .container > .about-section,
+.container > #commands,
+.container > #leaderboards,
+.container > #guide,
+.container > #pricing,
+.container > #microshop,
+.container > #roleDashboard,
+.container > #roadmap,
+.container > .testimonials-section,
+.container > #faq {
+  padding-inline: clamp(1rem, 3vw, 2.75rem) !important;
+}
+
+.container > #proof > *,
+.container > .about-section > *,
+.container > #commands > *,
+.container > #leaderboards > *,
+.container > #guide > *,
+.container > #pricing > *,
+.container > #microshop > *,
+.container > #roleDashboard > *,
+.container > #roadmap > *,
+.container > .testimonials-section > *,
+.container > #faq > * {
+  min-width: 0;
+}
+
+.container > #proof,
+.container > .about-section,
 .container > #pricing {
   min-width: 0;
   overflow: hidden;
