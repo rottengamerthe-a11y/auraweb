@@ -1326,11 +1326,29 @@ html {
 }
 
 /* Final layout corrections for the landing page surfaces. */
+#pricing[hidden],
+#microshop[hidden] {
+  display: none !important;
+}
+
 .container > #proof,
 .container > .about-section,
 .container > #pricing {
   min-width: 0;
   overflow: hidden;
+}
+
+.container > #proof,
+.container > .about-section {
+  padding-inline: clamp(0.85rem, 3vw, 2.5rem);
+}
+
+.container > #proof .section-heading,
+.container > .about-section .section-heading,
+.container > #guide,
+.container > #commands,
+.container > #leaderboards {
+  min-width: 0;
 }
 
 .container > #proof {
@@ -1463,6 +1481,12 @@ html {
   .container > #pricing {
     display: block;
     padding: 1rem 0.85rem;
+  }
+
+  .container > #guide,
+  .container > #commands,
+  .container > #leaderboards {
+    padding-inline: 0.85rem;
   }
 
   .container > #proof .section-heading h2,
