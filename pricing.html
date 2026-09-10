@@ -90,84 +90,104 @@
         </div>
       </section>
 
-      <section class="pricing-section" id="subscriptions">
+      <section class="pricing-section" id="pricing">
         <div class="section-heading">
-          <p class="eyebrow">Subscriptions</p>
-          <h2>Global User Premium</h2>
+          <p class="eyebrow">Store</p>
+          <h2>Premium, Prestige, and One-Time Drops</h2>
+          <ul class="premium-summary-list">
+            <li><span>GU</span><strong>Global Upgrade</strong>Unlock premium across any server where Aurix supports your account.</li>
+            <li><span>FP</span><strong>Fair Prestige</strong>Cosmetics, identity perks, modest capped boosts, and convenience without paid PvP dominance.</li>
+            <li><span>SC</span><strong>Secure Checkout</strong>Payments are processed securely by Paddle as merchant of record.</li>
+          </ul>
           <p class="pricing-compliance-note">Premium is linked to the Discord account connected at checkout, not locked to one server. Payments are processed securely by Paddle as reseller and merchant of record.</p>
+          <p class="pricing-compliance-note">All Aurix points, virtual items, ranks, and progression are virtual bot features only. They have no cash value, cannot be traded, and cannot be exchanged for money, prizes, or physical goods. Aurix does not offer gambling, betting, sweepstakes, or real-money rewards.</p>
+          <p class="pricing-login-note" id="pricingLoginNote">Login with Discord before buying so global premium can be linked to your user account.</p>
         </div>
-        <div class="pricing-grid pricing-grid-compact">
-          <article class="pricing-card">
+        <div class="store-tabs" role="tablist" aria-label="Store categories">
+          <button class="store-tab is-active" type="button" role="tab" aria-selected="true" data-store-tab="subscriptions">Subscriptions</button>
+          <button class="store-tab" type="button" role="tab" aria-selected="false" data-store-tab="drops">One-Time Drops</button>
+        </div>
+        <div class="pricing-toggle" role="group" aria-label="Premium billing cycle" data-store-panel="subscriptions">
+          <button class="pricing-toggle-button" type="button" data-plan-cycle="monthly">Monthly</button>
+          <button class="pricing-toggle-button is-active" type="button" data-plan-cycle="yearly">Annual <span>Save 44%</span></button>
+        </div>
+        <div class="pricing-trust-strip" aria-label="Payment and product trust signals" data-store-panel="subscriptions">
+          <span>Secure checkout by Paddle</span>
+          <span>Digital delivery to your Discord account</span>
+          <span>Global account-linked access</span>
+          <span>Support: zxavokaurix@gmail.com</span>
+        </div>
+        <div class="pricing-grid pricing-grid-compact" data-store-panel="subscriptions">
+          <article class="pricing-card featured-plan premium-toggle-card">
             <div class="plan-header">
-              <p class="plan-type">Flexible access</p>
-              <h3>Premium Monthly</h3>
-              <div class="plan-price"><span>$2.99</span><small>/month</small></div>
-              <p class="plan-anchor">Cancel or change plans as your community needs.</p>
+              <div class="plan-badge" id="premiumPlanBadge">Best value - save $15.89/year</div>
+              <p class="plan-type">Global User Premium</p>
+              <h3 id="premiumPlanTitle">Premium Annual</h3>
+              <div class="plan-price"><span id="premiumPlanPrice">$19.99</span><small id="premiumPlanTerm">/year</small></div>
+              <p class="plan-anchor" id="premiumPlanAnchor">Save compared with monthly billing.</p>
             </div>
-            <ul class="plan-benefits">
-              <li>No paid PvP damage, crit, robbery, or bounty advantage</li>
-              <li>1.08x daily aura and XP boost with economy-safe caps</li>
-              <li>Premium Chest every 24 hours</li>
-              <li>3 garden plots, reminder slots, cosmetics, and profile status</li>
+            <ul class="plan-benefits plan-benefits-compact" id="premiumPlanBenefits">
+              <li>Fair premium with no paid PvP damage, crit, or robbery advantage</li>
+              <li>1.12x daily aura and XP boost with economy-safe caps</li>
+              <li>Premium Chest every 22 hours with capped aura, cosmetics, materials, and crate chances</li>
+              <li>Welcome bundle: 5,000 aura, 2 rare cosmetic crates, and 1 epic cosmetic crate</li>
+              <li>4 total garden plots plus extra reminder slots for convenience</li>
+              <li>Premium cosmetics, profile status, titles, and activation announcement</li>
             </ul>
-            <button class="plan-button" data-plan-id="monthly" data-price-key="monthly">Get Monthly</button>
-          </article>
-          <article class="pricing-card featured-plan">
-            <div class="plan-badge">Best value - save $15.89/year</div>
-            <div class="plan-header">
-              <p class="plan-type">Annual access</p>
-              <h3>Premium Annual</h3>
-              <div class="plan-price"><span>$19.99</span><small>/year</small></div>
-              <p class="plan-anchor">The lowest effective price for ongoing premium.</p>
-            </div>
-            <ul class="plan-benefits">
-              <li>Everything in Premium Monthly with stronger convenience caps</li>
-              <li>1.12x daily aura and XP boost</li>
-              <li>Premium Chest every 22 hours</li>
-              <li>Welcome bundle, 4 garden plots, cosmetics, titles, and activation announcement</li>
-            </ul>
-            <button class="plan-button" data-plan-id="yearly" data-price-key="yearly">Get Annual</button>
+            <p class="plan-delivery">Delivered digitally to the Discord user account connected at checkout, not locked to one server.</p>
+            <button class="plan-button" id="premiumPlanButton" data-plan-id="yearly" data-price-key="yearly">Get Annual - Save 44%</button>
+            <div class="payment-methods" aria-label="Accepted payment methods"><span>Visa</span><span>Mastercard</span><span>PayPal</span><span>Apple Pay</span></div>
           </article>
           <article class="pricing-card lifetime-card">
             <div class="plan-header">
-              <p class="plan-type">One-time purchase</p>
+              <p class="plan-type">Global User Premium</p>
               <h3>Lifetime</h3>
               <div class="plan-price"><span>$49.99</span><small>one-time</small></div>
-              <p class="plan-anchor">Permanent fair premium for the long run.</p>
+              <p class="plan-anchor">Own premium for the long run.</p>
+              <p class="plan-roi">Pays for itself in just 10 months.</p>
             </div>
             <ul class="plan-benefits">
-              <li>Permanent premium with no paid PvP dominance</li>
+              <li>Permanent fair premium with no paid PvP damage, crit, or robbery advantage</li>
               <li>1.14x daily aura and XP boost with economy-safe caps</li>
-              <li>Premium Chest every 20 hours</li>
-              <li>5 garden plots, expanded reminders, VIP title, and profile cosmetics</li>
+              <li>Premium Chest every 20 hours with capped aura, cosmetics, materials, and crate chances</li>
+              <li>Welcome bundle: 8,000 aura, 3 rare cosmetic crates, and 1 epic cosmetic crate</li>
+              <li>5 total garden plots plus expanded reminder slots for convenience</li>
+              <li>Lifetime profile status, Aurix VIP title, Gold Profile Frame, and Storm Nameplate</li>
+              <li>Premium-only cosmetic shop items and activation announcement</li>
+              <li>Higher premium effect caps for convenience systems, never competitive dominance</li>
             </ul>
+            <p class="plan-delivery">Delivered digitally to the Discord user account connected at checkout, not locked to one server.</p>
             <button class="plan-button secondary-plan-button" data-plan-id="lifetime" data-price-key="lifetime">Get Lifetime</button>
+            <div class="payment-methods" aria-label="Accepted payment methods"><span>Visa</span><span>Mastercard</span><span>PayPal</span><span>Apple Pay</span></div>
           </article>
         </div>
+        <div class="pricing-faq" aria-label="Billing questions" data-store-panel="subscriptions">
+          <h3>Billing Questions</h3>
+          <div class="pricing-faq-items">
+            <details><summary>Can I transfer premium status to another server?</summary><p>Premium is linked to the Discord account used at checkout. Server-specific setup can be changed from the dashboard when you manage that server.</p></details>
+            <details><summary>How are refunds handled?</summary><p>Refund requests are reviewed under the <a href="/refund-policy.html">Refund Policy</a> for duplicate charges, billing mistakes, or undelivered digital access.</p></details>
+            <details><summary>When do I receive premium benefits?</summary><p>Benefits are delivered digitally to the connected Discord account after Paddle confirms checkout.</p></details>
+          </div>
+        </div>
       </section>
 
-      <section class="microshop-section" id="drops">
+      <section class="microshop-section" id="drops" data-store-panel="drops" hidden>
         <div class="section-heading">
           <p class="eyebrow">One-Time Drops</p>
-          <h2>Cosmetics and utility packs</h2>
-          <p>Optional digital packs for cosmetics, capped aura, collectibles, and convenience items. They have no cash value and do not provide real-money rewards.</p>
+          <h2>Cosmetic Crates, Prestige Drops, and Utility Packs</h2>
+          <p>Optional digital packs for cosmetics, modest capped aura, collectibles, and utility items without paid PvP dominance.</p>
+          <p class="pricing-login-note delivery-account-note" id="deliveryAccountNote">Login with Discord first so packs deliver to the right account.</p>
+          <p class="pricing-compliance-note">All packs are optional gameplay convenience items. They do not grant cash value, real-money rewards, withdrawals, gambling entries, prizes, physical goods, cryptocurrency, gift cards, or stored value.</p>
         </div>
         <div class="microshop-grid">
-          <article class="microshop-card"><div class="microshop-header"><h3>Starter Style Bundle</h3><div class="microshop-price">$0.99</div></div><p class="plan-delivery">3 common cosmetic crates, 1 rare crate, and 1,500 capped bonus aura.</p><button class="plan-button" data-product-id="starter_crate_bundle" data-price-key="starterCrateBundle">Buy Bundle</button></article>
-          <article class="microshop-card featured-plan"><div class="microshop-header"><h3>Rivalry Style Stack</h3><div class="microshop-price">$2.99</div></div><p class="plan-delivery">2 rare cosmetic crates, 1 epic crate, and 3,000 capped bonus aura.</p><button class="plan-button" data-product-id="rare_crate_stack" data-price-key="rareCrateStack">Buy Stack</button></article>
-          <article class="microshop-card"><div class="microshop-header"><h3>Legendary Prestige Drop</h3><div class="microshop-price">$4.99</div></div><p class="plan-delivery">Rare and epic crates, a legendary crate chance, 7,500 capped bonus aura, and a prestige title.</p><button class="plan-button" data-product-id="legendary_vault_drop" data-price-key="legendaryVaultDrop">Buy Drop</button></article>
-          <article class="microshop-card"><div class="microshop-header"><h3>Utility Supply Pack</h3><div class="microshop-price">$2.99</div></div><p class="plan-delivery">Health vials, smoke bombs, a vault key, capped combat utility, and 2,500 capped bonus aura.</p><button class="plan-button" data-product-id="boost_supply_pack" data-price-key="boostSupplyPack">Buy Pack</button></article>
+          <article class="microshop-card"><div class="microshop-art"><img src="/image/starter-bundle.png" alt="Starter Style Bundle"></div><div class="microshop-header"><h3>Starter Style Bundle</h3><div class="microshop-price">$0.99</div></div><ul class="plan-benefits microshop-benefits"><li>3 common cosmetic crates</li><li>1 rare cosmetic crate</li><li>1,500 capped bonus aura</li></ul><p class="plan-delivery">Best for new profiles that want early style without skipping the game.</p><button class="plan-button" data-product-id="starter_crate_bundle" data-price-key="starterCrateBundle">Buy Bundle</button></article>
+          <article class="microshop-card featured-plan"><div class="plan-badge">Popular</div><div class="microshop-art"><img src="/image/rare-crate-stack.png" alt="Rivalry Style Stack"></div><div class="microshop-header"><h3>Rivalry Style Stack</h3><div class="microshop-price">$2.99</div></div><ul class="plan-benefits microshop-benefits"><li>2 rare cosmetic crates</li><li>1 epic cosmetic crate</li><li>3,000 capped bonus aura</li></ul><p class="plan-delivery">A focused style pack for players who want their profile to stand out.</p><button class="plan-button" data-product-id="rare_crate_stack" data-price-key="rareCrateStack">Buy Stack</button></article>
+          <article class="microshop-card"><div class="microshop-art"><img src="/image/legendary-vault-drop.png" alt="Legendary Prestige Drop"></div><div class="microshop-header"><h3>Legendary Prestige Drop</h3><div class="microshop-price">$4.99</div></div><ul class="plan-benefits microshop-benefits"><li>3 rare cosmetic crates</li><li>1 epic cosmetic crate</li><li>1 legendary cosmetic crate chance</li><li>7,500 capped bonus aura</li><li>Prestige title and profile frame</li></ul><p class="plan-delivery">A prestige-focused drop for collectors, flex culture, and profile identity.</p><button class="plan-button" data-product-id="legendary_vault_drop" data-price-key="legendaryVaultDrop">Buy Drop</button></article>
+          <article class="microshop-card"><div class="microshop-art"><img src="/image/boost-supply-pack.png" alt="Utility Supply Pack"></div><div class="microshop-header"><h3>Utility Supply Pack</h3><div class="microshop-price">$2.99</div></div><ul class="plan-benefits microshop-benefits"><li>3 Health Vials, 2 Smoke Bombs, and 1 Vault Key</li><li>1 Adrenaline Tonic with capped combat utility</li><li>2,500 capped bonus aura</li></ul><p class="plan-delivery">Convenience supplies for active sessions without removing risk or counterplay.</p><button class="plan-button" data-product-id="boost_supply_pack" data-price-key="boostSupplyPack">Buy Pack</button></article>
         </div>
       </section>
 
-      <section class="faq-section">
-        <h2>Billing Questions</h2>
-        <div class="faq-items accordion-list">
-          <details class="faq-item" open><summary>How are purchases delivered?</summary><p>Benefits are delivered digitally to the Discord account connected during checkout after Paddle confirms payment.</p></details>
-          <details class="faq-item"><summary>Can I request a refund?</summary><p>Refunds are reviewed for duplicate charges, billing mistakes, undelivered digital access, and eligible unused purchases. See the <a href="/refund-policy.html">Refund Policy</a>.</p></details>
-          <details class="faq-item"><summary>Do virtual items have cash value?</summary><p>No. Aurix points, items, ranks, and progression are virtual bot features only. They cannot be exchanged for money, prizes, or physical goods.</p></details>
-        </div>
-      </section>
+      <section class="faq-section"><h2>Purchase Information</h2><div class="faq-items accordion-list"><details class="faq-item" open><summary>How are purchases delivered?</summary><p>Benefits are delivered digitally to the Discord account connected during checkout after Paddle confirms payment.</p></details><details class="faq-item"><summary>Do virtual items have cash value?</summary><p>No. Aurix points, items, ranks, and progression are virtual bot features only. They cannot be exchanged for money, prizes, or physical goods.</p></details></div></section>
     </main>
 
     <footer class="site-footer">
