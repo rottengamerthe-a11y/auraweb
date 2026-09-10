@@ -46,6 +46,7 @@ ALLOWED_STATIC_FILES = {
     "leaderboard.html",
     "leaderboard.js",
     "paddle.js",
+    "pricing.html",
     "privacy.html",
     "refund-policy.html",
     "script.js",
