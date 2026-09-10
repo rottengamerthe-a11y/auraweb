@@ -105,6 +105,33 @@ li {
   margin-top: 2rem;
 }
 
+.hero-kicker {
+  margin-bottom: 1.25rem !important;
+}
+
+.hero-proof {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 1.5rem;
+  margin-top: 2.25rem;
+  color: var(--muted);
+  font-size: 0.84rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.hero-proof span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.hero-proof strong {
+  color: var(--primary);
+  font-size: 0.72rem;
+}
+
 .hero-discord-mockup {
   display: grid;
   grid-template-columns: 72px 1fr;
@@ -4524,6 +4551,530 @@ body {
 
   .footer-content {
     text-align: left;
+  }
+}
+
+/* Aurix world UI refresh */
+:root {
+  --bg: #070a0f;
+  --primary: #ffbf69;
+  --secondary: #ff6b4a;
+  --text: #f7f1e7;
+  --surface: #11161b;
+  --muted: #9ba3a8;
+  --accent: #9cf6d0;
+  --line: rgba(247, 241, 231, 0.14);
+  --ink: #070a0f;
+}
+
+body {
+  font-family: 'Space Grotesk', 'Trebuchet MS', sans-serif;
+  background: var(--bg);
+  background-image: radial-gradient(circle at 85% 5%, rgba(255, 107, 74, 0.16), transparent 28rem), radial-gradient(circle at 8% 28%, rgba(156, 246, 208, 0.08), transparent 24rem), linear-gradient(135deg, #070a0f 0%, #0b1015 62%, #101414 100%);
+  color: var(--text);
+}
+
+h1,
+h2,
+h3,
+.nav-brand,
+.plan-price,
+.stat-number {
+  font-family: 'Space Grotesk', 'Trebuchet MS', sans-serif;
+  letter-spacing: -0.04em;
+}
+
+h2 {
+  font-size: clamp(2rem, 4.2vw, 4rem);
+  line-height: 0.98;
+}
+
+h3 {
+  line-height: 1.05;
+}
+
+.container,
+.nav-container {
+  width: min(1180px, calc(100% - 3rem));
+}
+
+.sticky-nav {
+  background: rgba(7, 10, 15, 0.82);
+  border-bottom: 1px solid var(--line);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.22);
+  backdrop-filter: blur(18px);
+}
+
+.nav-container {
+  min-height: 76px;
+}
+
+.nav-brand {
+  color: var(--text);
+  font-weight: 800;
+  letter-spacing: -0.06em;
+}
+
+.brand-mark {
+  color: var(--ink);
+  background: var(--primary);
+  border-radius: 9px;
+  box-shadow: 5px 5px 0 var(--secondary);
+}
+
+.nav-menu a,
+.nav-dropdown > button {
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.nav-menu a:hover,
+.nav-menu a.is-active,
+.nav-dropdown > button:hover {
+  color: var(--primary);
+}
+
+.bot-status {
+  color: var(--accent);
+  background: rgba(156, 246, 208, 0.08);
+  border: 1px solid rgba(156, 246, 208, 0.24);
+  border-radius: 999px;
+}
+
+.discord-login-button,
+.link-button,
+.plan-button,
+.submit-idea-button {
+  border-radius: 7px;
+  font-family: inherit;
+  box-shadow: none;
+}
+
+.discord-login-button,
+.link-button.bot-link,
+.plan-button {
+  color: var(--ink);
+  background: var(--primary);
+}
+
+.discord-login-button:hover,
+.link-button.bot-link:hover,
+.plan-button:hover {
+  background: var(--accent);
+  box-shadow: 4px 4px 0 var(--secondary);
+  transform: translate(-2px, -2px);
+}
+
+.link-button.server-link,
+.submit-idea-button {
+  color: var(--text);
+  background: transparent;
+  border: 1px solid var(--line);
+}
+
+.link-button.server-link:hover,
+.submit-idea-button:hover {
+  color: var(--ink);
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.site-header {
+  min-height: 680px;
+  padding: 7rem 0 4rem;
+  text-align: left;
+  background: transparent;
+}
+
+.site-header > .container,
+.pricing-page-header > * {
+  position: relative;
+  z-index: 1;
+}
+
+.site-header::before {
+  background: linear-gradient(90deg, rgba(7, 10, 15, 0.98) 0%, rgba(7, 10, 15, 0.7) 48%, transparent 100%), radial-gradient(circle at 78% 28%, rgba(255, 191, 105, 0.14), transparent 23rem);
+}
+
+.site-header > .container {
+  display: grid;
+  grid-template-columns: minmax(0, 0.82fr) minmax(420px, 1.18fr);
+  gap: clamp(2rem, 6vw, 6rem);
+  align-items: center;
+}
+
+.site-header h1 {
+  max-width: 8ch;
+  margin-bottom: 1.25rem;
+  color: var(--text);
+  font-size: clamp(4.4rem, 9vw, 8.4rem);
+  line-height: 0.82;
+  text-shadow: none;
+}
+
+.site-header p {
+  max-width: 34rem;
+  margin: 0;
+  color: var(--muted);
+  font-size: clamp(1rem, 1.5vw, 1.25rem);
+  line-height: 1.5;
+}
+
+.hero-actions {
+  justify-content: flex-start;
+  margin-top: 2.25rem;
+}
+
+.hero-discord-mockup {
+  width: 100%;
+  height: 480px;
+  min-height: 0;
+  margin: 0;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  box-shadow: 18px 18px 0 rgba(255, 107, 74, 0.16), 0 30px 80px rgba(0, 0, 0, 0.42);
+  transform: rotate(1.2deg);
+}
+
+.hero-discord-mockup .mockup-channel {
+  overflow: hidden;
+}
+
+main.container {
+  padding-top: 4rem;
+}
+
+main.container > section {
+  margin-top: 7rem;
+  scroll-margin-top: 7rem;
+}
+
+.section-heading {
+  max-width: 700px;
+  margin-bottom: 2.5rem;
+}
+
+.section-heading p {
+  color: var(--muted);
+}
+
+.eyebrow {
+  color: var(--primary) !important;
+  letter-spacing: 0.18em !important;
+}
+
+.stats-section,
+.about-section,
+.commands-section,
+.web-leaderboard-section,
+.guide-section,
+.pricing-section,
+.microshop-section,
+.role-dashboard-section,
+.roadmap-section,
+.testimonials-section,
+.faq-section,
+.newsletter-section,
+.links-section,
+.support-section,
+.legal-section {
+  background: transparent;
+}
+
+.stat-card,
+.command-card,
+.z-feature,
+.guide-step,
+.testimonial-card,
+.policy-card,
+.pricing-card,
+.microshop-card,
+.dashboard-shell,
+.faq-item {
+  background: rgba(17, 22, 27, 0.78);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.18);
+}
+
+.stat-card:hover,
+.command-card:hover,
+.pricing-card:hover,
+.microshop-card:hover,
+.guide-step:hover {
+  border-color: rgba(255, 191, 105, 0.6);
+  box-shadow: 8px 8px 0 rgba(255, 107, 74, 0.16);
+  transform: translateY(-4px);
+}
+
+.stat-number,
+.plan-price,
+.microshop-price {
+  color: var(--primary);
+}
+
+.stat-label,
+.command-card p,
+.z-feature-copy p,
+.guide-step p,
+.testimonial-card p {
+  color: var(--muted);
+}
+
+.feature-icon,
+.command-icon,
+.step-number {
+  color: var(--ink);
+  background: var(--accent);
+  border-radius: 8px;
+}
+
+.z-feature,
+.web-leaderboard-layout,
+.pricing-section,
+.microshop-section,
+.role-dashboard-section,
+.roadmap-section,
+.faq-section,
+.legal-section {
+  padding: clamp(1.25rem, 4vw, 3rem);
+  border-top: 1px solid var(--line);
+}
+
+.pricing-section {
+  background: linear-gradient(135deg, rgba(255, 191, 105, 0.08), rgba(156, 246, 208, 0.04));
+}
+
+.store-tabs,
+.pricing-toggle {
+  background: rgba(7, 10, 15, 0.72);
+  border-color: var(--line);
+  border-radius: 8px;
+}
+
+.store-tab,
+.pricing-toggle-button {
+  color: var(--muted);
+}
+
+.store-tab.is-active,
+.pricing-toggle-button.is-active {
+  color: var(--ink);
+  background: var(--primary);
+}
+
+.pricing-trust-strip span {
+  color: var(--accent);
+  background: rgba(156, 246, 208, 0.06);
+  border-color: rgba(156, 246, 208, 0.2);
+}
+
+.pricing-card.featured-plan {
+  border-color: var(--primary);
+  box-shadow: 8px 8px 0 rgba(255, 191, 105, 0.15);
+}
+
+.plan-badge,
+.pricing-card .plan-badge {
+  color: var(--ink);
+  background: var(--accent);
+}
+
+.plan-type,
+.plan-anchor,
+.plan-delivery,
+.pricing-compliance-note,
+.pricing-faq p,
+.legal-intro {
+  color: var(--muted) !important;
+}
+
+.plan-benefits li::before {
+  color: var(--accent);
+}
+
+.microshop-art {
+  border-radius: 8px;
+  background: #0b1015;
+}
+
+.newsletter-section {
+  border: 1px solid rgba(156, 246, 208, 0.24);
+  border-radius: 10px;
+  background: linear-gradient(135deg, rgba(156, 246, 208, 0.08), rgba(255, 191, 105, 0.08));
+}
+
+.site-footer {
+  margin-top: 8rem;
+  background: #050709;
+  border-top: 1px solid var(--line);
+}
+
+@media (max-width: 900px) {
+  .site-header > .container {
+    grid-template-columns: 1fr;
+  }
+
+  .site-header {
+    min-height: auto;
+    padding-top: 5rem;
+  }
+
+  .hero-discord-mockup {
+    max-width: 720px;
+  }
+}
+
+@media (max-width: 768px) {
+  .container,
+  .nav-container {
+    width: min(100% - 1.5rem, 1180px);
+  }
+
+  main.container {
+    padding-top: 2rem;
+  }
+
+  main.container > section {
+    margin-top: 4.5rem;
+  }
+
+  .site-header {
+    padding: 4rem 0 2.5rem;
+  }
+
+  .site-header h1 {
+    font-size: clamp(4rem, 20vw, 6rem);
+  }
+
+  .hero-discord-mockup {
+    transform: none;
+    height: 430px;
+  }
+
+  .z-feature,
+  .web-leaderboard-layout {
+    padding: 1.25rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .nav-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text);
+    background: transparent;
+    border: 1px solid var(--line);
+  }
+
+  .pricing-page-header {
+    min-height: auto;
+    margin-top: 0;
+    padding: 3rem 1rem 2.25rem;
+    text-align: left;
+  }
+
+  .pricing-page-header h1 {
+    max-width: none;
+    margin-bottom: 1rem;
+    font-size: clamp(2.55rem, 12vw, 4rem);
+    line-height: 0.94;
+  }
+
+  .pricing-page-header p {
+    max-width: 34rem;
+    font-size: 0.98rem;
+    line-height: 1.45;
+  }
+
+  .pricing-page-header .hero-actions {
+    margin-top: 1.5rem;
+  }
+
+  .pricing-page main,
+  .pricing-page > section {
+    min-width: 0;
+  }
+
+  .pricing-page .pricing-section,
+  .pricing-page .microshop-section,
+  .pricing-page .faq-section {
+    padding: 1.25rem 0.85rem;
+  }
+
+  .pricing-page .section-heading h2 {
+    font-size: clamp(2rem, 10vw, 3rem);
+  }
+
+  .pricing-page .premium-summary-list li {
+    grid-template-columns: 32px minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .pricing-page .premium-summary-list li strong {
+    grid-column: 2;
+  }
+
+  .pricing-page .premium-summary-list li:not(strong) {
+    line-height: 1.45;
+  }
+
+  .pricing-page .pricing-trust-strip {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .pricing-page .pricing-trust-strip span {
+    width: auto;
+    min-height: 48px;
+    justify-content: flex-start;
+    font-size: 0.75rem;
+    line-height: 1.2;
+  }
+
+  .pricing-page .plan-benefits {
+    max-height: none;
+    overflow: visible;
+  }
+
+  .pricing-page .pricing-card,
+  .pricing-page .microshop-card {
+    padding: 1rem;
+  }
+
+  .pricing-page .payment-methods {
+    flex-wrap: wrap;
+  }
+
+  .pricing-page .microshop-art {
+    max-height: 150px;
+  }
+
+  .hero-proof {
+    display: grid;
+    gap: 0.65rem;
+  }
+
+  .hero-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .hero-actions .link-button {
+    width: 100%;
+  }
+
+  .store-tabs,
+  .pricing-toggle {
+    display: flex;
+    width: 100%;
+  }
+
+  .store-tab,
+  .pricing-toggle-button {
+    flex: 1;
+    padding-inline: 0.55rem;
   }
 }
 
