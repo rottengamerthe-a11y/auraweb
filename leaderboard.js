@@ -4,7 +4,8 @@ function getAuthBaseUrl() {
 
 function getLeaderboardSlug() {
   const parts = window.location.pathname.split('/').filter(Boolean);
-  return parts[1] || 'global';
+  const querySlug = new URLSearchParams(window.location.search).get('server');
+  return querySlug || parts[1] || 'global';
 }
 
 function formatUpdatedAt(value) {

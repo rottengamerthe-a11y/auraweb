@@ -1325,6 +1325,189 @@ html {
   }
 }
 
+/* Final layout corrections for the landing page surfaces. */
+.container > #proof,
+.container > .about-section,
+.container > #pricing {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.container > #proof {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.7fr) minmax(0, 1.3fr);
+  align-items: end;
+  gap: 1.5rem;
+  padding: 1.5rem 0;
+}
+
+.container > #proof .section-heading {
+  min-width: 0;
+  margin: 0;
+}
+
+.container > #proof .section-heading h2,
+.container > .about-section .section-heading h2,
+.container > #pricing .section-heading h2 {
+  max-width: 18ch;
+  margin-bottom: 0.7rem;
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  line-height: 0.98;
+}
+
+.container > #proof .stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.6rem;
+  min-width: 0;
+  margin: 0;
+}
+
+.container > #proof .stat-card {
+  min-width: 0;
+  min-height: 106px;
+  padding: 0.9rem;
+  overflow: hidden;
+}
+
+.container > #proof .stat-number {
+  font-size: clamp(1.25rem, 2.7vw, 2.5rem);
+  white-space: nowrap;
+}
+
+.container > .about-section {
+  padding: 1.5rem 0;
+}
+
+.container > .about-section .section-heading {
+  margin-bottom: 1rem;
+}
+
+.container > .about-section .z-feature-stack {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.7rem;
+}
+
+.container > .about-section .z-feature,
+.container > .about-section .z-feature.is-reversed {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) !important;
+  grid-template-rows: auto auto;
+  min-width: 0;
+  min-height: 0;
+  gap: 0.8rem;
+  padding: 1rem;
+  overflow: hidden;
+}
+
+.container > .about-section .z-feature.is-reversed .z-feature-copy {
+  order: 0;
+}
+
+.container > .about-section .z-feature-copy h3 {
+  margin: 0.35rem 0 0.5rem;
+  font-size: 1.05rem;
+}
+
+.container > .about-section .z-feature-copy p {
+  font-size: 0.86rem;
+  line-height: 1.42;
+}
+
+.container > .about-section .bot-visual {
+  min-width: 0;
+  min-height: 142px;
+  padding: 0.7rem;
+  overflow: hidden;
+}
+
+.container > #guide .discord-preview {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.container > #guide .start-command-embed {
+  width: min(100%, 620px);
+  min-width: 0;
+  overflow: hidden;
+}
+
+.container > #pricing .section-heading {
+  min-width: 0;
+  margin-bottom: 1.25rem;
+}
+
+.container > #pricing .pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem;
+  min-width: 0;
+}
+
+.container > #pricing .pricing-card {
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.container > #pricing .plan-benefits {
+  max-height: 190px;
+  overflow: hidden;
+}
+
+@media (max-width: 768px) {
+  .container > #proof,
+  .container > #about-section,
+  .container > .about-section,
+  .container > #pricing {
+    display: block;
+    padding: 1rem 0.85rem;
+  }
+
+  .container > #proof .section-heading h2,
+  .container > .about-section .section-heading h2,
+  .container > #pricing .section-heading h2 {
+    max-width: none;
+    font-size: clamp(1.8rem, 9vw, 2.7rem);
+  }
+
+  .container > #proof .stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-top: 0.9rem;
+  }
+
+  .container > #proof .stat-card {
+    min-height: 78px;
+    padding: 0.65rem;
+  }
+
+  .container > #proof .stat-number {
+    font-size: 1.18rem;
+  }
+
+  .container > .about-section .z-feature-stack {
+    grid-template-columns: 1fr;
+  }
+
+  .container > .about-section .bot-visual {
+    display: none;
+  }
+
+  .container > #pricing .pricing-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .container > #pricing .lifetime-card,
+  .container > #pricing .pricing-faq {
+    display: none;
+  }
+
+  .container > #pricing .plan-benefits {
+    max-height: 150px;
+  }
+}
+
 @media (max-width: 768px) {
   main.container {
     padding-top: 1rem;
