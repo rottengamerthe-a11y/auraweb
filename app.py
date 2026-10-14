@@ -31,7 +31,7 @@ app.config.update(
 DISCORD_API_BASE = "https://discord.com/api/v10"
 DISCORD_REQUEST_HEADERS = {
     "Accept": "application/json",
-    "User-Agent": "AurixWebsiteOAuth/1.0 (https://aurawebsite-12gd.onrender.com)",
+    "User-Agent": "AurixWebsiteOAuth/1.0 (https://auraweb-nugv.onrender.com)",
 }
 MANAGE_GUILD_PERMISSION = 0x20
 ADMINISTRATOR_PERMISSION = 0x8
